@@ -1,0 +1,17 @@
+%!PS
+/printtwo {
+    /printnum {
+        100 mul round 100 div 20 string cvs print
+    } def
+    printnum
+    ( ) print
+    printnum
+    (\n) print
+} def
+/donothing { } def
+/fill {
+    flattenpath
+    {printtwo} {printtwo} {donothing} {donothing} pathforall
+} def
+(petal.ps) run
+
