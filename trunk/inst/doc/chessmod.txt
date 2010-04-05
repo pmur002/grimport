@@ -1,0 +1,105 @@
+La Bourdonnais:Cochrane:0-1:30:1821:Paris:C37 King's Gambit Accepted
+La Bourdonnais:Alexander D'Arblay:1-0:20:1830:France:C39 King's Gambit Accepted
+La Bourdonnais:Pelling:1-0:17:1830:Casual:C21 Center Game
+La Bourdonnais:McDonnell:1-0:42:1834:London m4 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:1-0:34:1834:London:C52 Evans Gambit
+McDonnell:La Bourdonnais:1-1:81:1834:London:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-0:29:1834:Match:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:25:1834:London m5 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:29:1834:London:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-1:49:1834:Match 03:C53 Giuoco Piano
+McDonnell:La Bourdonnais:0-1:42:1834:London m3 ;HCL 18:C33 King's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:48:1834:London m6 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-0:30:1834:London:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-1:92:1834:London m4 ;HCL 18:C38 King's Gambit Accepted
+McDonnell:La Bourdonnais:0-1:48:1834:London m 22:C33 King's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:53:1834:London:D00 Queen's Pawn Game
+McDonnell:La Bourdonnais:1-1:29:1834:London m5 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-1:55:1834:London Match:C44 King's Pawn Game
+La Bourdonnais:McDonnell:1-0:30:1834:London m3 ;HCL 18:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:0-1:53:1834:London m5 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:0-1:25:1834:London:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:0-1:36:1834:London m4 ;HCL 18:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:59:1834:London m6 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-0:31:1834:London:C53 Giuoco Piano
+La Bourdonnais:McDonnell:1-1:39:1834:London m4 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-0:29:1834:London:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:31:1834:Match:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-0:21:1834:London m5 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:50:1834:London:C00 French Defense
+La Bourdonnais:McDonnell:1-0:29:1834:Match 03:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:30:1834:London m3 ;HCL 18:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:30:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-0:29:1834:London:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:19:1834:London m4 ;HCL 18:C37 King's Gambit Accepted
+McDonnell:La Bourdonnais:0-1:20:1834:London m 20:C33 King's Gambit Accepted
+La Bourdonnais:McDonnell:1-1:51:1834:London:C21 Center Game
+McDonnell:La Bourdonnais:0-1:32:1834:London m4 ;HCL 18:B30 Sicilian
+La Bourdonnais:McDonnell:1-0:32:1834:Match:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:39:1834:London m3 ;HCL 18:C37 King's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:42:1834:London m5 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:1-0:51:1834:London:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-1:59:1834:London m4 ;HCL 18:C23 Bishop's Opening
+La Bourdonnais:McDonnell:0-1:67:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:0-1:44:1834:London:C53 Giuoco Piano
+McDonnell:La Bourdonnais:1-0:21:1834:London m4 ;HCL 18:B32 Sicilian
+La Bourdonnais:McDonnell:1-0:26:1834:London:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:20:1834:Match:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:48:1834:London m5 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:1-0:48:1834:London:C24 Bishop's Opening
+McDonnell:La Bourdonnais:1-0:32:1834:London m3 ;MAINB:C38 King's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:41:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-0:45:1834:London:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:26:1834:London m4 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:30:1834:London m 18:C33 King's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:54:1834:London:C23 Bishop's Opening
+McDonnell:La Bourdonnais:0-1:37:1834:London m4 ;HCL 18:B32 Sicilian
+La Bourdonnais:McDonnell:1-0:29:1834:Match:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:30:1834:London m1:C23 Bishop's Opening
+McDonnell:La Bourdonnais:1-0:49:1834:London m3 ;HCL 18:D41 Queen's Gambit Declined, Semi-Tarrasch
+McDonnell:La Bourdonnais:0-1:25:1834:London m5 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:0-1:35:1834:London:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-1:93:1834:London m4 ;HCL 18:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:1-0:20:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:0-1:54:1834:London:C53 Giuoco Piano
+McDonnell:La Bourdonnais:1-1:56:1834:London m4 ;HCL 18:B32 Sicilian
+McDonnell:La Bourdonnais:0-1:55:1834:London:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:1-0:39:1834:London m5 ;HCL 18:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:1-0:39:1834:Match:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:0-1:47:1834:London m3 ;HCL 18:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:63:1834:London m6 ;HCL 18:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:35:1834:London:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-1:41:1834:London m4 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:42:1834:London m 11:C33 King's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:39:1834:London:C23 Bishop's Opening
+McDonnell:La Bourdonnais:1-1:30:1834:London m4 ;HCL 18:B32 Sicilian
+La Bourdonnais:McDonnell:1-0:23:1834:London:C51 Evans Gambit
+McDonnell:La Bourdonnais:1-0:46:1834:London:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:1-0:51:1834:Match:B21 Sicilian, 2.f4 and 2.d4
+La Bourdonnais:McDonnell:1-0:36:1834:London m3 ;HCL 18:D20 Queen's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:100:1834:London m5 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:44:1834:London:B21 Sicilian, 2.f4 and 2.d4
+McDonnell:La Bourdonnais:0-1:53:1834:London m4 ;MAINB:C23 Bishop's Opening
+McDonnell:La Bourdonnais:1-0:60:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:0-1:36:1834:London:D00 Queen's Pawn Game
+La Bourdonnais:McDonnell:1-0:37:1834:London m4 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:1-0:99:1834:London m 35:C37 King's Gambit Accepted
+La Bourdonnais:McDonnell:1-0:55:1834:London:D00 Queen's Pawn Game
+McDonnell:La Bourdonnais:1-0:52:1834:London m5 ;HCL 18:C51 Evans Gambit
+McDonnell:La Bourdonnais:0-1:59:1834:London m3 ;HCL 18:C38 King's Gambit Accepted
+La Bourdonnais:McDonnell:0-1:27:1834:London m6 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-0:35:1834:London:D20 Queen's Gambit Accepted
+McDonnell:La Bourdonnais:0-1:43:1834:London m4 ;HCL 18:C51 Evans Gambit
+La Bourdonnais:McDonnell:1-1:58:1834:London:C44 King's Pawn Game
+McDonnell:La Bourdonnais:0-1:27:1835:Consultation:C11 French
+La Bourdonnais:McDonnell:1-0:23:1835:Unknown:C51 Evans Gambit
+La Bourdonnais:Boncourt:1-0:33:1836:Paris (France):C51 Evans Gambit
+Jouy:La Bourdonnais:0-1:28:1836:Paris:C22 Center Game
+Jouy:La Bourdonnais:0-1:17:1836:-3584:C37 King's Gambit Accepted
+La Bourdonnais:NN:1-0:25:1837:Match?:C44 King's Pawn Game
+La Bourdonnais:Delaroche:1-1:35:1837:Paris 1680:C37 King's Gambit Accepted
+La Bourdonnais:Jouantho:1-0:23:1837:Gilvoisin:C37 King's Gambit Accepted
+La Bourdonnais:Lecrivain:1-0:28:1837:Paris:C00 French Defense
+La Bourdonnais:Bonfil:1-1:37:1837:?:C52 Evans Gambit
+La Bourdonnais:D Wilson:1-0:44:1837:London:C00 French Defense
+La Bourdonnais:Jouy:1-0:32:1838:Paris (France):C52 Evans Gambit

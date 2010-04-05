@@ -1,0 +1,19 @@
+citHeader("To cite grImport in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Importing Vector Graphics: The {grImport} Package for {R}",
+  author       = personList(as.person("Paul Murrell")),
+  journal      = "Journal of Statistical Software",
+  year         = "2009",
+  volume       = "30",
+  number       = "4",
+  pages        = "1--37",
+  url          = "http://www.jstatsoft.org/v30/i04/",
+
+  textVersion  =
+  paste("Paul Murrell (2009).",
+        "Importing Vector Graphics: The grImport Package for R.",
+        "Journal of Statistical Software, 30(4), 1-37.",
+        "URL http://www.jstatsoft.org/v30/i04/.")
+)
+

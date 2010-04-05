@@ -1,0 +1,111 @@
+Changes from version 0.5 to 0.5-1
+=================================
+
+1.  Added checks for XML special characters in text values.
+
+2.  Added support for /awidthshow operator 
+    (BUT ONLY WHEN charpath=FALSE)
+
+3.  Added support for line types (lty/setdash).
+
+
+Changes from version 0.4-5 to 0.5
+=================================
+
+1.  Added picture() function for drawing Picture as part
+    of a plot produced by the 'graphics' package.
+
+
+Changes from version 0.4-4 to 0.4-5
+===================================
+
+1.  Added 'encoding' argument to PostScriptTrace().
+
+
+Changes from version 0.4 to 0.4-4
+=================================
+
+1.  Added support for /ashow operator.
+
+
+Changes from version 0.3-1 to 0.4
+=================================
+
+1.  Fixed bug in how the width and height of text is calculated when
+    PostScriptTrace(charpath=FALSE).
+
+2.  Added 'setflat' argument to PostScriptTrace() to allow
+    control of how many lines each curve is broken into.
+
+3.  Allowed 'label' argument of picturePaths() to be a logical
+    so can easily turn off labelling.
+
+4.  Added a DTD for the RGML format (in inst/dtd/).
+
+5.  Added a 'version' attribute to the <picture> element
+    in the RGML format.  This allows 'grImport' to detect
+    out-of-date RGML files and prompt for PostScriptTrace()
+    to be re-run.
+
+
+Changes from version 0.3 to 0.3-1
+=================================
+
+1.  Fixes to License: in DESCRIPTION and to imports in NAMESPACE
+
+
+Changes from version 0.2-4 to 0.3
+=================================
+
+1.  Added 'distort' argument to grid.picture() so that image
+    will not try to maintain its aspect ratio if distort=TRUE.
+
+    Decided to bump minor version number cos this is not just 
+    a bug fix.
+
+    Motivated by feature request from Toby Dylan Hocking.
+
+
+Changes from version 0.2-3 to 0.2-4
+===================================
+
+1.  Fix to PostScriptTrace() so that full file paths work on Windows.
+
+    Thanks to Duncan Murdoch and Alex Hanke for bug reports.
+
+
+Changes from version 0.2-2 to 0.2-3
+===================================
+
+1.  Fix to explodePaths() so that it handles paths that do not
+    need exploding.
+
+
+Changes from version 0.1 to 0.2
+=================================
+
+1.  Importing text was not working at all;  this now works, though
+    imported text is just character outlines.  The default drawing
+    method just strokes the character outline;  you can attempt
+    to fill the characters, in which case, the first outline in each
+    character is filled in the current colour, then all subsequent 
+    outlines for the character are filled using a user-specified 
+    background colour (default is "white").  This a very simple-
+    minded approach, but it does work for some straightforward
+    examples (an example where it doesn't work is the dot on a 
+    lower-case "i").
+
+    This change adds a new "char" type of path (to the existing
+    "stroke" and "fill" types) and a new "PictureChar" class
+    (to the existing "PictureStroke" and "PictureFill" classes).
+
+2.  A path with zero locations used to cause an error;  such
+    paths are now just not drawn.
+
+3.  A new function explodePaths() breaks up any path with multiple
+    'move' operations into separate paths.
+
+4.  Added some tests in test/ dir.
+
+[thanks to Ken Knoblauch for bug reports and testing 
+ that led to these improvements]
