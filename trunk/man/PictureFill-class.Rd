@@ -1,0 +1,40 @@
+\name{PictureFill-class}
+\docType{class}
+\alias{PictureFill-class}
+\alias{grobify,PictureFill-method}
+\alias{symbolize,PictureFill-method}
+
+\title{Class "PictureFill" }
+\description{A description of a polygon path (that might be part
+of a larger picture).}
+\section{Slots}{
+	 \describe{
+    \item{\code{x}:}{Object of class \code{"numeric"} }
+    \item{\code{y}:}{Object of class \code{"numeric"} }
+    \item{\code{rgb}:}{Object of class \code{"character"} 
+that specifies the fill colour for the polygon.}
+    \item{\code{lwd}:}{Object of class \code{"numeric"} 
+that specifies the line width of the polygon (not typically
+used because the polygon is meant to be  filled not stroked).}
+  }
+}
+\section{Extends}{
+Class \code{"PictureOp"}, directly.
+}
+\section{Methods}{
+  \describe{
+    \item{grobify}{\code{signature(object = "PictureFill")}: 
+convert to a grid grob (for one-off drawing).}
+    \item{symbolize}{\code{signature(object = "PictureFill")}: 
+convert to a grid grob (for drawing as a data symbol).}
+	 }
+}
+\author{ Paul Murrell }
+\seealso{
+\code{\link{Picture-class}},
+\code{\link{PictureStroke-class}},
+and
+\code{\link{grid.picture}},
+\code{\link{grid.symbols}}.
+}
+\keyword{classes}
