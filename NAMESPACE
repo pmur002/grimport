@@ -28,6 +28,7 @@ export(picturePaths)
 
 S3method("xDetails", "picture")
 S3method("yDetails", "picture")
+S3method("drawDetails", "picline")
 S3method("drawDetails", "symbolStroke")
 S3method("drawDetails", "symbolFill")
 S3method("drawDetails", "picturetext")

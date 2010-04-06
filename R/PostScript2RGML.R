@@ -11,7 +11,7 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       # XML file header info
       sprintf("(<?xml version='1.0' encoding='%s' ?>\n\n) print",
               encoding),
-      paste("(<picture version='2' xmlns:rgml='http://r-project.org/RGML'",
+      paste("(<picture version='3' xmlns:rgml='http://r-project.org/RGML'",
             " source='", file, "'",
             " date='", as.character(Sys.time()), "'",
             " creator='R (", R.Version()$major, ".", R.Version()$minor, ")'",
@@ -100,15 +100,17 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  pop pop",
       "  } def",
       "/printlwd {",
-      "  currentlinewidth",
-      # multiply line width by 1.33
-      # (R converts 1 to 0.75 when writing PostScript)
-      "  ( lwd=') print 1.33 mul str cvs print (') print",
+      # lwd is in user coords so transform
+      # This will need transforming to a grDevices "lwd" in R
+      "  currentlinewidth 0 transform pop",
+      "  0 0 transform pop sub",
+      "  ( lwd=') print str cvs print (') print",
       "} def",
       "/printdash {",
       "  currentdash",
-      # ignore offset
-      "  ( lty=') print pop {str cvs print ( ) print} forall (') print",
+      # Like lwd, transform user coords
+      # Ignore offset
+      "  ( lty=') print pop {0 transform pop 0 0 transform pop sub str cvs print ( ) print} forall (') print",
       "} def",      
       "/printstyle {",
       "  (\t\t<style) print",
@@ -357,7 +359,7 @@ PScaptureFoot <-
 # above PostScript code.
 # (e.g., do some character escaping that would be more painful to do
 #  in PostScript code)
-postProcess <- function(outfilename) {
+postProcess <- function(outfilename, enc) {
     processStringLine <- function(stringLine) {
         paste(stringLine[1],
               gsub("&", "&amp;",
@@ -368,7 +370,10 @@ postProcess <- function(outfilename) {
               stringLine[3],
               sep="")
     }
-    lines <- readLines(outfilename)
+    # The XML file has been created by ghostscript in ISO-8859-1
+    infile <- file(outfilename, "r", enc="ISO-8859-1")
+    lines <- readLines(infile)
+    close(infile)
     # All string values have been marked 
     stringLines <- grep("###TEXT", lines)
     if (length(stringLines) > 0) {
@@ -376,7 +381,10 @@ postProcess <- function(outfilename) {
         stringLinesMod <- sapply(stringLinesBits, processStringLine)
         lines[stringLines] <- stringLinesMod
     }
-    writeLines(lines, outfilename)
+    # Write the file using 'enc' encoding
+    outfile <- file(outfilename, "w", encoding=enc)
+    writeLines(lines, outfile)
+    close(outfile)
 }
 
 # Generate RGML file from PostScript file
@@ -422,7 +430,7 @@ PostScriptTrace <- function(file, outfilename,
         stop(gettextf("status %d in running command '%s'", ret, cmd),
              domain = NA)
     } else {
-        postProcess(outfilename)
+        postProcess(outfilename, encoding)
     }
     invisible(cmd)
 }

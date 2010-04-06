@@ -18,22 +18,19 @@ readPicture <- function(rgmlFile, ...) {
                       switch(funPathType(x),
                              stroke=new("PictureStroke", x=xval, y=yval,
                                lwd=as.numeric(gc$style["lwd"]),
-                               lty=fixLTY(gc$style["lty"],
-                                 gc$style["lwd"]),
+                               lty=readLTY(gc$style["lty"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
                              fill=new("PictureFill", x=xval, y=yval,
                                lwd=as.numeric(gc$style["lwd"]),
-                               lty=fixLTY(gc$style["lty"],
-                                 gc$style["lwd"]),
+                               lty=readLTY(gc$style["lty"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
                              char=new("PictureChar", x=xval, y=yval,
                                lwd=as.numeric(gc$style["lwd"]),
-                               lty=fixLTY(gc$style["lty"],
-                                 gc$style["lwd"]),
+                               lty=readLTY(gc$style["lty"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))))
@@ -60,7 +57,7 @@ readPicture <- function(rgmlFile, ...) {
 
     xmlDoc = xmlTreeParse(rgmlFile, ...)
     version <- as.numeric(xmlAttrs(xmlRoot(xmlDoc))["version"])
-    if (version != 2)
+    if (version != 3)
         stop(paste("Version mismatch:",
                    "RGML file needs to be recreated with PostScriptTrace()"))
     RGMLlist <- xmlApply(xmlRoot(xmlDoc), funPath)

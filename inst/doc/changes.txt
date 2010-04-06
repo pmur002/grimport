@@ -1,5 +1,5 @@
-Changes from version 0.5 to 0.5-1
-=================================
+Changes from version 0.5 to 0.6
+===============================
 
 1.  Added checks for XML special characters in text values.
 
@@ -7,6 +7,10 @@ Changes from version 0.5 to 0.5-1
     (BUT ONLY WHEN charpath=FALSE)
 
 3.  Added support for line types (lty/setdash).
+
+4.  Improved recording of line width.
+
+5.  Bumped RGML file version to 3.
 
 
 Changes from version 0.4-5 to 0.5
