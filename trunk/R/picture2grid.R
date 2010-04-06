@@ -144,15 +144,28 @@ setGeneric("grobify",
                standardGeneric("grobify")
            })
 
+picLinesGrob <- function(...) {
+    grob(..., cl="picline")
+}
+
+drawDetails.picline <- function(x, recording) {
+    # Figure out what lwd and lty really are
+    lwd <- convertWidth(unit(x$lwd, "native"), "bigpts", valueOnly=TRUE)
+    lty <- fixLTY(x$lty, x$lwd)
+    grid.lines(x$x, x$y, x$default.units,
+               gp=gpar(lwd=lwd, lty=lty, col=x$col))
+}
+
 # Individual path converted into grob
 setMethod("grobify", signature(object="PictureStroke"),
           function(object, ..., fillText, bgText, use.gc=TRUE) {
               if (length(object@x) > 1) {
                   if (use.gc) {
-                      linesGrob(object@x, object@y, default.units="native",
-                                gp=gpar(lwd=object@lwd,
-                                  lty=object@lty,
-                                  col=object@rgb), ...)
+                      picLinesGrob(x=object@x, y=object@y,
+                                   default.units="native",
+                                   lwd=object@lwd,
+                                   lty=object@lty,
+                                   col=object@rgb, ...)
                   } else {
                       linesGrob(object@x, object@y,
                                 default.units="native", ...)
@@ -312,11 +325,14 @@ drawDetails.symbolStroke <- function(x, recording) {
     id <- rep(1:locn$n, each=length(x$object@x))
     # Generate grob representing symbols
     if (x$use.gc) {
+        lwd <- convertWidth(unit(x$object@lwd, "native"), "bigpts",
+                            valueOnly=TRUE)
+        lty <- fixLTY(x$object@lty, x$object@lwd)
         do.call("grid.polyline",
                 c(list(x=locn$x, y=locn$y, id=id,
                        default.units="inches",
-                       gp=gpar(lwd=x$object@lwd,
-                         lty=x$object@lty,
+                       gp=gpar(lwd=lwd,
+                         lty=lty,
                          col=x$object@rgb)),
                   x$poly.args))
     } else {

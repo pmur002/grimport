@@ -1,13 +1,16 @@
 
-# Go from numeric vector for lty to string
-fixLTY <- function(ltyString, lwdString) {
+readLTY <- function(ltyString) {
     tc <- textConnection(ltyString)
     lty <- scan(tc, quiet=TRUE)
     close(tc)
+    lty
+}
+
+# Go from numeric vector for lty to string
+fixLTY <- function(lty, lwd) {
     if (length(lty)) {
-        # Arbitrary 0.5 multiplier
         # Minimum allowed is 1
-        paste(as.hexmode(pmax(1, round(0.5*lty/as.numeric(lwdString)))),
+        paste(as.hexmode(pmax(1, round(lty/lwd))),
               collapse="")
     } else {
         "solid"

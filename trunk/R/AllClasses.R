@@ -4,7 +4,7 @@ setClass("PictureOp",
          representation(x="numeric",
                         y="numeric",
                         rgb="character",
-                        lty="character",
+                        lty="numeric",
                         lwd="numeric"),
          prototype=list(rgb="black", lwd=1))
 
