@@ -1,5 +1,5 @@
 Package:      grImport
-Version:      0.5-1
+Version:      0.6
 Depends:      R (>= 2.3.0), methods, grid, XML
 SystemRequirements: ghostscript
 Title:        Importing Vector Graphics

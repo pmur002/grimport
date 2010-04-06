@@ -8,7 +8,9 @@ setGeneric("drawPath",
 
 setMethod("drawPath", signature(p="PictureStroke"),
           function(p, trans, ...) {
-              lines(trans(p@x, p@y), col=p@rgb, lwd=p@lwd)
+              lwd <- 72*p@lwd/xinch()
+              lty <- fixLTY(p@lty, p@lwd)
+              lines(trans(p@x, p@y), col=p@rgb, lwd=lwd, lty=lty)
           })
 
 setMethod("drawPath", signature(p="PictureFill"),
