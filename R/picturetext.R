@@ -19,12 +19,12 @@ drawDetails.picturetext <- function(x, recording=TRUE) {
     desiredWidth <- convertWidth(x$w, "inches",
                                  valueOnly=TRUE)
     # Scale text to fill desired width
-    grid.text(x$string, x$x, x$y,
+    grid.text(x$string, x$x, x$y, rot=x$angle,
               just=c("left", "bottom"),
               gp=gpar(cex=desiredWidth/currentWidth))
 }
 
-pictureTextGrob <- function(string, x, y, w, h,
+pictureTextGrob <- function(string, x, y, w, angle,
                             units="native",
                             gp=gpar(), name=NULL, vp=NULL) {
     if (!is.unit(x))
@@ -33,8 +33,6 @@ pictureTextGrob <- function(string, x, y, w, h,
         y <- unit(y, units)
     if (!is.unit(w))
         w <- unit(w, units)
-    if (!is.unit(h))
-        h <- unit(h, units)
-    grob(string=as.character(string), x=x, y=y, w=w, h=h,
+    grob(string=as.character(string), x=x, y=y, w=w, angle=angle,
          gp=gp, name=name, vp=vp, cl="picturetext")
 }

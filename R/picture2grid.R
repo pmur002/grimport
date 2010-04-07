@@ -195,12 +195,12 @@ setMethod("grobify", signature(object="PictureText"),
               if (use.gc) {
                   pictureTextGrob(object@string,
                                   object@x, object@y,
-                                  object@w, object@h,
+                                  object@w, object@angle,
                                   gp=gpar(col=object@rgb), ...)
               } else {
                   pictureTextGrob(object@string,
                                   object@x, object@y,
-                                  object@w, object@h, ...)
+                                  object@w, object@angle, ...)
               }
           })
 
