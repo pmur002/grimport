@@ -43,6 +43,7 @@ readPicture <- function(rgmlFile, ...) {
                           x=as.numeric(xmlAttrs(x)["x"]),
                           y=as.numeric(xmlAttrs(x)["y"]),
                           w=as.numeric(xmlAttrs(x)["width"]),
+                          h=as.numeric(xmlAttrs(x)["height"]),
                           angle=as.numeric(xmlAttrs(x)["angle"]),
                           lwd=as.numeric(gc$style["lwd"]),
                           rgb=rgb(as.numeric(gc$rgb["r"]),

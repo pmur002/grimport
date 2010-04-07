@@ -18,6 +18,7 @@ setClass("PictureText",
          representation("PictureOp",
                         string="character",
                         w="numeric",
+                        h="numeric",
                         angle="numeric"))
 
 setClass("PictureChar",
