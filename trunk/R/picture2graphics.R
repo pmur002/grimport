@@ -20,7 +20,7 @@ setMethod("drawPath", signature(p="PictureFill"),
 
 setMethod("drawPath", signature(p="PictureText"),
           function(p, trans, ...) {
-              text(trans(p@x, p@y), labels=p@string, col=p@rgb)
+              text(trans(p@x, p@y), labels=p@string, col=p@rgb, srt=p@angle)
           })
 
 setMethod("drawPath", signature(p="PictureChar"),

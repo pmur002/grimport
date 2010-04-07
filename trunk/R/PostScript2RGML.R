@@ -28,7 +28,43 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "/xmin  99999 def",
       "/ymax -99999 def",
       "/ymin  99999 def",
-                   
+
+      # bounding box processing
+      "/boxmove {",
+      "  transform",
+      "  dup",
+      "  convertToR exch /ystart exch put",
+      "  dup",
+      "  convertToR exch /cury exch put",
+      "  dup",
+      "  convertToR /ymin get lt {convertToR /ymin cury put} if",
+      "  convertToR /ymax get gt {convertToR /ymax cury put} if",
+      "  dup",
+      "  convertToR exch /xstart exch put",
+      "  dup",
+      "  convertToR exch /curx exch put",
+      "  dup",
+      "  convertToR /xmin get lt {convertToR /xmin curx put} if",
+      "  convertToR /xmax get gt {convertToR /xmax curx put} if",
+      "  } def",
+      "/boxline {",
+      "  transform",
+      "  dup",
+      "  convertToR exch /cury exch put",
+      "  dup",
+      "  convertToR /ymin get lt {convertToR /ymin cury put} if",
+      "  convertToR /ymax get gt {convertToR /ymax cury put} if",
+      "  dup",
+      "  convertToR exch /curx exch put",
+      "  dup",
+      "  convertToR /xmin get lt {convertToR /xmin curx put} if",
+      "  convertToR /xmax get gt {convertToR /xmax curx put} if",
+      "  } def",
+      "/boxcurve {",
+      " } def",
+      "/boxclose {",
+      " } def",
+      
       # path processing
       "/mymove {",
       "  (\t<move) print",
@@ -75,9 +111,6 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  (/>\n) print",
       "  } def",
       "/mycurve {",
-      "  (curve ) print",
-      "  str cvs print ( ) print",
-      "  str cvs print (\n) print",
       "  } def",
       "/myclose {",
       # Convert 'closepath' to 'lineto'
@@ -165,73 +198,33 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "    dup",
       "    convertToR /xmax get gt {convertToR /xmax curx put} if",
       "    ( x=') print str cvs print (') print",
-      # (width, height) of text
-      "  dup true charpath flattenpath mark pathbbox",
+      # width of text
+      "  dup stringwidth",
+      # stringwidth has put wx and wy on stack
+      # If wy is non-zero, text is at an angle
+      # Save this angle
+      "  1 index 1 index exch atan convertToR exch /angle exch put",
+      # Calculate user-space width from wx and wy
+      "  2 exp exch 2 exp add sqrt",      
+      # Transform user-space width to device
+      "  0 transform",
+      # Subtract (0, 0)[x]
+      "  exch 0 0 transform pop sub",
+      # Subtract (0, 0)[y]
+      "  exch 0 0 transform exch pop sub",
+      # If transformed y is non-zero then text is at an angle 
+      "  dup 0 ne { 1 index 1 index exch atan } { 0 } ifelse",
+      # Record user-space angle plus angle
+      "  ( angle=') print",
+      "    convertToR /angle get add str cvs print (') print",
+      # Calculate device width 
+      "  2 exp exch 2 exp add sqrt",
+      # Print width
       "  ( width=') print",
-      # pathbbox has put left, bottom, right, top on stack
-      # (indexing is 0-based)
-      # Leave this original for height calculation later
-      # Calculate width
-      # Transform bbox THEN subtract
-      #    Pull out right-top
-      #    (NOTE: after first index, there is another value on stack)
-      "    1 index 1 index",
-      #    Transform right-top and pop transformed top
-      #    (NOTE: transformed right is now on top of stack)
-      "    matrix currentmatrix transform pop",
-      #    Pull out left-bottom
-      "    4 index 4 index",
-      #    Transform left-bottom and pop transformed top
-      #    (NOTE: transformed left is now on top of stack)
-      "    matrix currentmatrix transform pop",
-      # Subtract transformed right - transformed left
-      "    sub",
       "    str cvs print (') print",
-      # At this point should be back to pathbbox on top of stack
-      # DO NOT add to current x for checking against xmin/xmax
-      # because current point has already moved to end of text, 
-      # so just use currentpoint
-      "    currentpoint",
-      "    matrix currentmatrix",
-      "    transform pop", # Drop (transformed) currentpoint[y]
-      "    dup",
-      "    convertToR exch /curx exch put",
-      "    dup",
-      "    convertToR /xmin get lt {convertToR /xmin curx put} if",
-      "    convertToR /xmax get gt {convertToR /xmax curx put} if",      
-      "  ( height=') print",
-      # At this point should be back to pathbbox on top of stack
-      # Calculate height
-      "    dup 3 index sub",
-      # Add to current y for checking against ymin/ymax
-      "    currentpoint exch pop add",
-      # Get currentpoint[x] so can transform 
-      "    currentpoint pop exch", # Drop currentpoint[y]
-      "    matrix currentmatrix",
-      "    transform exch pop", # Drop (transformed) currentpoint[x]
-      "    dup",
-      "    convertToR exch /cury exch put",
-      "    dup",
-      "    convertToR /ymin get lt {convertToR /ymin cury put} if",
-      "    convertToR /ymax get gt {convertToR /ymax cury put} if",      
-      # At this point should be back to pathbbox on top of stack
-      # Transform bbox THEN subtract
-      #    Pull out right-top
-      #    (NOTE: after first index, there is another value on stack)
-      "    1 index 1 index",
-      #    Transform right-top and pop transformed right
-      #    (NOTE: transformed top is now on top of stack)
-      "    matrix currentmatrix transform exch pop",
-      #    Pull out left-bottom
-      "    4 index 4 index",
-      #    Transform left-bottom and pop transformed left
-      #    (NOTE: transformed bottom is now on top of stack)
-      "    matrix currentmatrix transform exch pop",
-      # Subtract transformed top - transformed bottom
-      "    sub",
-      "    str cvs print (') print",
-      # Clean up stack back to pre-pathbbox call
-      "  cleartomark",
+      # Update xmin/xmax/ymin/ymax
+      "  dup true charpath flattenpath",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
       "  (>\n) print",
       "  (\t<context>\n) print",
       "  printcol",
@@ -362,10 +355,10 @@ PScaptureFoot <-
 postProcess <- function(outfilename, enc) {
     processStringLine <- function(stringLine) {
         paste(stringLine[1],
-              gsub("&", "&amp;",
-                   gsub("<", "&lt;",
-                        gsub(">", "gt;",
-                             gsub("'", "&apos;",
+              gsub("<", "&lt;",
+                   gsub(">", "&gt;",
+                        gsub("'", "&apos;",
+                             gsub("&", "&amp;",
                                   stringLine[2])))),
               stringLine[3],
               sep="")
