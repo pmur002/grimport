@@ -14,7 +14,7 @@
     \item{\code{x}:}{Object of class \code{"numeric"} }
     \item{\code{y}:}{Object of class \code{"numeric"} }
     \item{\code{w}:}{Object of class \code{"numeric"} }
-    \item{\code{h}:}{Object of class \code{"numeric"} }
+    \item{\code{angle}:}{Object of class \code{"numeric"} }
     \item{\code{rgb}:}{Object of class \code{"character"} 
 that specifies the fill colour for the polygon.}
     \item{\code{lwd}:}{Object of class \code{"numeric"} 
