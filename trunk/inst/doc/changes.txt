@@ -4,8 +4,7 @@ Changes from version 0.5 to 0.6
 1.  Added checks for XML special characters (e.g, '&')
     in text values (and improved encoding support).
 
-2.  Added support for /awidthshow operator 
-    (BUT ONLY WHEN charpath=FALSE)
+2.  Added support for /widthshow and /awidthshow operators 
 
 3.  Added support for line types (lty/setdash) 
     (and improved recording of line width).
