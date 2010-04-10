@@ -294,6 +294,18 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       # move to save location
       "  currentpoint newpath moveto",
       "} def",
+      "/widthstrokechar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      "  dup",
+      "  true charpath flattenpath",
+      "  {mymove} {myline} {mycurve} {myclose}",
+      "  mychar",
+      # Check for special char adjustment
+      # (the get converts char to int)
+      "  0 get 2 index eq {3 index 3 index rmoveto} if",
+      "  currentpoint newpath moveto",
+      "} def",
       "/astrokechar {",
       "  exch dup 3 -1 roll",
       "  1 getinterval",
@@ -303,29 +315,67 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  mychar",
       "  currentpoint newpath moveto",
       "} def",
+      "/awidthstrokechar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      # Do adjustment on every char
+      "  3 index 3 index rmoveto",
+      "  dup",
+      "  true charpath flattenpath",
+      "  {mymove} {myline} {mycurve} {myclose}",
+      "  mychar",
+      # Check for special char adjustment
+      "  0 get 4 index eq {5 index 5 index rmoveto} if",
+      "  currentpoint newpath moveto",
+      "} def",
       
       if (charpath) {
           c("/show {",
             "  dup length -1 add 0 exch 1 exch {strokechar} for",
             "} def",
+
+            "/widthshow {",
+            "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
+            "} def",
+
             "/ashow {",
             # Do first char without adjustment
             "  0 strokechar",
             # Do remaining chars with adjustment
             "  dup length -1 add 1 exch 1 exch {astrokechar} for",
-            "  pop pop pop", # Remove original string plus ax and ay
+            # Remove original string plus ax and ay
+            "  pop pop pop", 
+            "} def",
+
+            "/awidthshow {",
+            # Do first char without adjustment
+            "  4 copy 0 widthstrokechar pop pop pop pop",
+            # Do remaining chars with adjustment
+            "  dup length -1 add 1 exch 1 exch {awidthstrokechar} for",
+            # Remove original string plus ax,ay,char,cx,cy
+            "  pop pop pop pop pop pop", 
             "} def")
       } else {
           c("/show {",
             "  mytext",
             "  currentpoint newpath moveto",
             "} def",
+
+            # Ignores the fine placement of characters within a /widthshow
+            "/widthshow {",
+            "  mytext",
+            # Remove the string and cx and cy and char from the /widthshow
+            "  pop pop pop pop", 
+            "  currentpoint newpath moveto",
+            "} def",
+
             # Ignores the fine placement of characters within an /ashow
             "/ashow {",
             "  mytext",
             "  pop pop pop", # Remove the string and ax and ay from the /ashow
             "  currentpoint newpath moveto",
             "} def",
+            
             # Ignores the fine placement of characters within an /awidthshow
             "/awidthshow {",
             "  mytext",
