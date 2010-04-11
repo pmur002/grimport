@@ -13,19 +13,28 @@ validDetails.picturetext <- function(x) {
 }
 
 drawDetails.picturetext <- function(x, recording=TRUE) {
-    # Determine size of string in current font
-    currentWidth <- convertWidth(stringWidth(x$string), "inches",
-                                 valueOnly=TRUE)
-    desiredWidth <- convertWidth(x$w, "inches",
-                                 valueOnly=TRUE)
-    # Scale text to fill desired width
-    grid.text(x$string, x$x, x$y, rot=x$angle,
-              just=c("left", "bottom"),
-              gp=gpar(cex=desiredWidth/currentWidth))
+    if (x$sizeByWidth) {
+        # Determine size of string in current font
+        currentWidth <- convertWidth(stringWidth(x$string), "inches",
+                                     valueOnly=TRUE)
+        desiredWidth <- convertWidth(x$w, "inches",
+                                     valueOnly=TRUE)
+        # Scale text to fill desired width
+        grid.text(x$string, x$x, x$y, rot=x$angle,
+                  just=c("left", "bottom"),
+                  gp=gpar(cex=desiredWidth/currentWidth))
+    } else {
+        desiredHeight <- convertHeight(x$h, "points", valueOnly=TRUE)
+        # Scale text to fill desired height
+        grid.text(x$string, x$x, x$y, rot=x$angle,
+                  just=c("left", "bottom"),
+                  gp=gpar(fontsize=desiredHeight))
+    }
 }
 
-pictureTextGrob <- function(string, x, y, w, angle,
+pictureTextGrob <- function(string, x, y, w, h, angle, letters,
                             units="native",
+                            sizeByWidth=TRUE,
                             gp=gpar(), name=NULL, vp=NULL) {
     if (!is.unit(x))
         x <- unit(x, units)
@@ -33,6 +42,9 @@ pictureTextGrob <- function(string, x, y, w, angle,
         y <- unit(y, units)
     if (!is.unit(w))
         w <- unit(w, units)
-    grob(string=as.character(string), x=x, y=y, w=w, angle=angle,
+    if (!is.unit(h))
+        h <- unit(h, units)
+    grob(string=as.character(string), x=x, y=y, w=w, h=h, angle=angle,
+         sizeByWidth=sizeByWidth,
          gp=gp, name=name, vp=vp, cl="picturetext")
 }

@@ -29,22 +29,37 @@ readPicture <- function(rgmlFile, ...) {
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
                              char=new("PictureChar", x=xval, y=yval,
+                               char=xmlAttrs(x)["char"],
                                lwd=as.numeric(gc$style["lwd"]),
                                lty=readLTY(gc$style["lty"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))))
                   },
-               text={ # get context
+               text={ xa <- xmlAttrs(x)
+                   
+                      # get context
                       gc = funGetGC(xmlElementsByTagName(x, "context")[[1]])
 
+                      type = xa["type"]
+
+                      if (type == "text") {
+                          letters = list()
+                      } else {
+                          # list of PictureChar or PictureText
+                          letters = xmlApply(x, funPath)
+                          cntxt = which(names(letters) == "context")
+                          letters = letters[-cntxt]
+                      }
+                      
                       new("PictureText",
-                          string=xmlAttrs(x)["string"],
-                          x=as.numeric(xmlAttrs(x)["x"]),
-                          y=as.numeric(xmlAttrs(x)["y"]),
-                          w=as.numeric(xmlAttrs(x)["width"]),
-                          h=as.numeric(xmlAttrs(x)["height"]),
-                          angle=as.numeric(xmlAttrs(x)["angle"]),
+                          string=xa["string"],
+                          x=as.numeric(xa["x"]),
+                          y=as.numeric(xa["y"]),
+                          w=as.numeric(xa["width"]),
+                          h=as.numeric(xa["height"]),
+                          angle=as.numeric(xa["angle"]),
+                          letters=letters,
                           lwd=as.numeric(gc$style["lwd"]),
                           rgb=rgb(as.numeric(gc$rgb["r"]),
                             as.numeric(gc$rgb["g"]),
