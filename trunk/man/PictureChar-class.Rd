@@ -3,6 +3,7 @@
 \alias{PictureChar-class}
 \alias{grobify,PictureChar-method}
 \alias{symbolize,PictureChar-method}
+\alias{drawPath,PictureChar-method}
 
 \title{Class "PictureChar" }
 \description{A description of a polygon path that describes
@@ -13,10 +14,12 @@
     \item{\code{x}:}{Object of class \code{"numeric"} }
     \item{\code{y}:}{Object of class \code{"numeric"} }
     \item{\code{rgb}:}{Object of class \code{"character"} 
-that specifies the fill colour for the polygon.}
+      that specifies the fill colour for the polygon.}
     \item{\code{lwd}:}{Object of class \code{"numeric"} 
-that specifies the line width of the polygon (only
-used if the character outline is stroked).}
+      that specifies the line width of the polygon (only
+      used if the character outline is stroked).}
+    \item{\code{char}:}{Object of class \code{"character"}
+      that specifies the character that this path represents.}
   }
 }
 \section{Extends}{
@@ -35,6 +38,9 @@ Class \code{"PictureOp"}, directly.
     \item{symbolize}{\code{signature(object = "PictureChar")}: 
       convert to a grid grob (for drawing as a data symbol).
       Currently draws nothing.
+    }
+    \item{drawPath}{\code{signature(object = "PictureChar")}:
+      draws a traced character path as part of the current plot.
     }
   }
 }

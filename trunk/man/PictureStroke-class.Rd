@@ -3,6 +3,7 @@
 \alias{PictureStroke-class}
 \alias{grobify,PictureStroke-method}
 \alias{symbolize,PictureStroke-method}
+\alias{drawPath,PictureStroke-method}
 
 \title{Class "PictureStroke" }
 \description{A polyline path (that might be part of a larger picture). }
@@ -25,7 +26,9 @@ Class \code{"PictureOp"}, directly.
 convert into a grid  grob (for one-off drawing). }
     \item{symbolize}{\code{signature(object = "PictureStroke")}: 
 convert into a grid  grob (for drawing as a data symbol)). }
-	 }
+    \item{drawPath}{\code{signature(object = "PictureStroke")}:
+      draws a traced line as part of the current plot.}
+    }
 }
 \author{ Paul Murrell }
 \seealso{
