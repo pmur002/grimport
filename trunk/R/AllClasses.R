@@ -19,10 +19,12 @@ setClass("PictureText",
                         string="character",
                         w="numeric",
                         h="numeric",
-                        angle="numeric"))
+                        angle="numeric",
+                        letters="list"))
 
 setClass("PictureChar",
-         representation("PictureOp"))
+         representation("PictureOp",
+                        char="character"))
 
 setClass("PictureSummary",
          representation(numPaths="numeric",

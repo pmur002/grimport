@@ -191,16 +191,34 @@ setMethod("grobify", signature(object="PictureFill"),
           })
 
 setMethod("grobify", signature(object="PictureText"),
-          function(object, ..., fillText, bgText, use.gc=TRUE) {
-              if (use.gc) {
-                  pictureTextGrob(object@string,
-                                  object@x, object@y,
-                                  object@w, object@angle,
-                                  gp=gpar(col=object@rgb), ...)
+          function(object, ..., fillText=FALSE, bgText="white",
+                   sizeByWidth=TRUE, use.gc=TRUE) {
+              if (length(object@letters) == 0) {
+                  if (use.gc) {
+                      pictureTextGrob(object@string,
+                                      object@x, object@y,
+                                      object@w, object@h,
+                                      object@angle,
+                                      object@letters,
+                                      ...,
+                                      sizeByWidth=sizeByWidth,
+                                      gp=gpar(col=object@rgb))
+                  } else {
+                      pictureTextGrob(object@string,
+                                      object@x, object@y,
+                                      object@w, object@h,
+                                      object@angle,
+                                      object@letters,
+                                      ...,
+                                      sizeByWidth=sizeByWidth)
+                  }
               } else {
-                  pictureTextGrob(object@string,
-                                  object@x, object@y,
-                                  object@w, object@angle, ...)
+                  gTree(string=as.character(object@string), 
+                        children=do.call("gList",
+                          lapply(object@letters, grobify, ...,
+                                 fillText=fillText, bgText=bgText,
+                                 sizeByWidth=sizeByWidth, use.gc=use.gc)),
+                        cl="pictureletters")
               }
           })
 

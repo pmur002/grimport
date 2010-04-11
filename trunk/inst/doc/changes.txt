@@ -5,6 +5,7 @@ Changes from version 0.5 to 0.6
     in text values (and improved encoding support).
 
 2.  Added support for /widthshow and /awidthshow operators 
+    (and improved /ashow support).
 
 3.  Added support for line types (lty/setdash) 
     (and improved recording of line width).
@@ -12,7 +13,19 @@ Changes from version 0.5 to 0.6
 4.  Added support for rotated text
     (and improved calculation of text width).
 
-5.  Bumped RGML file version to 3.
+5.  Added 'charpos' argument to PostScriptTrace() to allow
+    text that is NOT stroked to still be drawn as individual
+    characters (with each character having its own location).
+
+6.  Added 'sizeByWidth' argument to grobify (method for 
+    PictureText objects) so that text size can be calculated
+    from traced width OR from traced height (the latter
+    is an estimate of font size, rather than the height
+    from the bounding box of the specific piece of text,
+    so that two pieces of text using the same font at the
+    same scale will have the same height upon tracing).
+
+7.  Bumped RGML file version to 3.
 
 
 Changes from version 0.4-5 to 0.5
