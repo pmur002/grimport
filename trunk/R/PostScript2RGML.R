@@ -4,7 +4,7 @@ PScaptureText <- c()
 
 PScaptureChars <- c()
     
-PScaptureHead <- function(file, charpath, setflat, encoding) {
+PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
     c("%!PS-Adobe-2.0 EPSF-1.2",
       "%%BeginProcSet:convertToR 0 0",
       
@@ -74,11 +74,21 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  convertToR /bxmin get convertToR /xmin get lt {convertToR /xmin convertToR /bxmin get put} if",
       "  convertToR /bxmax get convertToR /xmax get gt {convertToR /xmax convertToR /bxmax get put} if",
       " } def",
+
+      # Font height calculation (for *current* font)
+      "/fontsize {",
+      "  gsave",
+      "  newpath 0 0 moveto convertToR /curangle get -1 mul rotate",
+      "  (\\() true charpath flattenpath",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      "  convertToR /bymax get convertToR /bymin get sub",
+      "  grestore",
+      " } def",
       
       # path processing
       "/mymove {",
       "  (\t<move) print",
-      "  matrix currentmatrix",
       "  transform",
       "  dup",
       "  convertToR exch /ystart exch put",
@@ -102,7 +112,6 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "} def",
       "/myline {",
       "  (\t<line) print",
-      "  matrix currentmatrix",
       "  transform",
       "  dup",
       "  convertToR exch /cury exch put",
@@ -188,11 +197,19 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "/mytext {",
       "  (<text ) print",
       "  ( id=') print convertToR /id get str cvs print (') print",
+      "  convertToR /id get 1 add convertToR exch /id exch put",
       # Insert MARKS here so that postProcess() can easily locate strings
       "  ( string='###TEXT) print dup print (###TEXT') print",
+      # Type of text element
+      if (charpath) {
+          "  ( type='charpath') print"
+      } else if (charpos) {
+          "  ( type='char') print"
+      } else {
+          "  ( type='text') print"
+      },
       # (x, y) location of text
       "  currentpoint",
-      "  matrix currentmatrix",
       "  transform",
       "    dup",
       "    convertToR exch /cury exch put",
@@ -213,7 +230,7 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       # stringwidth has put wx and wy on stack
       # If wy is non-zero, text is at an angle
       # Save this angle
-      "  1 index 1 index exch atan convertToR exch /angle exch put",
+      "  1 index 1 index exch atan convertToR exch /curangle exch put",
       # Calculate user-space width from wx and wy
       "  2 exp exch 2 exp add sqrt",      
       # Transform user-space width to device
@@ -224,37 +241,48 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  exch 0 0 transform exch pop sub",
       # If transformed y is non-zero then text is at an angle 
       "  dup 0 ne { 1 index 1 index exch atan } { 0 } ifelse",
+      # Save user-space angle plus angle
+      "  convertToR /curangle get add convertToR exch /curangle exch put",
       # Record user-space angle plus angle
       "  ( angle=') print",
-      "    convertToR /angle get add str cvs print (') print",
+      "    convertToR /curangle get str cvs print (') print",
       # Calculate device width 
       "  2 exp exch 2 exp add sqrt",
       # Print width
       "  ( width=') print",
       "    str cvs print (') print",
-      # Height of text (based on text bounding box)
       # Calculate text bb
-      "  dup true charpath flattenpath",
+      "  gsave",
+      "  currentpoint newpath moveto dup true charpath flattenpath",
       "  boxinit",
       "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      # Height of text (size of current font)
       # Print height
       "  ( height=') print",
-      "  convertToR /bymax get convertToR /bymin get sub",
-      "    str cvs print (') print",      
-      # Update global xmin/xmax/ymin/ymax
-      "  boxupdate",
-      
+      "    fontsize str cvs print (') print",      
       "  (>\n) print",
+      # Graphics context
       "  (\t<context>\n) print",
       "  printcol",
       "  printstyle",
       "  (\t</context>\n\n) print",
-      "  convertToR /id get 1 add convertToR exch /id exch put",
+
+      # If charpath or charloc, need to nest additional elements
+      if (charpath) {
+          "convertToR /charpathfun get cvx exec"
+      } else if (charpos) {
+          "convertToR /charfun get cvx exec"
+      },
+      
       "  (</text>\n\n) print",
       "} def",
       "/mychar {",
       "  (<path type='char') print",
-      "  ( id=') print convertToR /id get str cvs print ('>\n) print",
+      "  ( id=') print convertToR /id get str cvs print (') print",
+      "  ( char=') print 4 index print ('>\n) print",
       "  pathforall",
       "  (\t<context>\n) print",
       "  printcol",
@@ -280,15 +308,31 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  myfill",
       "  newpath",
       "} def",
+
+      # text is split into individual characters
+      "/nullchar {} def",
+      "/drawchar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      "  convertToR /charfun (nullchar) put",
+      "  mytext",
+      # Generate charpath so that currentpoint returns correct location
+      # (this also consumes the original char)
+      "  true charpath", 
+      "  currentpoint newpath moveto",
+      "} def",
+      
       # text is split into individual characters,
       # each character is converted to a path, flattened
       # and then stroked
       "/strokechar {",
       "  exch dup 3 -1 roll",
-      "  1 getinterval", 
+      "  1 getinterval",
+      "  dup", # copy of char for "char="
       "  true charpath flattenpath",
       "  {mymove} {myline} {mycurve} {myclose}",
       "  mychar",
+      "  pop", # copy of char for "char="
       # Save current location (starting position for next char),
       # start new path for next char,
       # move to save location
@@ -310,9 +354,11 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  exch dup 3 -1 roll",
       "  1 getinterval",
       "  3 index 3 index rmoveto",
+      "  dup", # copy of char for "char="
       "  true charpath flattenpath",
       "  {mymove} {myline} {mycurve} {myclose}",
       "  mychar",
+      "  pop", # copy of char for "char="
       "  currentpoint newpath moveto",
       "} def",
       "/awidthstrokechar {",
@@ -328,63 +374,88 @@ PScaptureHead <- function(file, charpath, setflat, encoding) {
       "  0 get 4 index eq {5 index 5 index rmoveto} if",
       "  currentpoint newpath moveto",
       "} def",
-      
-      if (charpath) {
-          c("/show {",
-            "  dup length -1 add 0 exch 1 exch {strokechar} for",
-            "} def",
 
-            "/widthshow {",
-            "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
-            "} def",
+      "/showchar {",
+      "  dup length -1 add 0 exch 1 exch {drawchar} for",
+      "} def",
+      "/showtext {",
+      "  dup length -1 add 0 exch 1 exch {strokechar} for",
+      "} def",
+      "/widthshowtext {",
+      "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
+      "} def",
+      "/ashowtext {",
+      # Do first char without adjustment
+      "  0 strokechar",
+      # Do remaining chars with adjustment
+      "  dup length -1 add 1 exch 1 exch {astrokechar} for",
+      "} def",
+      "/awidthshowtext {",
+      # Do first char without adjustment
+      "  4 copy 0 widthstrokechar pop pop pop pop",
+      # Do remaining chars with adjustment
+      "  dup length -1 add 1 exch 1 exch {awidthstrokechar} for",
+      "} def",
 
-            "/ashow {",
-            # Do first char without adjustment
-            "  0 strokechar",
-            # Do remaining chars with adjustment
-            "  dup length -1 add 1 exch 1 exch {astrokechar} for",
-            # Remove original string plus ax and ay
-            "  pop pop pop", 
-            "} def",
-
-            "/awidthshow {",
-            # Do first char without adjustment
-            "  4 copy 0 widthstrokechar pop pop pop pop",
-            # Do remaining chars with adjustment
-            "  dup length -1 add 1 exch 1 exch {awidthstrokechar} for",
-            # Remove original string plus ax,ay,char,cx,cy
-            "  pop pop pop pop pop pop", 
-            "} def")
+      "/show {",
+      "  convertToR /charpathfun (showtext) put",
+      "  convertToR /charfun (showchar) put",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Generate charpath so that currentpoint returns correct location
+          # (this also consumes the original char)
+          "  true charpath"
       } else {
-          c("/show {",
-            "  mytext",
-            "  currentpoint newpath moveto",
-            "} def",
-
-            # Ignores the fine placement of characters within a /widthshow
-            "/widthshow {",
-            "  mytext",
-            # Remove the string and cx and cy and char from the /widthshow
-            "  pop pop pop pop", 
-            "  currentpoint newpath moveto",
-            "} def",
-
-            # Ignores the fine placement of characters within an /ashow
-            "/ashow {",
-            "  mytext",
-            "  pop pop pop", # Remove the string and ax and ay from the /ashow
-            "  currentpoint newpath moveto",
-            "} def",
-            
-            # Ignores the fine placement of characters within an /awidthshow
-            "/awidthshow {",
-            "  mytext",
-            "  pop pop pop", # Remove the string and ax and ay and
-            "  pop pop pop", # char and cx and cy from the /awidthshow
-            "  currentpoint newpath moveto",
-            "} def")
+          "pop"
       },
-      
+      "  currentpoint newpath moveto",
+      "} def",
+      "/widthshow {",
+      "  convertToR /charpathfun (widthshowtext) put",
+      "  convertToR /charfun (showchar) put",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Generate charpath so that currentpoint returns correct location
+          # (this also consumes the original char)
+          "  true charpath"
+      } else {
+          "pop"
+      },
+      # Remove the cx and cy and char from the /widthshow
+      "  pop pop pop", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/ashow {",
+      "  convertToR /charpathfun (ashowtext) put",
+      "  convertToR /charfun (showchar) put",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Generate charpath so that currentpoint returns correct location
+          # (this also consumes the original char)
+          "  true charpath"
+      } else {
+          "pop"
+      },
+      # Remove ax and ay
+      "  pop pop", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/awidthshow {",
+      "  convertToR /charpathfun (awidthshowtext) put",
+      "  convertToR /charfun (showchar) put",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Generate charpath so that currentpoint returns correct location
+          # (this also consumes the original char)
+          "  true charpath"
+      } else {
+          "pop"
+      },
+      # Remove ax,ay,char,cx,cy
+      "  pop pop pop pop pop", 
+      "  currentpoint newpath moveto",
+      "} def",
+
       "end",
       # end global settings
       "false setglobal",
@@ -451,14 +522,16 @@ postProcess <- function(outfilename, enc) {
 
 # Generate RGML file from PostScript file
 PostScriptTrace <- function(file, outfilename,
-                            charpath=TRUE, setflat=NULL,
+                            charpath=TRUE, charpos=FALSE,
+                            setflat=NULL,
                             encoding="ISO-8859-1") {
     # Create temporary PostScript file which loads
     # dictionary redefining stroke and fill operators
     # and then runs target PostScript file
     psfilename <- paste("capture", basename(file), sep="")
     psfile <- file(psfilename, "w")
-    writeLines(PScaptureHead(file, charpath, setflat, encoding), psfile)
+    writeLines(PScaptureHead(file, charpath, charpos,
+                             setflat, encoding), psfile)
     # Reconstitute file name here to handle Windows-style paths
     # in the file name
     writeLines(paste("(", file.path(dirname(file), basename(file)),

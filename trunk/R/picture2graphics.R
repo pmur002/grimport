@@ -8,7 +8,7 @@ setGeneric("drawPath",
 
 setMethod("drawPath", signature(p="PictureStroke"),
           function(p, trans, ...) {
-              lwd <- 72*p@lwd/xinch()
+              lwd <- (trans(p@lwd, 0)$x - trans(0, 0)$x)/xinch()*72
               lty <- fixLTY(p@lty, p@lwd)
               lines(trans(p@x, p@y), col=p@rgb, lwd=lwd, lty=lty)
           })
@@ -20,7 +20,12 @@ setMethod("drawPath", signature(p="PictureFill"),
 
 setMethod("drawPath", signature(p="PictureText"),
           function(p, trans, ...) {
-              text(trans(p@x, p@y), labels=p@string, col=p@rgb, srt=p@angle)
+              if (length(p@letters) == 0) {
+                  text(trans(p@x, p@y), labels=p@string, col=p@rgb,
+                       srt=p@angle)
+              } else {
+                  lapply(p@letters, drawPath, trans, ...)
+              }
           })
 
 setMethod("drawPath", signature(p="PictureChar"),

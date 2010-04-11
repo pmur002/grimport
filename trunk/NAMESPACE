@@ -25,6 +25,7 @@ export(grid.symbols)
 export(symbolsGrob)
 export(explodePaths)
 export(picturePaths)
+export(drawPath)
 
 S3method("xDetails", "picture")
 S3method("yDetails", "picture")
