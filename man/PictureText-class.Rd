@@ -3,6 +3,7 @@
 \alias{PictureText-class}
 \alias{grobify,PictureText-method}
 \alias{symbolize,PictureText-method}
+\alias{drawPath,PictureText-method}
 
 \title{Class "PictureText" }
 \description{A description of a piece of text to draw,
@@ -33,6 +34,9 @@ Class \code{"PictureOp"}, directly.
     \item{symbolize}{\code{signature(object = "PictureText")}: 
       convert to a grid grob (for drawing as a data symbol).
       Currently draws nothing.
+    }
+    \item{drawPath}{\code{signature(object = "PictureText")}:
+      draws a traced piece of text as part of the current plot.
     }
   }
 }

@@ -25,7 +25,20 @@ Changes from version 0.5 to 0.6
     so that two pieces of text using the same font at the
     same scale will have the same height upon tracing).
 
-7.  Bumped RGML file version to 3.
+7.  Text paths are now ALWAYS a single path.  If 
+    charpath=TRUE, then the text will also have child
+    paths (which are the individual letters stroked).
+    Alternatively, if charpos=TRUE, then the text will
+    have child paths that are the individual letters
+    as further text elements.
+
+8.  Added "[[" method for Picture objects (to allow 
+    access to paths within a PictureText path that
+    has PictureChars or PictureTexts as children;
+    subsetting by "[" does not access children of 
+    a PictureText path).
+
+9.  Bumped RGML file version to 3.
 
 
 Changes from version 0.4-5 to 0.5

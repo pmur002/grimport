@@ -9,6 +9,7 @@ exportClasses("PictureChar")
 exportClasses("PictureSummary")
 
 exportMethods("[")
+exportMethods("[[")
 
 export(PostScriptTrace)
 
