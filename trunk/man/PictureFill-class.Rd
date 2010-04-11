@@ -3,6 +3,7 @@
 \alias{PictureFill-class}
 \alias{grobify,PictureFill-method}
 \alias{symbolize,PictureFill-method}
+\alias{drawPath,PictureFill-method}
 
 \title{Class "PictureFill" }
 \description{A description of a polygon path (that might be part
@@ -27,7 +28,9 @@ Class \code{"PictureOp"}, directly.
 convert to a grid grob (for one-off drawing).}
     \item{symbolize}{\code{signature(object = "PictureFill")}: 
 convert to a grid grob (for drawing as a data symbol).}
-	 }
+    \item{drawPath}{\code{signature(object = "PictureFill")}:
+      draws a traced polygonx as part of the current plot.}
+    }
 }
 \author{ Paul Murrell }
 \seealso{

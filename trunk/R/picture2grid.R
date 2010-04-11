@@ -158,7 +158,7 @@ drawDetails.picline <- function(x, recording) {
 
 # Individual path converted into grob
 setMethod("grobify", signature(object="PictureStroke"),
-          function(object, ..., fillText, bgText, use.gc=TRUE) {
+          function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
                   if (use.gc) {
                       picLinesGrob(x=object@x, y=object@y,
@@ -176,7 +176,7 @@ setMethod("grobify", signature(object="PictureStroke"),
           })
 
 setMethod("grobify", signature(object="PictureFill"),
-          function(object, ..., fillText, bgText, use.gc=TRUE) {
+          function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
                   if (use.gc) {
                       polygonGrob(object@x, object@y, default.units="native",
@@ -223,7 +223,8 @@ setMethod("grobify", signature(object="PictureText"),
           })
 
 setMethod("grobify", signature(object="PictureChar"),
-          function(object, ..., fillText=FALSE, bgText="white", use.gc=TRUE) {
+          function(object, ..., fillText=FALSE, bgText="white",
+                   sizeByWidth=TRUE, use.gc=TRUE) {
               paths <- explode(object, fillText, bgText)
               do.call("gList", lapply(paths, grobify, ..., use.gc=use.gc))
           })
@@ -325,6 +326,7 @@ symbolLocn <- function(object, x, y, size, units,
         height <- sizeh
         width <- sizeh/scaleAspect
     }
+    lwd <- width*object@lwd/diff(rx)*72
     # Scale object@x/y to [-0.5, 0.5]
     # and then multiply by width/height
     wx <- rep((object@x - mean(rx))/abs(diff(rx)), n)*width
@@ -333,7 +335,7 @@ symbolLocn <- function(object, x, y, size, units,
     # NOTE object@x and object@y have same length
     xx <- rep(x, rep(length(object@x), n))
     yy <- rep(y, rep(length(object@x), n))
-    list(x=xx + wx, y=yy + hy, n=n)
+    list(x=xx + wx, y=yy + hy, n=n, lwd=lwd)
 }
 
 drawDetails.symbolStroke <- function(x, recording) {
@@ -343,8 +345,7 @@ drawDetails.symbolStroke <- function(x, recording) {
     id <- rep(1:locn$n, each=length(x$object@x))
     # Generate grob representing symbols
     if (x$use.gc) {
-        lwd <- convertWidth(unit(x$object@lwd, "native"), "bigpts",
-                            valueOnly=TRUE)
+        lwd <- locn$lwd
         lty <- fixLTY(x$object@lty, x$object@lwd)
         do.call("grid.polyline",
                 c(list(x=locn$x, y=locn$y, id=id,

@@ -102,11 +102,11 @@ popViewport()
 pushViewport(viewport(layout.pos.row=6,
                       layout.pos.col=1))
 grid.picture(testpage, fillText=TRUE)
-grid.picture(testpage[4],
+grid.picture(testpage[1],
              xscale=testpage@summary@xscale,
              yscale=testpage@summary@yscale,
              fillText=TRUE, bgText="black")
-grid.picture(testpage[10],
+grid.picture(testpage[4],
              xscale=testpage@summary@xscale,
              yscale=testpage@summary@yscale,
              fillText=TRUE, bgText="black")
@@ -134,7 +134,7 @@ y <- runif(10)
 require(lattice)
 xyplot(y ~ x,
        panel=function(x, y, ...) {
-           grid.symbols(testpage[21], x, y, 
+           grid.symbols(testpage[14], x, y, 
                         size=unit(5, "mm"),
                         units="native")
        })

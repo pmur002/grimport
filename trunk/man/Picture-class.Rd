@@ -2,6 +2,7 @@
 \docType{class}
 \alias{Picture-class}
 \alias{[,Picture-method}
+\alias{[[,Picture-method}
 \alias{grobify,Picture-method}
 \alias{symbolize,Picture-method}
 
@@ -23,6 +24,9 @@ Objects can be created by calls of the form \code{new("Picture", ...)}.
   \describe{
     \item{[}{\code{signature(x = "Picture")}: subset the paths of a picture
 to produce a new picture (includeing a new, updated summary). }
+    \item{[[}{\code{signature(x = "Picture")}: extract either a single
+      path or, more usefully, the sub-paths of a \code{"PictureText"}
+      object, to produce a new picture (includeing a new, updated summary). }
     \item{grobify}{\code{signature(object = "Picture")}: convert a picture
 into  a grid grob (for use as a one-off image). }
     \item{symbolize}{\code{signature(object = "Picture")}: convert a picture

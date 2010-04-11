@@ -80,7 +80,7 @@ readPicture <- function(rgmlFile, ...) {
     new("Picture",
         paths=RGMLlist[-length(RGMLlist)],
         summary=new("PictureSummary",
-          numPaths=RGMLlist$summary["count"],
+          numPaths=length(RGMLlist) - 1, # RGMLlist$summary["count"],
           xscale=RGMLlist$summary[c("xmin", "xmax")],
           yscale=RGMLlist$summary[c("ymin", "ymax")]))
 }
@@ -117,6 +117,26 @@ setMethod("[", "Picture",
                     numPaths=length(paths),
                     xscale=scales$xscale,
                     yscale=scales$yscale))
+          })
+
+setMethod("[[", "Picture",
+          function(x, i, j, drop) {
+              if (length(i) > 1)
+                  stop("Index must be length 1")
+              path <- x@paths[[i]]
+              if (is(path, "PictureText") &&
+                  length(path@letters) > 0) {
+                  paths <- path@letters
+                  scales <- pathBounds(paths)
+                  new("Picture",
+                      paths=paths,
+                      summary=new("PictureSummary",
+                        numPaths=length(paths),
+                        xscale=scales$xscale,
+                        yscale=scales$yscale))
+              } else {
+                  x[i]
+              }
           })
 
 

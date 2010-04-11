@@ -6,13 +6,16 @@
   an XML document describing an image that can be read into R.
 }
 \usage{PostScriptTrace(file, outfilename,
-                       charpath=TRUE, setflat=NULL,
-                       encoding="ISO-8859-1")}
+                       charpath=TRUE, charpos=FALSE,
+                       setflat=NULL, encoding="ISO-8859-1")}
 \arguments{
   \item{file}{The name of the PostScript file.}
   \item{outfilename}{The name of the XML document.}
   \item{charpath}{A boolean indicating whether text in the PostScript
     file should be converted to vector outlines, or left as just text.}
+  \item{charpos}{A boolean indicating whether text in the PostScript
+    file should be treated as individual characters, each with its
+    own location.}
   \item{setflat}{A number that controls how many straight lines a curve
     is broken into.  Lower values break a curve into more lines. }
   \item{encoding}{A character value giving the encoding for the
