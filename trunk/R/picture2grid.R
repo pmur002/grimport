@@ -125,6 +125,13 @@ setMethod("explode", signature(object="PictureChar"),
               paths <- explodePath(object, fill)
               np <- length(paths)
               if (np > 0) {
+                  # bg can be a named vector
+                  bgLetters <- names(bg)
+                  if (length(bgLetters) > 0) {
+                      letterBG <- bg[object@char]
+                      if (!is.na(letterBG))
+                          bg <- letterBG
+                  }
                   newpaths <- vector("list", np)
                   for (i in 1:np) {
                       newpaths[[i]] <- fixPath(paths[[i]], i, fill, bg)
@@ -134,6 +141,24 @@ setMethod("explode", signature(object="PictureChar"),
               paths
           })
 
+.bgText.default <- c(a="white",
+                     b="white",
+                     d="white",
+                     e="white",
+                     g="white",
+                     i="black",
+                     j="black",
+                     o="white",
+                     p="white",
+                     q="white",
+                     A="white",
+                     B="white",
+                     D="white",
+                     O="white",
+                     P="white",
+                     Q="white",
+                     R="white")
+                     
 ##################
 # Convert picture or path into single grob
 # For using picture as a one-off (e.g., plot background)
@@ -191,7 +216,7 @@ setMethod("grobify", signature(object="PictureFill"),
           })
 
 setMethod("grobify", signature(object="PictureText"),
-          function(object, ..., fillText=FALSE, bgText="white",
+          function(object, ..., fillText=FALSE, bgText=.bgText.default,
                    sizeByWidth=TRUE, use.gc=TRUE) {
               if (length(object@letters) == 0) {
                   if (use.gc) {
@@ -223,7 +248,7 @@ setMethod("grobify", signature(object="PictureText"),
           })
 
 setMethod("grobify", signature(object="PictureChar"),
-          function(object, ..., fillText=FALSE, bgText="white",
+          function(object, ..., fillText=FALSE, bgText=.bgText.default,
                    sizeByWidth=TRUE, use.gc=TRUE) {
               paths <- explode(object, fillText, bgText)
               do.call("gList", lapply(paths, grobify, ..., use.gc=use.gc))

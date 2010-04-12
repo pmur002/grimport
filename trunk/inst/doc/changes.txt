@@ -38,7 +38,12 @@ Changes from version 0.5 to 0.6
     subsetting by "[" does not access children of 
     a PictureText path).
 
-9.  Bumped RGML file version to 3.
+9.  The 'bgText' argument for grobify(PictureChar) can now
+    be a named vector so that, e.g., "o" can be "white" (to 
+    fill the centre), while "i" can be "black" (to fill the
+    dot).  The default value for 'bgText' has sensible settings. 
+
+10. Bumped RGML file version to 3.
 
 
 Changes from version 0.4-5 to 0.5
