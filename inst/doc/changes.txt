@@ -19,11 +19,10 @@ Changes from version 0.5 to 0.6
 
 6.  Added 'sizeByWidth' argument to grobify (method for 
     PictureText objects) so that text size can be calculated
-    from traced width OR from traced height (the latter
-    is an estimate of font size, rather than the height
-    from the bounding box of the specific piece of text,
-    so that two pieces of text using the same font at the
-    same scale will have the same height upon tracing).
+    from traced width OR from font height (the latter
+    is based on querying the font so that two pieces of text 
+    using the same font at the same scale will have the 
+    same height upon tracing).
 
 7.  Text paths are now ALWAYS a single path.  If 
     charpath=TRUE, then the text will also have child
