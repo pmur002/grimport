@@ -19,6 +19,7 @@ setClass("PictureText",
                         string="character",
                         w="numeric",
                         h="numeric",
+                        bbox="numeric",
                         angle="numeric",
                         letters="list"))
 
