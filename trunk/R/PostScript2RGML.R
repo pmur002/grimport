@@ -77,13 +77,25 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
 
       # Font height calculation (for *current* font)
       "/fontsize {",
-      "  gsave",
-      "  newpath 0 0 moveto convertToR /curangle get -1 mul rotate",
-      "  (\\() true charpath flattenpath",
-      "  boxinit",
-      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
-      "  convertToR /bymax get convertToR /bymin get sub",
-      "  grestore",
+      # DO NOT just 'get' the third element of FontMatrix
+      # because the font may, e.g., rotate the font outlines
+      "  currentfont /FontMatrix get",
+      # For Type 1 fonts, scale the matrix by 1000
+      # For Type 42 (TrueType), no multiplier necessary
+      # For other font types, not sure what the initial font matrix is
+      # COPY the FontMatrix to avoid 'invalidaccess'
+      "  currentfont /FontType get 1 eq { 1000 1000 matrix scale matrix concatmatrix } if",
+      # Transform (0, 1) using this matrix, then transform to user coords
+      "  dup 0 exch 1 exch transform transform",
+      # Do the same to (0, 0)
+      "  2 index 0 exch 0 exch transform transform",
+      # dy
+      "  2 index exch sub",
+      # dx
+      "  3 index 2 index sub",
+      "  2 exp exch 2 exp add sqrt",
+      # clean up
+      "  5 1 roll pop pop pop pop",
       " } def",
       
       # path processing
@@ -482,7 +494,7 @@ PScaptureFoot <-
       "( xmax=') print convertToR /xmax get str cvs print (') print",
       "( xmin=') print convertToR /xmin get str cvs print (') print",
       "(/>\n\n) print",
-      "(</picture>) print",
+      "(</picture>\n) print",
 
       # EOF
       "%% EOF\n"
