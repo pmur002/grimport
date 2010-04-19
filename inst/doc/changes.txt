@@ -42,7 +42,12 @@ Changes from version 0.5 to 0.6
     fill the centre), while "i" can be "black" (to fill the
     dot).  The default value for 'bgText' has sensible settings. 
 
-10. Bumped RGML file version to 3.
+10. PostScriptTrace() now also records font name information for
+    text.  This information is not currently used in drawing,
+    but at least the information is now recorded in the 
+    RGML format.
+
+11. Bumped RGML file version to "3".
 
 
 Changes from version 0.4-5 to 0.5

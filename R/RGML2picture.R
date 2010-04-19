@@ -58,6 +58,7 @@ readPicture <- function(rgmlFile, ...) {
                           y=as.numeric(xa["y"]),
                           w=as.numeric(xa["width"]),
                           h=as.numeric(xa["height"]),
+                          bbox=as.numeric(strsplit(xa["bbox"], " ")[[1]]),
                           angle=as.numeric(xa["angle"]),
                           letters=letters,
                           lwd=as.numeric(gc$style["lwd"]),
@@ -87,17 +88,27 @@ readPicture <- function(rgmlFile, ...) {
 
 # Given a list of paths, determine the bounding box
 pathBounds <- function(paths) {
-    pathXmin <- function(path) { min(path@x) }
-    pathYmin <- function(path) { min(path@y) }
+    pathXmin <- function(path) {
+        if (is(path, "PictureText"))
+            path@bbox[1]
+        else
+            min(path@x)
+    }
+    pathYmin <- function(path) {
+        if (is(path, "PictureText"))
+            path@bbox[2]
+        else 
+            min(path@y)
+    }
     pathXmax <- function(path) {
         if (is(path, "PictureText"))
-            path@x + path@w
+            path@bbox[3]
         else
             max(path@x)
     }
     pathYmax <- function(path) {
         if (is(path, "PictureText"))
-            path@y + path@h
+            path@bbox[4]
         else
             max(path@y)
     }

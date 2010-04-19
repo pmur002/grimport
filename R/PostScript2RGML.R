@@ -21,7 +21,7 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # file I run cannot reset my counters with a restore!
       "true setglobal",
       "/convertToR dup 100 dict def load begin",
-      "/str 20 string def",
+      "/str 50 string def",
       "/id 1 def",
       # Do these need to be even "larger"?
       "/xmax -99999 def",
@@ -81,7 +81,9 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # because the font may, e.g., rotate the font outlines
       "  currentfont /FontMatrix get",
       # For Type 1 fonts, scale the matrix by 1000
+      # (see PLRM.pdf version 3 page 324; comment on FontMatrix)
       # For Type 42 (TrueType), no multiplier necessary
+      # (http://www.adobe.com/devnet/font/pdfs/5012.Type42_Spec.pdf)
       # For other font types, not sure what the initial font matrix is
       # COPY the FontMatrix to avoid 'invalidaccess'
       "  currentfont /FontType get 1 eq { 1000 1000 matrix scale matrix concatmatrix } if",
@@ -237,7 +239,7 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "    dup",
       "    convertToR /xmax get gt {convertToR /xmax curx put} if",
       "    ( x=') print str cvs print (') print",
-      # width of text (reading text horizontally)
+      # width of text 
       "  dup stringwidth",
       # stringwidth has put wx and wy on stack
       # If wy is non-zero, text is at an angle
@@ -275,6 +277,18 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # Print height
       "  ( height=') print",
       "    fontsize str cvs print (') print",      
+      # Record bbox
+      "  ( bbox=') print",
+      "  convertToR /bxmin get str cvs print ( ) print",
+      "  convertToR /bymin get str cvs print ( ) print",
+      "  convertToR /bxmax get str cvs print ( ) print",
+      "  convertToR /bymax get str cvs print (') print",
+      # Record font (if available)
+      "  ( fontName=') print currentfont /FontName get str cvs print (') print",
+      "  currentfont /FontInfo get /FamilyName known",
+      "  { ( fontFamilyName=') print currentfont /FontInfo get /FamilyName get print (') print } if ",
+      "  currentfont /FontInfo get /FullName known",
+      "  { ( fontFullName=') print currentfont /FontInfo get /FullName get print (') print } if",
       "  (>\n) print",
       # Graphics context
       "  (\t<context>\n) print",
