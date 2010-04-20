@@ -23,7 +23,10 @@ Class \code{"PictureOp"}, directly.
 \section{Methods}{
   \describe{
     \item{grobify}{\code{signature(object = "PictureStroke")}: 
-convert into a grid  grob (for one-off drawing). }
+      convert into a grid  grob (for one-off drawing).  There is a
+      logical argument \code{use.gc} which can be used to turn off the
+      graphics context coming from the object so that a different one
+      can be specified via the \code{gp} argument. }
     \item{symbolize}{\code{signature(object = "PictureStroke")}: 
 convert into a grid  grob (for drawing as a data symbol)). }
     \item{drawPath}{\code{signature(object = "PictureStroke")}:

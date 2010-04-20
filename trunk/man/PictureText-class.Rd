@@ -29,7 +29,18 @@ Class \code{"PictureOp"}, directly.
 \section{Methods}{
   \describe{
     \item{grobify}{\code{signature(object = "PictureText")}: 
-      convert to a grid grob (for one-off drawing).
+      convert to a grid grob (for one-off drawing).  In addition to a
+      \code{use.gc} argument, there is a \code{fillText} argument to
+      specify whether to stroke or fill text paths.  Filling text paths
+      is not necessarily a good idea because some characters have holes
+      (e.g., the letter  \sQuote{o}).  The \code{bgText} argument can be
+      used to specify a colour to use to fill these holes;  this
+      argument can actually be a named vector of colours so that, e.g.,
+      the hole in an \sQuote{o} is filled white, but the dot on an
+      \sQuote{i} is filled black.  Finally, there is a
+      \code{sizeByWidth} argument which controls whether text is sized
+      based on the traced width or based on the traced height of the
+      original text.
     }
     \item{symbolize}{\code{signature(object = "PictureText")}: 
       convert to a grid grob (for drawing as a data symbol).
