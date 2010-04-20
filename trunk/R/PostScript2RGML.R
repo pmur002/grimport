@@ -29,6 +29,16 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/ymax -99999 def",
       "/ymin  99999 def",
 
+      # Start with x, y and end with dw
+      "/transwidth {",
+      "  transform",
+      "  0 0 transform",
+      "  2 index exch sub", # dy
+      "  3 index 2 index sub", # dx
+      "  2 exp exch 2 exp add sqrt",
+      "  3 1 roll pop pop pop",
+      "  } def",
+      
       # bounding box processing
       "/boxinit {",
       "  convertToR /bxmax -99999 put",
@@ -222,6 +232,8 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       } else {
           "  ( type='text') print"
       },
+      # Calculate any width adjustments
+      "  convertToR /widthadjfun get cvx exec",
       # (x, y) location of text
       "  currentpoint",
       "  transform",
@@ -262,21 +274,17 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "    convertToR /curangle get str cvs print (') print",
       # Calculate device width 
       "  2 exp exch 2 exp add sqrt",
+      # Make any adjustments
+      "  convertToR /curadj get add",
       # Print width
       "  ( width=') print",
       "    str cvs print (') print",
-      # Calculate text bb
-      "  gsave",
-      "  currentpoint newpath moveto dup true charpath flattenpath",
-      "  boxinit",
-      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
-      # Update global picture xmin/xmax/ymin/ymax
-      "  boxupdate",
-      "  grestore",
       # Height of text (size of current font)
       # Print height
       "  ( height=') print",
       "    fontsize str cvs print (') print",      
+      # Calculate text bb
+      "  convertToR /bboxfun get cvx exec",
       # Record bbox
       "  ( bbox=') print",
       "  convertToR /bxmin get str cvs print ( ) print",
@@ -337,14 +345,57 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
 
       # text is split into individual characters
       "/nullchar {} def",
-      "/drawchar {",
+      "/showchar {",
       "  exch dup 3 -1 roll",
       "  1 getinterval",
       "  convertToR /charfun (nullchar) put",
+      "  convertToR /bboxfun (showbbox) put",
       "  mytext",
       # Generate charpath so that currentpoint returns correct location
       # (this also consumes the original char)
       "  true charpath", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/widthshowchar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      "  convertToR /charfun (nullchar) put",
+      # Just get bbox of char 
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      "  dup 0 get 3 index eq {4 index 4 index rmoveto} if",
+      # Generate charpath so that currentpoint returns correct location
+      # (this also consumes the original char)
+      "  true charpath", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/ashowchar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      "  convertToR /charfun (nullchar) put",
+      # Just get bbox of char 
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      # Generate charpath so that currentpoint returns correct location
+      # (this also consumes the original char)
+      "  true charpath", 
+      # Do adjustment on every char
+      "  2 index 2 index rmoveto",
+      "  currentpoint newpath moveto",
+      "} def",
+      "/awidthshowchar {",
+      "  exch dup 3 -1 roll",
+      "  1 getinterval",
+      "  convertToR /charfun (nullchar) put",
+      # Just get bbox of char 
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      # Generate charpath so that currentpoint returns correct location
+      # (this also consumes the original char)
+      # Check for special char adjustment
+      "  dup 0 get 5 index eq {6 index 6 index rmoveto} if",
+      "  true charpath", 
+      "  2 index 2 index rmoveto",
       "  currentpoint newpath moveto",
       "} def",
       
@@ -379,57 +430,136 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/astrokechar {",
       "  exch dup 3 -1 roll",
       "  1 getinterval",
-      "  3 index 3 index rmoveto",
       "  dup", # copy of char for "char="
       "  true charpath flattenpath",
       "  {mymove} {myline} {mycurve} {myclose}",
       "  mychar",
       "  pop", # copy of char for "char="
+      "  2 index 2 index rmoveto",
       "  currentpoint newpath moveto",
       "} def",
       "/awidthstrokechar {",
       "  exch dup 3 -1 roll",
       "  1 getinterval",
-      # Do adjustment on every char
-      "  3 index 3 index rmoveto",
       "  dup",
       "  true charpath flattenpath",
       "  {mymove} {myline} {mycurve} {myclose}",
       "  mychar",
+      # Do adjustment on every char
+      "  3 index 3 index rmoveto",
       # Check for special char adjustment
       "  0 get 4 index eq {5 index 5 index rmoveto} if",
       "  currentpoint newpath moveto",
       "} def",
 
-      "/showchar {",
-      "  dup length -1 add 0 exch 1 exch {drawchar} for",
+      "/showchars {",
+      "  dup length -1 add 0 exch 1 exch {showchar} for",
       "} def",
-      "/showtext {",
-      "  dup length -1 add 0 exch 1 exch {strokechar} for",
+      "/widthshowchars {",
+      "  dup length -1 add 0 exch 1 exch {widthshowchar} for",
       "} def",
-      "/widthshowtext {",
-      "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
+      "/ashowchars {",
+      "  dup length -1 add 0 exch 1 exch {ashowchar} for",
       "} def",
-      "/ashowtext {",
-      # Do first char without adjustment
-      "  0 strokechar",
-      # Do remaining chars with adjustment
-      "  dup length -1 add 1 exch 1 exch {astrokechar} for",
-      "} def",
-      "/awidthshowtext {",
-      # Do first char without adjustment
-      "  4 copy 0 widthstrokechar pop pop pop pop",
-      # Do remaining chars with adjustment
-      "  dup length -1 add 1 exch 1 exch {awidthstrokechar} for",
+      "/awidthshowchars {",
+      "  dup length -1 add 0 exch 1 exch {awidthshowchar} for",
       "} def",
 
+      "/showpaths {",
+      "  dup length -1 add 0 exch 1 exch {strokechar} for",
+      "} def",
+      "/widthshowpaths {",
+      "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
+      "} def",
+      "/ashowpaths {",
+      "  dup length -1 add 0 exch 1 exch {astrokechar} for",
+      "} def",
+      "/awidthshowpaths {",
+      "  dup length -1 add 0 exch 1 exch {awidthstrokechar} for",
+      "} def",
+
+      "/showbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto dup true charpath flattenpath",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/widthshowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      "  dup length -1 add 0 exch 1 exch { 1 index exch 1 getinterval dup true charpath flattenpath 0 get 2 index eq { 3 index 3 index rmoveto } if } for",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/ashowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      "  dup length -1 add 0 exch 1 exch { 1 index exch 1 getinterval true charpath flattenpath 2 index 2 index rmoveto } for",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/awidthshowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      "  dup length -1 add 0 exch 1 exch { 1 index exch 1 getinterval dup true charpath flattenpath 3 index 3 index rmoveto 0 get 4 index eq { 5 index 5 index rmoveto } if } for",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      
+      "/showwidthadj {",
+      "  convertToR /curadj 0 put",
+      "} def",
+      "/widthshowwidthadj {",
+      "  convertToR /curadj 0 put",
+      # Determine width adj in device coords
+      "  3 index 0 transwidth",
+      # Check each char, if special, add 
+      "  1 index { 3 index eq { convertToR /curadj get 1 index add convertToR /curadj 3 -1 roll put } if } forall",
+      # Clean up
+      "  pop",
+      "} def",
+      "/ashowwidthadj {",
+      # How many chars
+      "  dup length",
+      # Determine width adj in device coords
+      "  3 index 0 transwidth",
+      "  mul convertToR /curadj 3 -1 roll put",
+      "} def",
+      "/awidthshowwidthadj {",
+      # How many chars
+      "  dup length",
+      # Determine width adj in device coords
+      "  3 index 0 transwidth",
+      "  mul convertToR /curadj 3 -1 roll put",
+      # Determine width adj in device coords
+      "  5 index 0 transwidth",
+      # Check each char, if special, add 
+      "  1 index { 5 index eq { convertToR /curadj get 1 index add convertToR /curadj 3 -1 roll put } if } forall",
+      # Clean up
+      "  pop",
+      "} def",
+      
       "/show {",
-      "  convertToR /charpathfun (showtext) put",
-      "  convertToR /charfun (showchar) put",
+      "  convertToR /charpathfun (showpaths) put",
+      "  convertToR /charfun (showchars) put",
+      "  convertToR /widthadjfun (showwidthadj) put",
+      "  convertToR /bboxfun (showbbox) put",
       "  mytext",
       if (!(charpath || charpos)) {
           # Generate charpath so that currentpoint returns correct location
-          # (this also consumes the original char)
+          # (this also consumes the original text)
           "  true charpath"
       } else {
           "pop"
@@ -437,13 +567,17 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  currentpoint newpath moveto",
       "} def",
       "/widthshow {",
-      "  convertToR /charpathfun (widthshowtext) put",
-      "  convertToR /charfun (showchar) put",
+      "  convertToR /charpathfun (widthshowpaths) put",
+      "  convertToR /charfun (widthshowchars) put",
+      "  convertToR /widthadjfun (widthshowwidthadj) put",
+      "  convertToR /bboxfun (widthshowbbox) put",
       "  mytext",
       if (!(charpath || charpos)) {
+          # Check for any char adjustments
+          c("  dup dup { 2 index eq {3 index 3 index rmoveto} if } forall",
           # Generate charpath so that currentpoint returns correct location
-          # (this also consumes the original char)
-          "  true charpath"
+          # (this also consumes the original text)
+            "  true charpath")
       } else {
           "pop"
       },
@@ -452,13 +586,17 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  currentpoint newpath moveto",
       "} def",
       "/ashow {",
-      "  convertToR /charpathfun (ashowtext) put",
-      "  convertToR /charfun (showchar) put",
+      "  convertToR /charpathfun (ashowpaths) put",
+      "  convertToR /charfun (ashowchars) put",
+      "  convertToR /widthadjfun (ashowwidthadj) put",
+      "  convertToR /bboxfun (ashowbbox) put",
       "  mytext",
       if (!(charpath || charpos)) {
+          # Do per-char adjustment
+          c("  dup length dup 4 index mul exch 3 index mul rmoveto",
           # Generate charpath so that currentpoint returns correct location
-          # (this also consumes the original char)
-          "  true charpath"
+          # (this also consumes the original text)
+            "  true charpath")
       } else {
           "pop"
       },
@@ -467,13 +605,19 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  currentpoint newpath moveto",
       "} def",
       "/awidthshow {",
-      "  convertToR /charpathfun (awidthshowtext) put",
-      "  convertToR /charfun (showchar) put",
+      "  convertToR /charpathfun (awidthshowpaths) put",
+      "  convertToR /charfun (awidthshowchars) put",
+      "  convertToR /widthadjfun (awidthshowwidthadj) put",
+      "  convertToR /bboxfun (awidthshowbbox) put",
       "  mytext",
       if (!(charpath || charpos)) {
+          # Do per-char adjustment
+          c("  dup length -1 add dup 4 index mul exch 3 index mul rmoveto",
+          # Check for any char adjustments
+            "  dup { 4 index eq {5 index 5 index rmoveto} if } forall",
           # Generate charpath so that currentpoint returns correct location
-          # (this also consumes the original char)
-          "  true charpath"
+          # (this also consumes the original text)
+            "  true charpath")
       } else {
           "pop"
       },
