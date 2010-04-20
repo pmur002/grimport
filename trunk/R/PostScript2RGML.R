@@ -316,7 +316,8 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/mychar {",
       "  (<path type='char') print",
       "  ( id=') print convertToR /id get str cvs print (') print",
-      "  ( char=') print 4 index print ('>\n) print",
+      # Insert MARKS here so that postProcess() can easily locate strings
+      "  ( char='###TEXT) print 4 index print (###TEXT'>\n) print",
       "  pathforall",
       "  (\t<context>\n) print",
       "  printcol",
