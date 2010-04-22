@@ -49,6 +49,9 @@ Changes from version 0.5 to 0.6
 
 11. Bumped RGML file version to "3".
 
+12. Added vignette to describe the variety of ways that you
+    can import text from an external image.
+
 
 Changes from version 0.4-5 to 0.5
 =================================

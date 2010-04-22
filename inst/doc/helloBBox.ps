@@ -1,0 +1,33 @@
+%!PS
+/Times-Roman findfont
+10 scalefont
+setfont
+
+% Draw a grey baseline
+% newpath
+% 0.7 setgray
+% 0 0 moveto
+% (hello) stringwidth lineto
+% stroke
+% 0 setgray
+
+% Draw character bounding boxes
+0 0 moveto
+(hello) 0 1 4
+{ 1 index exch 1 getinterval  
+  gsave
+  dup true charpath flattenpath pathbbox
+  newpath
+  3 index 3 index moveto
+  3 index 1 index lineto
+  1 index 1 index lineto
+  1 index 3 index lineto
+  3 index 3 index lineto
+  1 index 3 index moveto
+  pop pop pop pop
+  [2 2] 0 setdash
+  stroke
+  grestore
+  show
+}
+for 
