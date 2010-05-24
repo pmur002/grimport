@@ -216,7 +216,8 @@ setMethod("grobify", signature(object="PictureFill"),
           })
 
 setMethod("grobify", signature(object="PictureText"),
-          function(object, ..., fillText=FALSE, bgText=.bgText.default,
+          function(object, FUN=grobify, ..., 
+                   fillText=FALSE, bgText=.bgText.default,
                    sizeByWidth=TRUE, use.gc=TRUE) {
               if (length(object@letters) == 0) {
                   if (use.gc) {
@@ -240,7 +241,7 @@ setMethod("grobify", signature(object="PictureText"),
               } else {
                   gTree(string=as.character(object@string), 
                         children=do.call("gList",
-                          lapply(object@letters, grobify, ...,
+                          lapply(object@letters, FUN=FUN, ...,
                                  fillText=fillText, bgText=bgText,
                                  sizeByWidth=sizeByWidth, use.gc=use.gc)),
                         cl="pictureletters")
@@ -248,10 +249,11 @@ setMethod("grobify", signature(object="PictureText"),
           })
 
 setMethod("grobify", signature(object="PictureChar"),
-          function(object, ..., fillText=FALSE, bgText=.bgText.default,
+          function(object, FUN=grobify, ..., 
+                   fillText=FALSE, bgText=.bgText.default,
                    sizeByWidth=TRUE, use.gc=TRUE) {
               paths <- explode(object, fillText, bgText)
-              do.call("gList", lapply(paths, grobify, ..., use.gc=use.gc))
+              do.call("gList", lapply(paths, FUN=FUN, ..., use.gc=use.gc))
           })
 
 pictureHull <- function(object) {
@@ -273,7 +275,7 @@ setMethod("grobify", signature(object="Picture"),
                       x=x, y=y, width=width, height=height,
                       just=just, gp=gp),
                     children=do.call("gList",
-                      lapply(object@paths, FUN,
+                      lapply(object@paths, FUN=FUN,
                              vp=vpPath("picture.shape", "picture.scale"),
                              ...)),
                     # FIXME: editDetails method for "picture" class
