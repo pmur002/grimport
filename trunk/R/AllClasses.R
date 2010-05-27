@@ -12,7 +12,8 @@ setClass("PictureStroke",
          representation("PictureOp"))
 
 setClass("PictureFill",
-         representation("PictureOp"))
+         representation("PictureOp",
+                        rule="character"))
 
 setClass("PictureText",
          representation("PictureOp",

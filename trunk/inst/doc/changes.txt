@@ -1,3 +1,13 @@
+Changes from version 0.6 to 0.6-2
+===============================
+
+1.  Minor fix to how 'FUN' argument gets passed down by grobify().
+
+2.  PostScriptTrace() now records eofill slightly differently from
+    fill.  This is captured in a 'rule' slot in PictureFill objects
+    by readPicture().
+
+
 Changes from version 0.5 to 0.6
 ===============================
 

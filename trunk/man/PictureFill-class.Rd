@@ -17,6 +17,9 @@ that specifies the fill colour for the polygon.}
     \item{\code{lwd}:}{Object of class \code{"numeric"} 
 that specifies the line width of the polygon (not typically
 used because the polygon is meant to be  filled not stroked).}
+  \item{\code{rule}:}{Object of class \code{"character"}
+    with the value \code{evenodd} or \code{nonzero}
+    indicating the fill rule for the path.}
   }
 }
 \section{Extends}{
