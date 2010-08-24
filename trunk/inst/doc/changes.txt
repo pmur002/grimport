@@ -1,4 +1,4 @@
-Changes from version 0.6 to 0.6-2
+Changes from version 0.6 to 0.6-3
 ===============================
 
 1.  Minor fix to how 'FUN' argument gets passed down by grobify().
@@ -6,6 +6,11 @@ Changes from version 0.6 to 0.6-2
 2.  PostScriptTrace() now records eofill slightly differently from
     fill.  This is captured in a 'rule' slot in PictureFill objects
     by readPicture().
+
+3.  readPicture() attempts to handle non-printing characters
+    in imported text (by replacing them with full stops).  
+    The 'tidy' argument allows the user to turn off this 
+    conversion if desired.
 
 
 Changes from version 0.5 to 0.6
