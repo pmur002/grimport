@@ -266,8 +266,9 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  dup stringwidth",
       # stringwidth has put wx and wy on stack
       # If wy is non-zero, text is at an angle
+      "  dup 0 ne { 1 index 1 index exch atan } { 0 } ifelse",
       # Save this angle
-      "  1 index 1 index exch atan convertToR exch /curangle exch put",
+      "  convertToR exch /curangle exch put",
       # Calculate user-space width from wx and wy
       "  2 exp exch 2 exp add sqrt",      
       # Transform user-space width to device

@@ -1,4 +1,4 @@
-Changes from version 0.6 to 0.6-3
+Changes from version 0.6 to 0.6-4
 ===============================
 
 1.  Minor fix to how 'FUN' argument gets passed down by grobify().
@@ -11,6 +11,9 @@ Changes from version 0.6 to 0.6-3
     in imported text (by replacing them with full stops).  
     The 'tidy' argument allows the user to turn off this 
     conversion if desired.
+
+4.  Fix to cope with zero-height text in imported image
+    (problem reported by Toby Dylan Hocking)
 
 
 Changes from version 0.5 to 0.6
