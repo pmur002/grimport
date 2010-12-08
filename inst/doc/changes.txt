@@ -1,4 +1,25 @@
-Changes from version 0.6 to 0.6-5
+Changes from version 0.6-4 to 0.7
+===============================
+
+1.  RGML <path> elements ("stroke", "fill", and "char")
+    are now converted into "pathgrob" grobs by grobify(),
+    which means that it is now possible to correctly 
+    reproduce more complex images, particularly, paths
+    with holes using grid.picture().
+
+    Similar change allows similar functionality with picture().
+
+    Old behaviour retained (for grid.picture()) via
+    oldGrobify() function.
+
+2.  Improved PostScriptTrace() to at least have a prayer
+    at handling non-standard color spaces (like R's sRGB !!!)
+     
+3.  The vignettes have been updated for the new complex-path
+    support.
+
+
+Changes from version 0.6 to 0.6-4
 ===============================
 
 1.  Minor fix to how 'FUN' argument gets passed down by grobify().
@@ -14,23 +35,6 @@ Changes from version 0.6 to 0.6-5
 
 4.  Fix to cope with zero-height text in imported image
     (problem reported by Toby Dylan Hocking)
-
-5.  RGML <path> elements ("stroke", "fill", and "char")
-    are now converted into "pathgrob" grobs by grobify(),
-    which means that it is now possible to correctly 
-    reproduce more complex images, particularly, paths
-    with holes using grid.picture().
-
-    Similar change allows similar functionality with picture().
-
-    Old behaviour retained (for grid.picture()) via
-    oldGrobify() function.
-
-6.  Improved PostScriptTrace() to at least have a prayer
-    at handling non-standard color spaces (like R's sRGB !!!)
-     
-7.  The vignettes have been updated for the new complex-path
-    support.
 
 
 Changes from version 0.5 to 0.6
