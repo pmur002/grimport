@@ -1209,28 +1209,15 @@ The first approach to importing this text into \proglang{R}
 is to convert each character in the text into (flattened) paths.
 The advantage of this approach is that the resulting text will
 look quite a lot like the original text because it will be based on
-the actual outlines of the characters in the original text.
+the actual outlines of the characters in the original text
+(see the text on the left of Figure \ref{figure:textversions}).
 
-There are two major drawbacks to this approach.  The first is that 
-translating each individual letter of text into its own path can result 
-in a very large \rgml{} file.  The second problem 
-is that the paths for characters 
-that have a ``hole'' in them, such as an `e' or an `o',
-will be hard
-to fill correctly.  
-
-Because of the second problem, the paths
-that are recorded to represent the characters in the text
-are \emph{stroked} rather than filled, by default.  The
-following code and the resulting image 
-demonstrate this (see 
-Figure \ref{figure:textversions}).
  
 <<hellotrace>>=
-PostScriptTrace("hello.ps")
+PostScriptTrace("hello.ps", "hello.xml")
 
 <<hello, fig=TRUE, width=1, height=1, include=FALSE>>=
-hello <- readPicture("hello.ps.xml")
+hello <- readPicture("hello.xml")
 grid.picture(hello)
 
 @ 
@@ -1238,30 +1225,23 @@ grid.picture(hello)
 \hspace*{\fill}
 \includegraphics[width = .5in]{import-hello}
 \hfill
-\includegraphics[width = .5in]{import-hellofill}
-\hfill
 \includegraphics[width = .5in]{import-hellotext}
 \hspace*{\fill}
 \caption{\label{figure:textversions}An illustration of the different
-ways that text can be imported:  as letter outlines (left),
-as filled shapes (middle); or as characters (right).}
+ways that text can be imported:  as filled shapes (left);
+or as character glyphs from a font (right).}
 \end{figure}
 
-An argument, \code{fillText}
- is provided to instruct \code{grid.picture()} to \emph{attempt}
-to fill the text.  This uses a simple heuristic to fill all holes 
-in a letter with a background color.  The background color
- is controlled by another
-argument, \code{bgText}, which has the value \code{"white"} by default.
+There are several drawbacks to this approach.  The first is that 
+translating each individual letter of text into its own path can result 
+in a very large \rgml{} file.  The second problem 
+is that drawing text by filling paths is \emph{not} the same as
+drawing text using fonts because the latter uses sophisticated 
+techniques, such as font \emph{hinting} to make things look nice,
+especially at small font sizes.  There may also be problems with this
+approach if
+the font does not permit copying or modifying the font outlines.
 
-For the current simple example, the heuristic works, as shown in
-Figure \ref{figure:textversions},
-but the result may be different for other text or for other fonts.
-
-<<hellofill, fig=TRUE, width=1, height=1, include=FALSE>>=
-grid.picture(hello, fillText = TRUE)
-
-@ 
 
 The other approach to importing text from a \ps{} file is to 
 completely ignore the font that is being used and just import the actual
@@ -1274,8 +1254,8 @@ differences in fonts will mean that the location and size
 of text will not be identical.
 The following code imports just the text from the file 
 \code{hello.ps} and the resulting image 
-(see Figure \ref{figure:textversions})
-is approximately the right size, but uses a completely different font.
+is approximately the right size, but uses a completely different font
+(see the text on the right of Figure \ref{figure:textversions}).
 
 <<hellotexttrace>>=
 PostScriptTrace("hello.ps", 
@@ -1287,6 +1267,9 @@ hellotext <- readPicture("hellotext.xml")
 grid.picture(hellotext)
 
 @ 
+The vignette ``Importing Text'' provides more details about importing
+text, including some other options for fine-tuning the size and placement
+of imported text.
 
 One problem that can completely stymie attempts to import text from a
 \ps{} file is that some font  outlines are ``protected'' by the font
@@ -1407,7 +1390,7 @@ consist mostly of
 \code{<path>} element is made up of \code{<move>} elements and
 \code{<line>} elements that describe a shape 
 and the \code{type} attribute of the
-\code{<path>} element is either \code{"fill"} 
+\code{<path>} element is typically either \code{"fill"} 
 or \code{"stroke"} to indicate whether that shape should be
 filled or stroked.  Each \code{<move>} and \code{<line>} element
 has two attributes, \code{x} and \code{y}, which provide the
@@ -1416,7 +1399,7 @@ being described.
 
 Each \code{<path>} element also contains a \code{<context>} element,
 which in turn contains an \code{<rgb>} element and a \code{<style>} element,
-with information about the color and line width that should
+with information about the color, line width, and line type that should
 be used to fill or stroke the path.
 
 The final element in an \rgml{} file is a \code{<summary>}  element
@@ -1440,21 +1423,23 @@ cat(petalrgml[1:(grep("<move", petalrgml) + 1)],
     sep = "\n")
 
 @ 
-In addition to \code{<path>} elements with \code{type = "fill"}
-and \code{type = "stroke"}, there may also be
-\code{<path>} elements with \code{type = "char"}, in which
+
+As well as \code{<path>} elements, a
+ \code{<picture>} element may also contain \code{<text>}
+elements, which represent complete pieces of text.  
+If the text has \emph{not} been traced as paths,
+the \code{<text>} element will only
+ contain a \code{<context>} element;  the text itself,
+plus its location and size are recorded as
+attributes of the \code{<text>} element.  
+
+If the text has been traced as paths, the \code{<text>} element will
+contain further \code{<path>} elements with \code{type = "char"}, in which
 case, the \code{<move>} elements and
 \code{<line>} elements describe the outline of a
  single letter from a piece of text.  This is represented as a different
 sort of \code{<path>} element because the default drawing algorithm
 for text can be different from normal paths.
-
-As well as \code{<path>} elements, a
- \code{<picture>} element may also contain \code{<text>}
-elements, which represent complete pieces of text.  
-These contain only a \code{<context>} element;  the text itself,
-plus its location and size are recorded as
-attributes of the \code{<text>} element.  
 
 The basic structure of an \rgml{} file consisting of just a single
 \code{<text>} element is shown below (this is
@@ -1571,7 +1556,7 @@ in the \code{Picture} object.  The \code{grobify()} function is an S4 generic
 function with methods for \code{PictureFill}, \code{PictureStroke},
 \code{PictureChar}, and \code{PictureText} objects.  For example,
 the \code{grobify()} method for \code{PictureFill} objects creates
-a polygon grob, whereas the method for \code{PictureText} objects
+a path grob, whereas the method for \code{PictureText} objects
 creates a text grob.
 
 The \code{grid.picture()} function provides an argument called \code{FUN}
@@ -1582,7 +1567,7 @@ the conversion of the \code{Picture} paths into \pkg{grid} grobs.
 Table \ref{table:blueify} shows an example of this sort of
 customization.  An S4 generic function called \code{blueify()}
 is defined, with methods for \code{PictureFill} and \code{PictureStroke}
-objects.  The \code{PictureFill} method produces a polygon grob
+objects.  The \code{PictureFill} method produces a path grob
 and the \code{PictureStroke} method produces a polyline grob,
 just like the standard \code{grobify()} function would do.
 The difference is that the \code{blueify()} methods set the fill and
@@ -1661,39 +1646,24 @@ One of the more sophisticated features of \ps{} is that it
 allows paths to be quite complex.  For example, a path may 
 intersect itself and a path may be disjoint, being composed
 of more than one shape, with the shapes able to overlap
-and create holes within one another.  This can create a problem
-for importing such an image to \proglang{R} because \proglang{R} graphics
-cannot draw such complex paths.
+and create holes within one another.  From
+version 2.12.0, \proglang{R} can faithfully
+reproduce these sorts of complex paths.
 
-In order to demonstrate these ideas, the next example introduces a new
+In order to demonstrate this, the next example introduces a new
 image, which is a logo for the GNU project 
 (designed by Aur\'{e}lio A. Heckert).
 The original file is in an {SVG} format and this was converted to
 a \ps{} format using \pkg{Inkscape}.
 The \ps{} file, \code{GNU.ps},
  can be imported using the tools described previously,
-as shown by the following code.  
-However, the result is not quite right.
+as shown by the following code (see Figure \ref{figure:gnulogo}).  
 
 <<gnulogo, fig=TRUE, include=FALSE>>=
-PostScriptTrace("GNU.ps")
-GNU <- readPicture("GNU.ps.xml")
+PostScriptTrace("GNU.ps", "GNU.xml")
+GNU <- readPicture("GNU.xml")
 grid.picture(GNU)
 
-@
-Figure \ref{figure:gnulogo} shows
- the original logo, on the left, the image that is
-produced by \pkg{grImport}, in the middle, and a zoomed view of the
-problem area in the \pkg{grImport} effort, on the right.
-
-<<gnulogozoom, echo=FALSE, fig=TRUE, include=FALSE>>=
-xscale <- GNU@summary@xscale
-yscale <- GNU@summary@yscale
-xd <- diff(range(xscale))
-yd <- diff(range(yscale))
-grid.picture(GNU, 
-             xscale = xscale[1] + c(.2, .7)*xd,
-             yscale = yscale[1] + c(.4, .8)*yd)
 
 @
 \begin{figure}
@@ -1702,20 +1672,15 @@ grid.picture(GNU,
 \includegraphics[width=1in]{GNU}
 \hfill
 \includegraphics[width=1in]{import-gnulogo}
-\hfill
-\includegraphics[width=1in]{import-gnulogozoom}
 \hspace*{\fill}
 \end{center}
-\caption{\label{figure:gnulogo}The original GNU logo (left),
-the default image after importing and drawing with \proglang{R}
-(middle), and a zoomed view of the problem area with \proglang{R}'s
-version (right).}
+\caption{\label{figure:gnulogo}The GNU logo in its original form (left) and 
+after importing and drawing with \proglang{R}
+(right).}
 \end{figure}
 
-The problem is that the GNU logo contains some of these complex
-paths that consist of multiple disjoint shapes that overlap
-with each other.  The \pkg{grImport} package provides two tools
-that can be used to diagnose and possibly solve this sort of problem.
+It can still be useful, or just interesting, to explore the 
+components of complex paths like this.
 
 The \code{picturePaths()} function draws each separate path
 within an imported image.  The following code uses this function
@@ -1734,7 +1699,7 @@ picturePaths(GNU, nr = 1, nc = 2, label = FALSE)
 GNU logo:  a white background and a (complex) black foreground.}
 \end{figure}
 
-The other tool that is useful in this situation is the 
+Another useful tool is the 
 \code{explodePaths()} function.  This function takes any path
 that consists of more than one disjoint shape and breaks it
 into several distinct paths, each consisting of just a single shape.
@@ -1760,49 +1725,7 @@ after ``exploding'' the complex path into several smaller and simpler paths.}
 \end{figure}
 
 The output shows that the complex second path in the original image
-was composed of 13 disjoint shapes.  The usefulness of exploding the
-original image like this is that it is sometimes possible to 
-resurrect the original complex path by drawing the individual paths
-in the right order, with the right selection of colours.
-
-The following code demonstrates this idea with the broken-apart GNU logo, 
-by drawing the second path first, followed by paths 11 to 14,
-each filled with white rather than black, and finally  paths
-3 to 10.  This order and the colors were obtained after a little 
-trial and error.  The drawing code is wrapped within a simple function,
-\code{GNUlogo()},
-so that we can use it again later.
-
-<<>>=
-GNUlogo <- function() {
-    xscale <- GNU@summary@xscale
-    yscale <- GNU@summary@yscale
-    grid.picture(brokenGNU[2],
-                 xscale = xscale, yscale = yscale)
-    grid.picture(brokenGNU[11:14], use.gc = FALSE, 
-                 gp = gpar(fill = "white"),
-                 xscale = xscale, yscale = yscale)
-    grid.picture(brokenGNU[3:10],  
-                 xscale = xscale, yscale = yscale)
-}
-
-<<fixedgnupaths, fig=TRUE, include=FALSE>>=
-GNUlogo()
-
-@
-\begin{figure}
-\begin{center}
-\includegraphics[width=1in]{import-fixedgnupaths}
-\end{center}
-\caption{\label{figure:gnufinal}A faithful reproduction of the
-GNU logo, drawn using \proglang{R} by carefully controlling the
-order and fill color of the ``exploded'' paths from the original
-image (see Figure
-\ref{figure:gnuexploded}).}
-\end{figure}
-
-The result is now faithful to the original logo
-(see Figure \ref{figure:gnufinal}).
+was composed of 13 disjoint shapes.  
 
 \section{Applications and examples}
 \label{section:applications}
@@ -2100,10 +2023,9 @@ raster elements, which \pkg{grImport} just ignores, and
 B\'{e}zier curves, which \pkg{grImport} flattens into a series of 
 straight lines.
 
-Some other \ps{} features that are not supported by either 
-\proglang{R} graphics in general or \pkg{grImport} specifically are:
-\begin{description}
-\item[Clipping to arbitrary paths:]
+Another \ps{} feature that is not supported by either 
+\proglang{R} graphics in general or \pkg{grImport} specifically is
+the ability to clip to an arbitrary path.
 \ps{} allows clipping to the current path, which can be a very
 complex shape.  As a simple example, the image in
 Figure \ref{figure:clip}
@@ -2131,32 +2053,6 @@ an original image that makes uses of clipping can be imported
 but will not be
 reproduced correctly in \proglang{R}.
 
-\item[The path fill rule:]
-When a self-intersecting path is filled with a color, there are
-two main ways to decide what constitutes the ``inside'' of the 
-resulting shape.  The two algorithms are called the \dfn{non-zero winding rule}
-and the \dfn{even-odd rule}.  The image in Figure \ref{figure:fillrule}
- demonstrates 
-the difference by showing exactly the same
-(self-intersecting) path being filled with the two algorithms
-(the even-odd rule is on the left).
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=2in]{fillrule}
-\end{center}
-\caption{\label{figure:fillrule}An illustration of the difference between
-the non-zero winding rule (right) and the even-odd rule (left)
-for filling the same polygon.}
-\end{figure}
-
-\ps{} can perform either type of fill,
-but \proglang{R} graphics only uses the non-zero winding rule, so
-an original \ps{} image that uses the even-odd rule can be imported, but
-it will not
-reproduce correctly in \proglang{R}.
-
-\end{description}
 
 Moving on to the choice of \xml{} as an intermediate format,
 the main problem is that \xml{} is a verbose language that can result

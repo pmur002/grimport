@@ -64,7 +64,7 @@ addBBox <- function(existingPic) {
 \section*{Importing text as paths}
 
 The default approach for importing text is to convert all characters 
-into paths and stroke (draw the outline of) the paths.  
+into paths and fill the paths.  
 The following \R{} code traces the simple text image shown in 
 Figure \ref{figure:simpletext}, reads the
 resulting \rgml{} file into \R{}, and draws it.  The image drawn
@@ -72,13 +72,12 @@ by \R{} is shown in Figure \ref{figure:importsimple}.
 
 <<>>=
 library(grImport)
-
 <<simpleimport, fig=true, height=2, include=false>>=
 PostScriptTrace("hello.ps", "hello.xml")
 hello <- readPicture("hello.xml")
 grid.picture(hello)
-
 @ 
+
 \begin{figure}
 \begin{center}
 \includegraphics[width=2in]{importText-simpleimport}
@@ -88,78 +87,38 @@ grid.picture(hello)
 by \pkg{grImport}.}
 \end{figure}
 
-A small improvement can be gained by using a thinner line to draw the
-text outline and it is possible to improve the smoothness of the character
+It is possible to improve the smoothness of the character
 outlines via the \code{setflat} argument when tracing the original 
 image.  The following code provides an example, 
 with the result shown in Figure 
-\ref{figure:importsimplethin}.
+\ref{figure:importsimplesmooth}.
 
-<<simpleimportthin, fig=true, height=2, include=false>>=
+<<simpleimportsmooth, fig=true, height=2, include=false>>=
 PostScriptTrace("hello.ps", "hello-smooth.xml", setflat=0.5)
 helloSmooth <- readPicture("hello-smooth.xml")
-grid.picture(helloSmooth, use.gc=FALSE, gp=gpar(lwd=1))
-
+grid.picture(helloSmooth)
 @ 
+
 \begin{figure}
 \begin{center}
-\includegraphics[width=2in]{importText-simpleimportthin}
+\includegraphics[width=2in]{importText-simpleimportsmooth}
 \end{center}
-\caption{\label{figure:importsimplethin}The simple image from Figure 
-\ref{figure:simpletext} after smoother tracing, normal importing, and 
-rendering with a thin line.  Compare the smoothness of the `o' in this
+\caption{\label{figure:importsimplesmooth}The simple image from Figure 
+\ref{figure:simpletext} after smoother tracing.  
+Compare the smoothness of the `o' in this
 image with the rougher `o' in Figure \ref{figure:importsimple}.}
 \end{figure}
 
-The characters are drawn as outlines by default because the character
-shapes are complex polygons that \R{} cannot necessarily render
-correctly.  It is possible to instruct \pkg{grImport} to
-use a simple algorithm that attempts
-to fill the characters (basically fill the first path in the character
-using the text colour then fill the remaining paths in the character
-using another ``background'' colour).  This approach is controlled
-via the \code{fillText} and \code{bgText} arguments to 
-\code{grid.picture} (technically, they are arguments passed to the
-\code{grobify} function).  The \code{bgText} argument is either a single
-colour, or a named vector of colours;  in the latter case, a different
-background colour can be specified for different characters (e.g., 
-\code{"white"} to fill the hole in an `o', but \code{"black"}
-to fill the dot in an `i').  The following code draws the smoothly-traced
-simple text image by filling the character paths (see Figure 
-\ref{figure:importsimplethinfill}).
 
-<<simpleimportthinfillsrc>>=
-grid.picture(helloSmooth, fillText=TRUE)
-
-<<simpleimportthinfill, echo=false, fig=true, height=2, include=false>>=
-<<simpleimportthinfillsrc>>
-addBBox(helloSmooth)
-
-@ 
-\begin{figure}
-\begin{center}
-\includegraphics[width=2in]{importText-simpleimportthinfill}
-\end{center}
-\caption{\label{figure:importsimplethinfill}The simple image from Figure 
-\ref{figure:simpletext} after smoother tracing, normal importing, and 
-rendering by filling the character paths.   }
-\end{figure}
-
-This simple filling algorithm will not work with all characters and all
-fonts and it will not
-work if the background for the rendered image is supposed to be 
-transparent.  Nevertheless, the result in Figure 
-\ref{figure:importsimplethinfill} has the nice property that it is
-very close to the original text.  If there is a small amount of 
-large text in an image, this approach may produce the best result.
-
-However, it is important to note that filling the paths of characters
+It is important to note that filling the paths of characters
 is not the same thing as drawing text using fonts (e.g., fonts
 contain ``hinting'' information for drawing at small sizes), so
 for an image that contains lots of small text, this approach is
 probably not the best idea.  If case space is an issue,
 tracing text as character paths
 will also produce a large \rgml{} file.
+There may also be copyright issues if a font does not permit
+copying or modifying the font outlines.
 
 \section*{Importing text as text}
 
@@ -174,7 +133,6 @@ and the result is shown in Figure \ref{figure:importsimpletext}.
 PostScriptTrace("hello.ps", "helloText.xml", charpath=FALSE)
 helloText <- readPicture("helloText.xml")
 grid.picture(helloText)
-
 <<simpleimporttext, echo=false, fig=true, height=2, include=false>>=
 <<simpleimporttextsrc>>
 addBBox(helloText)
@@ -196,9 +154,7 @@ paths.  However, it does have the benefit that it is drawing the
 text using fonts.  This means that, although it does not look exactly
 like the original text, it will look cleaner and 
 clearer than the filling-paths
-approach from the previous section, especially at small sizes, plus
-we do not have to worry about things like getting the central hole
-in an `o' the right colour.  The
+approach from the previous section, especially at small sizes.  The
 rendering will also probably be faster if that is an issue.
 
 The major difference between Figure \ref{figure:importsimpletext} and
@@ -215,7 +171,6 @@ see Figure \ref{figure:importsimpletextfont}).
 
 <<simpleimporttextfontsrc>>=
 grid.picture(helloText, gp=gpar(fontfamily="serif"))
-
 <<simpleimporttextfont, echo=false, fig=true, height=2, include=false>>=
 <<simpleimporttextfontsrc>>
 addBBox(helloText)
@@ -233,7 +188,7 @@ the bounding boxes for the characters in the original text.}
 \end{figure}
 
 Note that, although Figure \ref{figure:importsimpletextfont} looks 
-very much like Figure \ref{figure:importsimplethinfill}, they are
+very much like Figure \ref{figure:importsimplesmooth}, they are
 actually quite different;  the former is drawing the text ``hello''
 using a Times Roman font, while the latter is drawing a set of 
 character paths.
@@ -259,7 +214,6 @@ argument, as shown in the following code and Figure
 
 <<simpleimporttextheightsrc>>=
 grid.picture(helloText, sizeByWidth=FALSE)
-
 <<simpleimporttextheight, echo=false, fig=true, height=2, include=false>>=
 <<simpleimporttextheightsrc>>
 addBBox(helloText)
@@ -313,7 +267,6 @@ PostScriptTrace("hello.ps", "helloChar.xml",
                 charpath=FALSE, charpos=TRUE)
 helloChar <- readPicture("helloChar.xml")
 grid.picture(helloChar, sizeByWidth=FALSE)
-
 <<simpleimporttextcharpos, echo=false, fig=true, height=2, include=false>>=
 <<simpleimporttextcharpossrc>>
 addBBox(helloText)
@@ -344,7 +297,6 @@ For completeness, the following code and Figure
 
 <<simpleimporttextcharposwidthsrc>>=
 grid.picture(helloChar)
-
 <<simpleimporttextcharposwidth, echo=false, fig=true, height=2, include=false>>=
 <<simpleimporttextcharposwidthsrc>>
 addBBox(helloText)

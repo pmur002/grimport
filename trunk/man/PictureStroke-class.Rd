@@ -2,6 +2,7 @@
 \docType{class}
 \alias{PictureStroke-class}
 \alias{grobify,PictureStroke-method}
+\alias{oldGrobify,PictureStroke-method}
 \alias{symbolize,PictureStroke-method}
 \alias{drawPath,PictureStroke-method}
 

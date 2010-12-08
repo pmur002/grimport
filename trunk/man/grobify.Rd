@@ -1,5 +1,6 @@
 \name{grobify}
 \alias{grobify}
+\alias{oldGrobify}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Convert a Picture into a Grid Grob }
 \description{
@@ -10,6 +11,8 @@
 }
 \usage{
 grobify(object, ...)
+
+oldGrobify(object, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

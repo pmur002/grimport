@@ -41,24 +41,43 @@ explodePath <- function(path, fill) {
             for (i in 1:(npaths - 1)) {
                 index <- moves[i]:(moves[i + 1] - 1)
                 if (length(index) > 1) {
-                    newpaths[[i]] <- new(if (fill)
-                                         "PictureFill" else "PictureStroke",
-                                         x=path@x[index],
-                                         y=path@y[index],
-                                         lwd=path@lwd,
-                                         lty=path@lty,
-                                         rgb=path@rgb)
+                    if (fill) {
+                        newpaths[[i]] <- new("PictureFill",
+                                             x=path@x[index],
+                                             y=path@y[index],
+                                             rule="winding",
+                                             lwd=path@lwd,
+                                             lty=path@lty,
+                                             rgb=path@rgb)
+                    } else {
+                        newpaths[[i]] <- new("PictureStroke",
+                                             x=path@x[index],
+                                             y=path@y[index],
+                                             lwd=path@lwd,
+                                             lty=path@lty,
+                                             rgb=path@rgb)
+                    }
                 }
             }
             index <- moves[npaths]:length(ops)
             if (length(index) > 1) {
-                newpaths[[npaths]] <- new(if (fill)
-                                          "PictureFill" else "PictureStroke",
-                                          x=path@x[moves[npaths]:length(ops)],
-                                          y=path@y[moves[npaths]:length(ops)],
-                                          lwd=path@lwd,
-                                          lty=path@lty,
-                                          rgb=path@rgb)
+                if (fill) {
+                    newpaths[[npaths]] <-
+                        new("PictureFill",
+                            x=path@x[moves[npaths]:length(ops)],
+                            y=path@y[moves[npaths]:length(ops)],
+                            rule="winding",
+                            lwd=path@lwd,
+                            lty=path@lty,
+                            rgb=path@rgb)
+                } else {
+                        new("PictureStroke",
+                            x=path@x[moves[npaths]:length(ops)],
+                            y=path@y[moves[npaths]:length(ops)],
+                            lwd=path@lwd,
+                            lty=path@lty,
+                            rgb=path@rgb)
+                }
             }
             newpaths[!sapply(newpaths, is.null)]
         } else {
@@ -158,7 +177,8 @@ setMethod("explode", signature(object="PictureChar"),
                      P="white",
                      Q="white",
                      R="white")
-                     
+
+
 ##################
 # Convert picture or path into single grob
 # For using picture as a one-off (e.g., plot background)
@@ -169,31 +189,46 @@ setGeneric("grobify",
                standardGeneric("grobify")
            })
 
-picLinesGrob <- function(...) {
-    grob(..., cl="picline")
+picStrokeGrob <- function(...) {
+    grob(..., cl="picstroke")
 }
 
-drawDetails.picline <- function(x, recording) {
+drawDetails.picstroke <- function(x, recording) {
     # Figure out what lwd and lty really are
     lwd <- convertWidth(unit(x$lwd, "native"), "bigpts", valueOnly=TRUE)
     lty <- fixLTY(x$lty, x$lwd)
-    grid.lines(x$x, x$y, x$default.units,
-               gp=gpar(lwd=lwd, lty=lty, col=x$col))
+    grid.polyline(x$x, x$y,
+                  default.units=x$default.units, id.lengths=x$id.lengths,
+                  gp=gpar(lwd=lwd, lty=lty, col=x$col, fill=NA))
 }
 
 # Individual path converted into grob
 setMethod("grobify", signature(object="PictureStroke"),
           function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  if (use.gc) {
-                      picLinesGrob(x=object@x, y=object@y,
-                                   default.units="native",
-                                   lwd=object@lwd,
-                                   lty=object@lty,
-                                   col=object@rgb, ...)
+                  paths <- grImport:::explode(object)
+                  if (is.list(paths)) {
+                      pathX <- lapply(paths, slot, "x")
+                      pathY <- lapply(paths, slot, "y")
                   } else {
-                      linesGrob(object@x, object@y,
-                                default.units="native", ...)
+                      pathX <- list(paths@x)
+                      pathY <- list(paths@y)
+                  }
+                  if (use.gc) {
+                      picStrokeGrob(x=unlist(pathX),
+                                    y=unlist(pathY),
+                                    default.units="native",
+                                    id.lengths=sapply(pathX, length),
+                                    lwd=object@lwd,
+                                    lty=object@lty,
+                                    col=object@rgb,
+                                    ...)
+                  } else {
+                      polylineGrob(x=unlist(pathX),
+                                   y=unlist(pathY),
+                                   default.units="native",
+                                   id.lengths=sapply(pathX, length),
+                                   ...)
                   }
               } else {
                   NULL
@@ -203,12 +238,31 @@ setMethod("grobify", signature(object="PictureStroke"),
 setMethod("grobify", signature(object="PictureFill"),
           function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  if (use.gc) {
-                      polygonGrob(object@x, object@y, default.units="native",
-                                  gp=gpar(col=NA, fill=object@rgb), ...)
+                  paths <- grImport:::explode(object)
+                  if (is.list(paths)) {
+                      pathX <- lapply(paths, slot, "x")
+                      pathY <- lapply(paths, slot, "y")
                   } else {
-                      polygonGrob(object@x, object@y,
-                                  default.units="native", ...)
+                      pathX <- list(paths@x)
+                      pathY <- list(paths@y)
+                  }
+                  if (use.gc) {
+                      pathGrob(x=unlist(pathX),
+                               y=unlist(pathY),
+                               default.units="native",
+                               id.lengths=sapply(pathX, length),
+                               rule=switch(object@rule,
+                                 nonzero="winding", "evenodd"),
+                               gp=gpar(col=NA, fill=object@rgb),
+                               ...)
+                  } else {
+                      pathGrob(x=unlist(pathX),
+                               y=unlist(pathY),
+                               default.units="native",
+                               id.lengths=sapply(pathX, length),
+                               rule=switch(object@rule,
+                                 nonzero="winding", "evenodd"),
+                               ...)
                   }
               } else {
                   NULL
@@ -248,12 +302,31 @@ setMethod("grobify", signature(object="PictureText"),
               }
           })
 
+# PictureChars no longer need to be exploded and drawn as
+# separate paths because can now draw them as single path (with holes)
 setMethod("grobify", signature(object="PictureChar"),
-          function(object, FUN=grobify, ..., 
-                   fillText=FALSE, bgText=.bgText.default,
+          function(object, ...,
+                   fillText=FALSE, bgText=NA,
                    sizeByWidth=TRUE, use.gc=TRUE) {
-              paths <- explode(object, fillText, bgText)
-              do.call("gList", lapply(paths, FUN=FUN, ..., use.gc=use.gc))
+              paths <- grImport:::explode(object, FALSE, NA)
+              pathX <- lapply(paths, slot, "x")
+              pathY <- lapply(paths, slot, "y")
+              if (use.gc) {
+                  pathGrob(x=unlist(pathX),
+                           y=unlist(pathY),
+                           default.units="native",
+                           id.lengths=sapply(pathX, length),
+                           rule="winding",
+                           gp=gpar(col=NA, fill=object@rgb),
+                           ...)
+              } else {
+                  pathGrob(x=unlist(pathX),
+                           y=unlist(pathY),
+                           default.units="native",
+                           id.lengths=sapply(pathX, length),
+                           rule="winding",
+                           ...)
+              }
           })
 
 pictureHull <- function(object) {
@@ -597,3 +670,97 @@ picturePaths <- function(picture,
     popViewport()
 }
 
+##################
+# Retain old grobify() behaviour for back-compatibility
+
+setGeneric("oldGrobify",
+           function(object, ...) {
+               standardGeneric("oldGrobify")
+           })
+
+picLinesGrob <- function(...) {
+    grob(..., cl="picline")
+}
+
+drawDetails.picline <- function(x, recording) {
+    # Figure out what lwd and lty really are
+    lwd <- convertWidth(unit(x$lwd, "native"), "bigpts", valueOnly=TRUE)
+    lty <- fixLTY(x$lty, x$lwd)
+    grid.lines(x$x, x$y, x$default.units,
+               gp=gpar(lwd=lwd, lty=lty, col=x$col))
+}
+
+# Individual path converted into grob
+setMethod("oldGrobify", signature(object="PictureStroke"),
+          function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
+              if (length(object@x) > 1) {
+                  if (use.gc) {
+                      picLinesGrob(x=object@x, y=object@y,
+                                   default.units="native",
+                                   lwd=object@lwd,
+                                   lty=object@lty,
+                                   col=object@rgb, ...)
+                  } else {
+                      linesGrob(object@x, object@y,
+                                default.units="native", ...)
+                  }
+              } else {
+                  NULL
+              }
+          })
+
+setMethod("oldGrobify", signature(object="PictureFill"),
+          function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
+              if (length(object@x) > 1) {
+                  if (use.gc) {
+                      polygonGrob(object@x, object@y, default.units="native",
+                                  gp=gpar(col=NA, fill=object@rgb), ...)
+                  } else {
+                      polygonGrob(object@x, object@y,
+                                  default.units="native", ...)
+                  }
+              } else {
+                  NULL
+              }
+          })
+
+setMethod("oldGrobify", signature(object="PictureText"),
+          function(object, FUN=oldGrobify, ..., 
+                   fillText=FALSE, bgText=.bgText.default,
+                   sizeByWidth=TRUE, use.gc=TRUE) {
+              if (length(object@letters) == 0) {
+                  if (use.gc) {
+                      pictureTextGrob(object@string,
+                                      object@x, object@y,
+                                      object@w, object@h,
+                                      object@angle,
+                                      object@letters,
+                                      ...,
+                                      sizeByWidth=sizeByWidth,
+                                      gp=gpar(col=object@rgb))
+                  } else {
+                      pictureTextGrob(object@string,
+                                      object@x, object@y,
+                                      object@w, object@h,
+                                      object@angle,
+                                      object@letters,
+                                      ...,
+                                      sizeByWidth=sizeByWidth)
+                  }
+              } else {
+                  gTree(string=as.character(object@string), 
+                        children=do.call("gList",
+                          lapply(object@letters, FUN=FUN, ...,
+                                 fillText=fillText, bgText=bgText,
+                                 sizeByWidth=sizeByWidth, use.gc=use.gc)),
+                        cl="pictureletters")
+              }
+          })
+
+setMethod("oldGrobify", signature(object="PictureChar"),
+          function(object, FUN=oldGrobify, ..., 
+                   fillText=FALSE, bgText=.bgText.default,
+                   sizeByWidth=TRUE, use.gc=TRUE) {
+              paths <- explode(object, fillText, bgText)
+              do.call("gList", lapply(paths, FUN=FUN, ..., use.gc=use.gc))
+          })

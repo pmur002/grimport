@@ -2,6 +2,7 @@
 \docType{class}
 \alias{PictureText-class}
 \alias{grobify,PictureText-method}
+\alias{oldGrobify,PictureText-method}
 \alias{symbolize,PictureText-method}
 \alias{drawPath,PictureText-method}
 
