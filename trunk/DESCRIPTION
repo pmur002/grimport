@@ -1,5 +1,5 @@
 Package:      grImport
-Version:      0.6-5
+Version:      0.7-0
 Depends:      R (>= 2.12.0), methods, grid, XML
 Suggests:     lattice
 SystemRequirements: ghostscript
