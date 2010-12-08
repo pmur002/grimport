@@ -10,12 +10,35 @@ setMethod("drawPath", signature(p="PictureStroke"),
           function(p, trans, ...) {
               lwd <- (trans(p@lwd, 0)$x - trans(0, 0)$x)/xinch()*72
               lty <- fixLTY(p@lty, p@lwd)
-              lines(trans(p@x, p@y), col=p@rgb, lwd=lwd, lty=lty)
+              paths <- grImport:::explode(p)
+              if (is.list(paths)) {
+                  pathX <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@x) }))[-1]
+                  pathY <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@y) }))[-1]
+              } else {
+                  pathX <- paths@x
+                  pathY <- paths@y
+              }
+              lines(trans(pathX, pathY), col=p@rgb, lwd=lwd, lty=lty)
           })
 
 setMethod("drawPath", signature(p="PictureFill"),
           function(p, trans, ...) {
-              polygon(trans(p@x, p@y), col=p@rgb, border=NA)
+              paths <- grImport:::explode(p)
+              if (is.list(paths)) {
+                  pathX <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@x) }))[-1]
+                  pathY <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@y) }))[-1]
+              } else {
+                  pathX <- paths@x
+                  pathY <- paths@y
+              }
+              polypath(trans(pathX, pathY),
+                       rule=switch(p@rule,
+                         nonzero="winding", "evenodd"),
+                       col=p@rgb, border=NA)
           })
 
 setMethod("drawPath", signature(p="PictureText"),
@@ -30,8 +53,19 @@ setMethod("drawPath", signature(p="PictureText"),
 
 setMethod("drawPath", signature(p="PictureChar"),
           function(p, trans, ...) {
-              cPaths <- explode(p, TRUE, "white")
-              lapply(cPaths, drawPath, trans)
+              paths <- grImport:::explode(p, FALSE, NA)
+              if (is.list(paths)) {
+                  pathX <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@x) }))[-1]
+                  pathY <- unlist(lapply(paths,
+                                         function(pp) { c(NA, pp@y) }))[-1]
+              } else {
+                  pathX <- paths@x
+                  pathY <- paths@y
+              }
+              polypath(trans(pathX, pathY), 
+                       rule="winding",
+                       col=p@rgb, border=NA)
           })
 
 picture <- function(picture, xleft, ybottom, xright, ytop, ...) {
