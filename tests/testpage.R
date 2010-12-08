@@ -66,20 +66,20 @@ writeLines(testpageps, "testpage.ps")
 
 require(grImport)
 
-PostScriptTrace("testpage.ps")
-PostScriptTrace("testpage.ps", out="testpagetext.ps.xml", charpath=FALSE)
+PostScriptTrace("testpage.ps", "testpage.xml")
+PostScriptTrace("testpage.ps", "testpagetext.xml", charpath=FALSE)
 
-testpage <- readPicture("testpage.ps.xml")
-testpagetext <- readPicture("testpagetext.ps.xml")
+testpage <- readPicture("testpage.xml")
+testpagetext <- readPicture("testpagetext.xml")
 
 # grid.newpage()
 # Simple picture (text gets stroked)
-pushViewport(viewport(layout=grid.layout(8, 1,
-                        heights=unit(c(1, 1), c("lines", "null")))))
+pushViewport(viewport(layout=grid.layout(4, 1,
+                        heights=unit(c(1, 2), c("lines", "in")))))
 pushViewport(viewport(layout.pos.row=1,
                       layout.pos.col=1))
 grid.rect()
-grid.text("Stroked text")
+grid.text("Path text")
 popViewport()
 pushViewport(viewport(layout.pos.row=2,
                       layout.pos.col=1))
@@ -88,37 +88,11 @@ popViewport()
 pushViewport(viewport(layout.pos.row=3,
                       layout.pos.col=1))
 grid.rect()
-grid.text("Filled text")
-popViewport()
-pushViewport(viewport(layout.pos.row=4,
-                      layout.pos.col=1))
-grid.picture(testpage, fillText=TRUE)
-popViewport()
-pushViewport(viewport(layout.pos.row=5,
-                      layout.pos.col=1))
-grid.rect()
-grid.text("Filled text (dotting the i's)")
-popViewport()
-pushViewport(viewport(layout.pos.row=6,
-                      layout.pos.col=1))
-grid.picture(testpage, fillText=TRUE)
-grid.picture(testpage[1],
-             xscale=testpage@summary@xscale,
-             yscale=testpage@summary@yscale,
-             fillText=TRUE, bgText="black")
-grid.picture(testpage[4],
-             xscale=testpage@summary@xscale,
-             yscale=testpage@summary@yscale,
-             fillText=TRUE, bgText="black")
-popViewport()
-pushViewport(viewport(layout.pos.row=7,
-                      layout.pos.col=1))
-grid.rect()
 grid.text("Substituted text")
 # NOTE: the text "stroke" is drawn in two parts
 # in the PostScript file, "strok" and "e", due to kerning
 popViewport()
-pushViewport(viewport(layout.pos.row=8,
+pushViewport(viewport(layout.pos.row=4,
                       layout.pos.col=1))
 grid.picture(testpagetext)
 popViewport()

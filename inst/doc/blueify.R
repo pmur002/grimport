@@ -4,11 +4,11 @@ setGeneric("blueify",
            })
 setMethod("blueify", signature(object="PictureFill"),
           function (object, ...) {
-              polygonGrob(object@x, object@y, 
-                          default.units="native",
-                          gp=gpar(col=NA, 
-                                  fill=blueShade(object@rgb)), 
-                          ...)
+              pathGrob(object@x, object@y, 
+                       default.units="native",
+                       gp=gpar(col=NA, 
+                         fill=blueShade(object@rgb)), 
+                       ...)
           })
 setMethod("blueify", signature(object="PictureStroke"),
           function (object, ...) {

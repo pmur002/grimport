@@ -2,6 +2,7 @@
 \docType{class}
 \alias{PictureFill-class}
 \alias{grobify,PictureFill-method}
+\alias{oldGrobify,PictureFill-method}
 \alias{symbolize,PictureFill-method}
 \alias{drawPath,PictureFill-method}
 
