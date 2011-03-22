@@ -694,7 +694,7 @@ postProcess <- function(outfilename, enc) {
               sep="")
     }
     # The XML file has been created by ghostscript in ISO-8859-1
-    infile <- file(outfilename, "r", enc="ISO-8859-1")
+    infile <- file(outfilename, "r", encoding="ISO-8859-1")
     lines <- readLines(infile)
     close(infile)
     # All string values have been marked 
