@@ -901,9 +901,9 @@ xyplot(V8 ~ V7, data = flower,
 <<flowerplot, echo=FALSE, results=hide>>=
 trellis.device("pdf", file = "import-flowerplot.pdf",
                width = 6, height = 4, color = FALSE)
-print(
+print({ .Last.value <- 
 <<flowerplotcode>>
-)
+}); rm(.Last.value)
 dev.off()
 
 @ 
@@ -1354,9 +1354,9 @@ xyplot(V8 ~ V7, data = flower,
 <<flowerplot2, echo=FALSE, results=hide>>=
 trellis.device("pdf", file = "import-flowerplot2.pdf",
                width = 6, height = 4, color = FALSE)
-print(
+print({ .Last.value <- 
 <<flowerplotcode2>>
-)
+}); rm(.Last.value)
 dev.off()
 
 @ 
@@ -1768,9 +1768,9 @@ cit <- c("1998"=4, "1999"=15, "2000"=17, "2001"=39,
          "2002"=119, "2003"=276, "2004"=523, 
          "2005"=945, "2006"=1475, "2007"=2015) 
 trellis.device("pdf", file = "import-logo.pdf", height = 4, color = TRUE)
-print(
+print({ .Last.value <- 
 <<logobody>>
-)
+}); rm(.Last.value)
 dev.off()
 
 @ 

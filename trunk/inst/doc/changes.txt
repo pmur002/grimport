@@ -1,3 +1,9 @@
+Changes from version 0.7 to 0.7-1
+===============================
+
+1.  Fix warning in vignettes.
+
+
 Changes from version 0.6-4 to 0.7
 ===============================
 
