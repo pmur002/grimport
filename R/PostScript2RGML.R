@@ -649,14 +649,14 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "end",
       # end global settings
       "false setglobal",
-      # Dummy LOCAL dict for top-level defs (e.g., defs
-      # of main dictionary) in file to be run
-      "/dummy 100 dict def",
       "%%EndProcSet",
       "%% EndProlog",
       "",
+      # Put converToR on the dictionary stack
       "convertToR begin",
-      "dummy begin",
+      # Put userdict on top of dictionary stack for the file that is
+      # about to run
+      "userdict begin",
       if (!is.null(setflat)) {
           paste(setflat, "setflat")
       },
@@ -665,6 +665,9 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
 
 PScaptureFoot <-
     c(
+      # Restore convertToR dict to dictionary stack in case the file
+      # that we just ran does something nasty like clearing the dict stack!
+      "convertToR begin",
       # XML file footer info
       "(<summary count=') print convertToR /id get 1 sub str cvs print (') print",
       "( ymax=') print convertToR /ymax get str cvs print (') print",

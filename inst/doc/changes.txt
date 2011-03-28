@@ -1,7 +1,13 @@
-Changes from version 0.7 to 0.7-1
+Changes from version 0.7 to 0.7-2
 ===============================
 
 1.  Fix warning in vignettes.
+
+2.  Improvement to PostScriptTrace() to protect itself from
+    traced file doing a 'cleardictstack'.
+
+    The test case is vasarely.ps (part of the ghostscript distribution).
+    Reported by Al Roark.
 
 
 Changes from version 0.6-4 to 0.7
