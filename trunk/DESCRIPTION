@@ -1,7 +1,7 @@
 Package:      grImport
-Version:      0.7-1
+Version:      0.7-2
 Depends:      R (>= 2.12.0), methods, grid, XML
-Suggests:     lattice
+Suggests:     lattice, cluster, colorspace, survival
 SystemRequirements: ghostscript
 Title:        Importing Vector Graphics
 Author:       Paul Murrell and Richard Walton.
