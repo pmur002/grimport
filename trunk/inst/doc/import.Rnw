@@ -202,9 +202,6 @@ xyplot(Freq ~ nmoves | result, data = chess.df, type = "h",
                                   "white", "grey", "black")))
        })   
 )
-
-<<>>=
-
 @ 
 
 \begin{figure}
@@ -411,7 +408,6 @@ The resulting \rgml{} file,
 
 <<eval=FALSE>>=
 <<petaltrace>>
-
 @ 
 The \rgml{} format in this example is roughly a one-to-one
 translation of the \ps{} code.  The shape is recorded as 
@@ -620,7 +616,6 @@ the overall structure of the file.
 
 <<eval=FALSE>>=
 <<flowertrace>>
-
 @ 
 \begin{table}
 \begin{boxedminipage}{\textwidth}
@@ -709,7 +704,6 @@ flowerRGML <- xmlParse("flower.ps.xml")
 xpathApply(flowerRGML, "//path//rgb", 'xmlAttrs<-', 
            value = c(r = .3, g = .6, b = .8))
 saveXML(flowerRGML, "blueflower.ps.xml")
-
 @ 
 <<blueflower, echo=FALSE, fig=TRUE, width=1, height=1, include=FALSE>>=
 blueflower <- readPicture("blueflower.ps.xml")
@@ -753,7 +747,6 @@ image from the file \code{petal.ps.xml}.
 
 <<>>=
 petal <- readPicture("petal.ps.xml")
-
 @ 
 The resulting object, \code{petal}, is a \code{Picture}
 object, with two slots:
@@ -765,7 +758,6 @@ filled with a color).
 
 <<>>=
 str(petal)
-
 @ 
 The \code{Picture}
 object has a clear one-to-one correspondence with the information
@@ -792,7 +784,6 @@ PSflower <- readPicture("flower.ps.xml")
 
 <<>>=
 str(PSflower@summary)
-
 @ 
 This \code{Picture} object has five paths, corresponding to the five
 petals.  A subsetting method for \code{Picture} objects is defined
@@ -802,7 +793,6 @@ in the code below.
 
 <<>>=
 petals <- PSflower[2:3]
-
 @ 
 The result is a new \code{Picture} object consisting of just the
 second and third paths from the original \code{Picture} object.  As the code
@@ -810,7 +800,6 @@ below shows, the summary information has been updated as well.
 
 <<>>=
 str(petals@summary)
-
 @ 
 Visually, the new picture is just the second and third petals from
 the original image, as shown in Figure \ref{figure:petals}.
@@ -865,7 +854,6 @@ can be on an arbitrary scale.
 <<>>=
 petal@summary@xscale
 petal@summary@yscale
-
 @ 
 In order to position and size the image in useful ways, the
 $(x, y)$ locations for the paths need to be scaled.
@@ -896,7 +884,6 @@ xyplot(V8 ~ V7, data = flower,
            grid.symbols(PSflower, x, y, units = "native", 
                         size = unit(5, "mm")) 
        })
-
 @ 
 <<flowerplot, echo=FALSE, results=hide>>=
 trellis.device("pdf", file = "import-flowerplot.pdf",
@@ -1215,11 +1202,10 @@ the actual outlines of the characters in the original text
  
 <<hellotrace>>=
 PostScriptTrace("hello.ps", "hello.xml")
-
+@ 
 <<hello, fig=TRUE, width=1, height=1, include=FALSE>>=
 hello <- readPicture("hello.xml")
 grid.picture(hello)
-
 @ 
 \begin{figure}
 \hspace*{\fill}
@@ -1261,11 +1247,10 @@ is approximately the right size, but uses a completely different font
 PostScriptTrace("hello.ps", 
                 "hellotext.xml",
                 charpath = FALSE)
-
+@ 
 <<hellotext, fig=TRUE, width=1, height=1, include=FALSE>>=
 hellotext <- readPicture("hellotext.xml")
 grid.picture(hellotext)
-
 @ 
 The vignette ``Importing Text'' provides more details about importing
 text, including some other options for fine-tuning the size and placement
@@ -1322,7 +1307,6 @@ Figure \ref{figure:hollowflower}).
 grid.picture(PSflower, 
              use.gc = FALSE, 
              gp = gpar(fill = NA, col = "black"))
-
 @ 
 \begin{figure}
 \begin{center}
@@ -1349,7 +1333,6 @@ xyplot(V8 ~ V7, data = flower,
                         use.gc = FALSE, 
                         gp = gpar(col = "white", fill = "black", lwd = .5)) 
        })
-
 @ 
 <<flowerplot2, echo=FALSE, results=hide>>=
 trellis.device("pdf", file = "import-flowerplot2.pdf",
@@ -1483,7 +1466,6 @@ contains a list of shapes that describe the image and the
 
 <<>>=
 slotNames(petal)
-
 @ 
 The components of the list in the \code{paths} slot
 are all S4 objects, each with a class 
@@ -1512,7 +1494,6 @@ in the imported petal image.  This path is a \code{PictureFill} object.
 
 <<>>=
 str(petal@paths[[1]])
-
 @ 
 A \code{PictureText} object has three additional slots:  the \code{string}
 slot contains the text to draw, and the \code{w} and \code{h} slots 
@@ -1523,7 +1504,6 @@ in the imported text image.  This path is a \code{PictureText} object.
 
 <<>>=
 str(hellotext@paths[[1]])
-
 @ 
 The \code{summary} slot of a \code{Picture} object is a 
 \code{PictureSummary} object with slots for the number of 
@@ -1533,7 +1513,6 @@ the imported petal image.
 
 <<>>=
 str(petal@summary)
-
 @ 
 
 \subsection[Picture objects to grid grobs]{\code{Picture} objects to \pkg{grid} grobs}
@@ -1663,8 +1642,6 @@ as shown by the following code (see Figure \ref{figure:gnulogo}).
 PostScriptTrace("GNU.ps", "GNU.xml")
 GNU <- readPicture("GNU.xml")
 grid.picture(GNU)
-
-
 @
 \begin{figure}
 \begin{center}
@@ -1689,7 +1666,6 @@ one is the complex one (see Figure \ref{figure:gnupaths}).
 
 <<gnulogopaths, fig=TRUE, height=3, include=FALSE>>=
 picturePaths(GNU, nr = 1, nc = 2, label = FALSE)
-
 @
 \begin{figure}
 \begin{center}
@@ -1713,7 +1689,6 @@ is drawn on its own scale (see Figure \ref{figure:gnuexploded}).
 brokenGNU <- explodePaths(GNU)
 picturePaths(brokenGNU, nr = 3, nc = 5, 
              label = FALSE, freeScales = TRUE)
-
 @
 \begin{figure}
 \begin{center}
@@ -1756,11 +1731,10 @@ to a lattice barchart.
 <<logobody, eval=FALSE>>=
 barchart(~ cit, main = "Number of Citations per Year", xlab = "",
          panel = function(...) {
-             GNUlogo()
+             grid.picture(GNU)
              grid.rect(gp = gpar(fill = rgb(1, 1, 1, .9)))
              panel.barchart(...)
          })
-
 @ 
 % For some strange reason I seem to have to FORCE colour in the PDF output
 <<logo, echo=FALSE, results=hide>>=
@@ -1832,7 +1806,6 @@ and this is converted to \rgml{} format by the following code.
 
 <<>>=
 PostScriptTrace("page27.ps")
-
 @ 
 We do not need the entire page, but using the \code{picturePaths()}
 function and a little trial and error, it is possible to determine which
@@ -1845,7 +1818,6 @@ and path 27 is the blue curve.
 <<>>=
 page27 <- readPicture("page27.ps.xml")
 survivalPlot <- page27[c(3:16, 18, 27)]
-
 @ 
 
 The following code draws the extracted paths and  the result is
@@ -1855,7 +1827,6 @@ The following code draws the extracted paths and  the result is
 pushViewport(viewport(gp = gpar(lex = .2)))
 grid.picture(survivalPlot)
 popViewport()
-
 @
 \begin{figure}
 \begin{center}
@@ -1880,7 +1851,6 @@ y-location of this path.
 <<>>=
 zeroY <- survivalPlot@paths[[9]]@y[1]
 zeroY
-
 @ 
 Similarly, the uppermost tick mark is path 14, so a unit step on the 
 vertical scale is $\frac{1}{100}$th of the difference between the
@@ -1889,7 +1859,6 @@ y-location of this path and that of path 9.
 <<>>=
 unitY <- (survivalPlot@paths[[14]]@y[1] - zeroY)/100
 unitY
-
 @ 
 The survival percentages from the green curve (path 15 of 
 \code{survivalPlot}) can now be
@@ -1900,7 +1869,6 @@ function.
 <<>>=
 greenY <- (survivalPlot@paths[[15]]@y - zeroY)/unitY
 head(round(unname(greenY), 1), n = 20)
-
 @ 
 Happily, these numbers match quite well with the values that 
 were used to produce the original plot.
@@ -1910,7 +1878,6 @@ library("survival")
 sfit <- survfit(Surv(time, status) ~ trt, data = veteran)
 originalGreenY <- sfit$surv[1:sfit$strata[1]]
 head(round(originalGreenY*100, 1), n = 9)
-
 @ 
 The x-values for the green curve and the data from the
 blue curve could be extracted in an analogous fashion.
