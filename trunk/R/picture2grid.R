@@ -395,6 +395,7 @@ symbolLocn <- function(object, x, y, size, units,
     n <- max(length(x), length(y))
     x <- rep(x, length.out=n)
     y <- rep(y, length.out=n)
+    size <- rep(size, length.out=n)
     if (!is.unit(x))
         x <- unit(x, units)
     if (!is.unit(y))
@@ -419,18 +420,17 @@ symbolLocn <- function(object, x, y, size, units,
     # is given the smallest physical dimension
     sizeAspect <- sizeh / sizew
     scaleAspect <- diff(ry) / diff(rx)
-    if (scaleAspect < sizeAspect) {
-        width <- sizew
-        height <- sizew*scaleAspect
-    } else {
-        height <- sizeh
-        width <- sizeh/scaleAspect
-    }
+    width <- ifelse(scaleAspect < sizeAspect,
+                    sizew, sizeh/scaleAspect)
+    height <- ifelse(scaleAspect < sizeAspect,
+                     sizew*scaleAspect, sizeh)
     lwd <- width*object@lwd/diff(rx)*72
     # Scale object@x/y to [-0.5, 0.5]
     # and then multiply by width/height
-    wx <- rep((object@x - mean(rx))/abs(diff(rx)), n)*width
-    hy <- rep((object@y - mean(ry))/abs(diff(ry)), n)*height
+    wx <- rep((object@x - mean(rx))/abs(diff(rx)), n)*
+        rep(width, each=length(object@x))
+    hy <- rep((object@y - mean(ry))/abs(diff(ry)), n)*
+        rep(height, each=length(object@y))
     # Replicate x/y by length object@x/y
     # NOTE object@x and object@y have same length
     xx <- rep(x, rep(length(object@x), n))
