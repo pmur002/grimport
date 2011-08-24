@@ -1,3 +1,22 @@
+Changes from version 0.7-4 to 0.8
+===============================
+
+1.  Added support for /xshow, /yshow, and /xyshow
+    (fine-tuned positioning of text)
+
+2.  Small fix for case where import generates char paths
+    from text that consists of only a moveto 
+    (e.g., text is only a space character).
+
+3.  Ability to cope with "Separation" colorspace
+    (actually just some defensive code so that PostScriptTrace()
+     does not fall over;  just sets the colour to "black").
+
+4.  Extraction of font information is more robust 
+    (checks whether information is actually there before
+     trying to extract it!).
+
+
 Changes from version 0.7 to 0.7-4
 ===============================
 
