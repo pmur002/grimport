@@ -309,23 +309,27 @@ setMethod("grobify", signature(object="PictureChar"),
                    fillText=FALSE, bgText=NA,
                    sizeByWidth=TRUE, use.gc=TRUE) {
               paths <- grImport:::explode(object, FALSE, NA)
-              pathX <- lapply(paths, slot, "x")
-              pathY <- lapply(paths, slot, "y")
-              if (use.gc) {
-                  pathGrob(x=unlist(pathX),
-                           y=unlist(pathY),
-                           default.units="native",
-                           id.lengths=sapply(pathX, length),
-                           rule="winding",
-                           gp=gpar(col=NA, fill=object@rgb),
-                           ...)
+              if (length(paths) > 0) {
+                  pathX <- lapply(paths, slot, "x")
+                  pathY <- lapply(paths, slot, "y")
+                  if (use.gc) {
+                      pathGrob(x=unlist(pathX),
+                               y=unlist(pathY),
+                               default.units="native",
+                               id.lengths=sapply(pathX, length),
+                               rule="winding",
+                               gp=gpar(col=NA, fill=object@rgb),
+                               ...)
+                  } else {
+                      pathGrob(x=unlist(pathX),
+                               y=unlist(pathY),
+                               default.units="native",
+                               id.lengths=sapply(pathX, length),
+                               rule="winding",
+                               ...)
+                  }
               } else {
-                  pathGrob(x=unlist(pathX),
-                           y=unlist(pathY),
-                           default.units="native",
-                           id.lengths=sapply(pathX, length),
-                           rule="winding",
-                           ...)
+                  NULL
               }
           })
 
