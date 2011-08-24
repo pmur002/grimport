@@ -171,9 +171,11 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # first element which is colorspace name
       "  currentcolorspace 0 get",
       # If it's DeviceRGB or DeviceGray or DeviceCMYK we're ok
-      # otherwise we "hail mary" and hope that currencolor throws back 3 values
+      # Separation is a special case that is currently handled
+      # by just specifying "black" as the colour
+      # Otherwise we "hail mary" and hope that currencolor throws back 3 values
       # that can be interpreted as RGB (e.g., R's sRGB!)
-      "  dup (DeviceGray) eq exch dup (DeviceRGB) eq exch (DeviceCMYK) eq or or {currentrgbcolor} {currentcolor} ifelse",
+      "  dup (Separation) eq {pop 0 0 0} {dup (DeviceGray) eq exch dup (DeviceRGB) eq exch (DeviceCMYK) eq or or {currentrgbcolor} {currentcolor} ifelse} ifelse",
       "  (\t\t<rgb) print",
       # make sure the colour is RGB not BGR
       "  ( r=') print 2 index str cvs print (') print",
@@ -312,10 +314,12 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  convertToR /bymax get str cvs print (') print",
       # Record font (if available)
       "  ( fontName=') print currentfont /FontName get str cvs print (') print",
-      "  currentfont /FontInfo get /FamilyName known",
-      "  { ( fontFamilyName=') print currentfont /FontInfo get /FamilyName get print (') print } if ",
-      "  currentfont /FontInfo get /FullName known",
-      "  { ( fontFullName=') print currentfont /FontInfo get /FullName get print (') print } if",
+      "  currentfont /FontInfo known",
+      "  { currentfont /FontInfo get /FamilyName known",
+      "    { ( fontFamilyName=') print currentfont /FontInfo get /FamilyName get print (') print } if } if",
+      "  currentfont /FontInfo known",
+      "  { currentfont /FontInfo get /FullName known",
+      "    { ( fontFullName=') print currentfont /FontInfo get /FullName get print (') print } if } if",
       "  (>\n) print",
       # Graphics context
       "  (\t<context>\n) print",
@@ -374,6 +378,72 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # Generate charpath so that currentpoint returns correct location
       # (this also consumes the original char)
       "  true charpath", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/xshowchar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  convertToR /charfun (nullchar) put",
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      # Pop char
+      "  pop",
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch get 0 rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
+      "  currentpoint newpath moveto",
+      "} def",
+      "/yshowchar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  convertToR /charfun (nullchar) put",
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      # Pop char
+      "  pop",
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch get 0 exch rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
+      "  currentpoint newpath moveto",
+      "} def",
+      "/xyshowchar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  convertToR /charfun (nullchar) put",
+      "  convertToR /bboxfun (showbbox) put",
+      "  mytext",
+      # Pop char
+      "  pop",
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch 2 mul 2 getinterval dup 0 get exch 1 get rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
       "  currentpoint newpath moveto",
       "} def",
       "/widthshowchar {",
@@ -435,6 +505,72 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # move to save location
       "  currentpoint newpath moveto",
       "} def",
+      "/xstrokechar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  dup", # copy of char for "char="
+      "  true charpath flattenpath",
+      "  {mymove} {myline} {mycurve} {myclose}",
+      "  mychar",
+      "  pop", # copy of char for "char="
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch get 0 rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
+      "  currentpoint newpath moveto",
+      "} def",
+      "/ystrokechar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  dup", # copy of char for "char="
+      "  true charpath flattenpath",
+      "  {mymove} {myline} {mycurve} {myclose}",
+      "  mychar",
+      "  pop", # copy of char for "char="
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch get 0 exch rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
+      "  currentpoint newpath moveto",
+      "} def",
+      "/xystrokechar {",
+      # Save copy of 'i'
+      "  dup",
+      # Get copy of 'str' out front
+      "  2 index",
+      "  exch",
+      "  1 getinterval",
+      # Save current location (starting position for THIS char)
+      "  currentpoint 3 -1 roll",
+      "  dup", # copy of char for "char="
+      "  true charpath flattenpath",
+      "  {mymove} {myline} {mycurve} {myclose}",
+      "  mychar",
+      "  pop", # copy of char for "char="
+      # Return to start point for THIS char and use 'numarray'
+      # to find location for NEXT char
+      "  moveto 2 index exch 2 mul 2 getinterval dup 0 get exch 1 get rmoveto",
+      # Save current location (starting position for next char),
+      # start new path for next char,
+      # move to save location
+      "  currentpoint newpath moveto",
+      "} def",
       "/widthstrokechar {",
       "  exch dup 3 -1 roll",
       "  1 getinterval",
@@ -475,6 +611,15 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/showchars {",
       "  dup length -1 add 0 exch 1 exch {showchar} for",
       "} def",
+      "/xshowchars {",
+      "  dup length -1 add 0 exch 1 exch {xshowchar} for",
+      "} def",
+      "/yshowchars {",
+      "  dup length -1 add 0 exch 1 exch {yshowchar} for",
+      "} def",
+      "/xyshowchars {",
+      "  dup length -1 add 0 exch 1 exch {xyshowchar} for",
+      "} def",
       "/widthshowchars {",
       "  dup length -1 add 0 exch 1 exch {widthshowchar} for",
       "} def",
@@ -487,6 +632,15 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
 
       "/showpaths {",
       "  dup length -1 add 0 exch 1 exch {strokechar} for",
+      "} def",
+      "/xshowpaths {",
+      "  dup length -1 add 0 exch 1 exch {xstrokechar} for",
+      "} def",
+      "/yshowpaths {",
+      "  dup length -1 add 0 exch 1 exch {ystrokechar} for",
+      "} def",
+      "/xyshowpaths {",
+      "  dup length -1 add 0 exch 1 exch {xystrokechar} for",
       "} def",
       "/widthshowpaths {",
       "  dup length -1 add 0 exch 1 exch {widthstrokechar} for",
@@ -501,6 +655,42 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/showbbox {",
       "  gsave",
       "  currentpoint newpath moveto dup true charpath flattenpath",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/xshowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      # For each char, save currentpoint, flatten charpath,
+      # move back to start point and shift across using 'numarray'
+      "  dup length -1 add 0 exch 1 exch { dup 2 index exch 1 getinterval currentpoint 3 -1 roll true charpath flattenpath moveto 2 index exch get 0 rmoveto } for",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/yshowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      # For each char, save currentpoint, flatten charpath,
+      # move back to start point and shift across using 'numarray'
+      "  dup length -1 add 0 exch 1 exch { dup 2 index exch 1 getinterval currentpoint 3 -1 roll true charpath flattenpath moveto 2 index exch get 0 exch rmoveto } for",
+      "  boxinit",
+      "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
+      # Update global picture xmin/xmax/ymin/ymax
+      "  boxupdate",
+      "  grestore",
+      "} def",
+      "/xyshowbbox {",
+      "  gsave",
+      "  currentpoint newpath moveto",
+      # For each char, save currentpoint, flatten charpath,
+      # move back to start point and shift across using 'numarray'
+      "  dup length -1 add 0 exch 1 exch { dup 2 index exch 1 getinterval currentpoint 3 -1 roll true charpath flattenpath moveto 2 index exch 2 mul 2 getinterval dup 0 get exch 1 get rmoveto } for",
       "  boxinit",
       "  {boxmove} {boxline} {boxcurve} {boxclose} pathforall",
       # Update global picture xmin/xmax/ymin/ymax
@@ -584,6 +774,66 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       } else {
           "pop"
       },
+      "  currentpoint newpath moveto",
+      "} def",
+      "/xshow {",
+      "  convertToR /charpathfun (xshowpaths) put",
+      "  convertToR /charfun (xshowchars) put",
+      "  convertToR /widthadjfun (showwidthadj) put",
+      "  convertToR /bboxfun (xshowbbox) put",
+      # Switch 'string' and 'numarray' so common code
+      # for show operators can see 'string' on top of stack
+      "  exch",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Perform the x-shifts from 'numarray'
+          "  exch { 0 rmoveto } forall"
+      } else {
+          # remove 'numarray'
+          "  exch pop"
+      },
+      # Remove 'string'
+      "  pop", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/yshow {",
+      "  convertToR /charpathfun (yshowpaths) put",
+      "  convertToR /charfun (yshowchars) put",
+      "  convertToR /widthadjfun (showwidthadj) put",
+      "  convertToR /bboxfun (yshowbbox) put",
+      # Switch 'string' and 'numarray' so common code
+      # for show operators can see 'string' on top of stack
+      "  exch",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Perform the y-shifts from 'numarray'
+          "  exch { 0 exch rmoveto } forall"
+      } else {
+          # remove 'numarray'
+          "  exch pop"
+      },
+      # Remove 'string'
+      "  pop", 
+      "  currentpoint newpath moveto",
+      "} def",
+      "/xyshow {",
+      "  convertToR /charpathfun (xyshowpaths) put",
+      "  convertToR /charfun (xyshowchars) put",
+      "  convertToR /widthadjfun (showwidthadj) put",
+      "  convertToR /bboxfun (xyshowbbox) put",
+      # Switch 'string' and 'numarray' so common code
+      # for show operators can see 'string' on top of stack
+      "  exch",
+      "  mytext",
+      if (!(charpath || charpos)) {
+          # Perform the x/y-shifts from 'numarray' and pop 'numarray'
+          "  exch dup length 2 idiv -1 add 0 exch 1 exch { 1 index exch 2 mul 2 getinterval dup 0 get exch 1 get rmoveto } for pop"
+      } else {
+          # remove 'numarray'
+          "  exch pop"
+      },
+      # Remove 'string'
+      "  pop", 
       "  currentpoint newpath moveto",
       "} def",
       "/widthshow {",
