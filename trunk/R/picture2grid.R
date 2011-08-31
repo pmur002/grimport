@@ -33,57 +33,64 @@ pictureVP <- function(picture, exp=0.05, xscale=NULL, yscale=NULL,
 ##################
 explodePath <- function(path, fill) {
     ops <- attr(path@x, "names")
-    if (length(ops) > 1) {
-        moves <- grep("move", ops)
-        npaths <- length(moves)
-        if (npaths > 1) {
-            newpaths <- vector("list", npaths)
-            for (i in 1:(npaths - 1)) {
-                index <- moves[i]:(moves[i + 1] - 1)
-                if (length(index) > 1) {
-                    if (fill) {
-                        newpaths[[i]] <- new("PictureFill",
-                                             x=path@x[index],
-                                             y=path@y[index],
-                                             rule="winding",
-                                             lwd=path@lwd,
-                                             lty=path@lty,
-                                             rgb=path@rgb)
-                    } else {
-                        newpaths[[i]] <- new("PictureStroke",
-                                             x=path@x[index],
-                                             y=path@y[index],
-                                             lwd=path@lwd,
-                                             lty=path@lty,
-                                             rgb=path@rgb)
+    if (length(path@x) > 1) {
+        if (length(ops) > 1) {
+            moves <- grep("move", ops)
+            npaths <- length(moves)
+            if (npaths > 1) {
+                newpaths <- vector("list", npaths)
+                for (i in 1:(npaths - 1)) {
+                    index <- moves[i]:(moves[i + 1] - 1)
+                    if (length(index) > 1) {
+                        if (fill) {
+                            newpaths[[i]] <- new("PictureFill",
+                                                 x=path@x[index],
+                                                 y=path@y[index],
+                                                 rule="winding",
+                                                 lwd=path@lwd,
+                                                 lty=path@lty,
+                                                 rgb=path@rgb)
+                        } else {
+                            newpaths[[i]] <- new("PictureStroke",
+                                                 x=path@x[index],
+                                                 y=path@y[index],
+                                                 lwd=path@lwd,
+                                                 lty=path@lty,
+                                                 rgb=path@rgb)
+                        }
                     }
                 }
-            }
-            index <- moves[npaths]:length(ops)
-            if (length(index) > 1) {
-                if (fill) {
-                    newpaths[[npaths]] <-
-                        new("PictureFill",
-                            x=path@x[moves[npaths]:length(ops)],
-                            y=path@y[moves[npaths]:length(ops)],
-                            rule="winding",
-                            lwd=path@lwd,
-                            lty=path@lty,
-                            rgb=path@rgb)
-                } else {
-                        new("PictureStroke",
-                            x=path@x[moves[npaths]:length(ops)],
-                            y=path@y[moves[npaths]:length(ops)],
-                            lwd=path@lwd,
-                            lty=path@lty,
-                            rgb=path@rgb)
+                index <- moves[npaths]:length(ops)
+                if (length(index) > 1) {
+                    if (fill) {
+                        newpaths[[npaths]] <-
+                            new("PictureFill",
+                                x=path@x[moves[npaths]:length(ops)],
+                                y=path@y[moves[npaths]:length(ops)],
+                                rule="winding",
+                                lwd=path@lwd,
+                                lty=path@lty,
+                                rgb=path@rgb)
+                    } else {
+                        newpaths[[npaths]] <- 
+                            new("PictureStroke",
+                                x=path@x[moves[npaths]:length(ops)],
+                                y=path@y[moves[npaths]:length(ops)],
+                                lwd=path@lwd,
+                                lty=path@lty,
+                                rgb=path@rgb)
+                    }
                 }
+                newpaths[!sapply(newpaths, is.null)]
+            } else {
+                path
             }
-            newpaths[!sapply(newpaths, is.null)]
         } else {
+            # If there are 'x' values BUT no 'ops' just return the path
             path
         }
     } else {
+        # If there are no 'x' values, return an empty list
         list()
     }
 }

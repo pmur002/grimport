@@ -13,7 +13,8 @@ setClass("PictureStroke",
 
 setClass("PictureFill",
          representation("PictureOp",
-                        rule="character"))
+                        rule="character"),
+         prototype=list(rule="evenodd"))
 
 setClass("PictureText",
          representation("PictureOp",
