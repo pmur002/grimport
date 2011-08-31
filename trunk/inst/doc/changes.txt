@@ -1,4 +1,20 @@
-Changes from version 0.7-4 to 0.8
+
+Changes from version 0.8-0 to 0.8-1
+===============================
+
+1.  Fixed bug in conversion of "PictureStroke" objects to grobs
+    with multiple "moves" (i.e., a complex path that is stroked
+    rather than filled).  It used to drop the last bit of the 
+    path (the bit after the last "move").
+
+    Problem reported by Rene Locher.
+
+2.  Made conversion of "PictureOp" objects to grobs a bit more
+    robust (can now handle 'x' and 'y' vectors that have no
+    name attributes).
+
+
+Changes from version 0.7-4 to 0.8-0
 ===============================
 
 1.  Added support for /xshow, /yshow, and /xyshow
