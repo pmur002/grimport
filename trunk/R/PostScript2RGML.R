@@ -988,10 +988,15 @@ PostScriptTrace <- function(file, outfilename,
     
     # Run temp file using ghostscript
     gscmd <- Sys.getenv("R_GSCMD")
-    if (is.null(gscmd) || nchar(gscmd) == 0) {
+    if(is.null(gscmd) || !nzchar(gscmd)) {
         gscmd <- switch(.Platform$OS.type,
                         unix = "gs",
-                        windows = "gswin32c.exe")
+                        windows = {
+                            poss <- Sys.which(c("gswin64c.exe",
+                                                "gswin32c.exe"))
+                            poss <- poss[nzchar(poss)]
+                            gscmd <- if (length(poss)) poss else "gswin32c.exe"
+                        })
     }
     outfile <- switch(.Platform$OS.type,
                       unix = "/dev/null",
