@@ -1,5 +1,5 @@
 
-Changes from version 0.8-0 to 0.8-1
+Changes from version 0.8-0 to 0.8-3
 ===============================
 
 1.  Fixed bug in conversion of "PictureStroke" objects to grobs
@@ -12,6 +12,11 @@ Changes from version 0.8-0 to 0.8-1
 2.  Made conversion of "PictureOp" objects to grobs a bit more
     robust (can now handle 'x' and 'y' vectors that have no
     name attributes).
+
+3.  Added more defensive code for extraction of font information
+    when importing text.
+
+    Thanks to Wojciech Wojciak for report, diagnosis, and patch!
 
 
 Changes from version 0.7-4 to 0.8-0
