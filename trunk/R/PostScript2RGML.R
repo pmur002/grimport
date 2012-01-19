@@ -313,7 +313,8 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  convertToR /bxmax get str cvs print ( ) print",
       "  convertToR /bymax get str cvs print (') print",
       # Record font (if available)
-      "  ( fontName=') print currentfont /FontName get str cvs print (') print",
+      "  currentfont /FontName known",
+      "  { ( fontName=') print currentfont /FontName get str cvs print (') print} if",
       "  currentfont /FontInfo known",
       "  { currentfont /FontInfo get /FamilyName known",
       "    { ( fontFamilyName=') print currentfont /FontInfo get /FamilyName get print (') print } if } if",
