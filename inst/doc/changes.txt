@@ -27,6 +27,12 @@ Changes from version 0.8-0 to 0.8-4
 
     Thanks again to Wojciech Wojciak for report and test case.
 
+5.  Moved vignette files from inst/doc/ to vignettes/ directory.
+
+    Removed jss.cls and jss.bst from inst/doc.
+
+    Thanks to Brian Ripley for pointing out the problem and solution!
+
 
 Changes from version 0.7-4 to 0.8-0
 ===============================

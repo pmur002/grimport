@@ -23,3 +23,8 @@
 6.  Allow subsetting picture paths by *name* (requires naming
     picture paths).
 
+7.  Add support for direct conversion from SVG to RGML.
+    Should be possible via XSL, though initial tests suggest
+    that it might be easier to do it in R with the 'XML' package.
+    
+    See grimport/inst/xsl/ directory
