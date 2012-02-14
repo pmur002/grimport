@@ -1,6 +1,6 @@
 
-Changes from version 0.8-0 to 0.8-3
-===============================
+Changes from version 0.8-0 to 0.8-4
+===================================
 
 1.  Fixed bug in conversion of "PictureStroke" objects to grobs
     with multiple "moves" (i.e., a complex path that is stroked
@@ -17,6 +17,15 @@ Changes from version 0.8-0 to 0.8-3
     when importing text.
 
     Thanks to Wojciech Wojciak for report, diagnosis, and patch!
+
+4.  Added defenses against NUL bytes in text.
+
+    The test case is a file produced by dvips which has bitmap
+    font (subsets) with custom encodings so that some pieces
+    of text contain control characters, including in one case 
+    a NUL byte (\000 or ^@).  (See Bugs/tabart.ps)
+
+    Thanks again to Wojciech Wojciak for report and test case.
 
 
 Changes from version 0.7-4 to 0.8-0
