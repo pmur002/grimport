@@ -197,16 +197,18 @@ setGeneric("grobify",
            })
 
 picStrokeGrob <- function(...) {
-    grob(..., cl="picstroke")
+    gTree(..., cl="picstroke")
 }
 
-drawDetails.picstroke <- function(x, recording) {
+makeContent.picstroke <- function(x) {
     # Figure out what lwd and lty really are
     lwd <- convertWidth(unit(x$lwd, "native"), "bigpts", valueOnly=TRUE)
     lty <- fixLTY(x$lty, x$lwd)
-    grid.polyline(x$x, x$y,
-                  default.units=x$default.units, id.lengths=x$id.lengths,
-                  gp=gpar(lwd=lwd, lty=lty, col=x$col, fill=NA))
+    child <- polylineGrob(x$x, x$y,
+                          default.units=x$default.units,
+                          id.lengths=x$id.lengths,
+                          gp=gpar(lwd=lwd, lty=lty, col=x$col, fill=NA))
+    setChildren(x, gList(child))
 }
 
 # Individual path converted into grob
@@ -449,7 +451,7 @@ symbolLocn <- function(object, x, y, size, units,
     list(x=xx + wx, y=yy + hy, n=n, lwd=lwd)
 }
 
-drawDetails.symbolStroke <- function(x, recording) {
+makeContent.symbolStroke <- function(x) {
     locn <- symbolLocn(x$object, x$x, x$y, x$size,
                        x$units, x$xscale, x$yscale)
     # Create id to distinguish separate symbols
@@ -458,39 +460,41 @@ drawDetails.symbolStroke <- function(x, recording) {
     if (x$use.gc) {
         lwd <- locn$lwd
         lty <- fixLTY(x$object@lty, x$object@lwd)
-        do.call("grid.polyline",
-                c(list(x=locn$x, y=locn$y, id=id,
-                       default.units="inches",
-                       gp=gpar(lwd=lwd,
-                         lty=lty,
-                         col=x$object@rgb)),
-                  x$poly.args))
+        child <- do.call("polylineGrob",
+                         c(list(x=locn$x, y=locn$y, id=id,
+                                default.units="inches",
+                                gp=gpar(lwd=lwd,
+                                    lty=lty,
+                                    col=x$object@rgb)),
+                           x$poly.args))
     } else {
-        do.call("grid.polyline",
-                c(list(x=locn$x, y=locn$y, id=id,
-                       default.units="inches"),
-                  x$poly.args))
+        child <- do.call("polylineGrob",
+                         c(list(x=locn$x, y=locn$y, id=id,
+                                default.units="inches", vp=x$vp),
+                           x$poly.args))
     }
+    setChildren(x, gList(child))
 }
-    
-drawDetails.symbolFill <- function(x, recording) {
+
+makeContent.symbolFill <- function(x) {
     locn <- symbolLocn(x$object, x$x, x$y, x$size,
                        x$units, x$xscale, x$yscale)
     # Create id to distinguish separate symbols
     id <- rep(1:locn$n, each=length(x$object@x))
     # Generate grob representing symbols
     if (x$use.gc) {
-        do.call("grid.polygon",
-                c(list(x=locn$x, y=locn$y, id=id, 
-                       default.units="inches",
-                       gp=gpar(col=NA, fill=x$object@rgb)),
-                  x$poly.args))
+        child <- do.call("polygonGrob",
+                         c(list(x=locn$x, y=locn$y, id=id, 
+                                default.units="inches",
+                                gp=gpar(col=NA, fill=x$object@rgb)),
+                           x$poly.args))
     } else {
-        do.call("grid.polygon",
-                c(list(x=locn$x, y=locn$y, id=id,
-                       default.units="inches"),
-                  x$poly.args))
+        child <- do.call("polygonGrob",
+                         c(list(x=locn$x, y=locn$y, id=id,
+                                default.units="inches", vp=x$vp),
+                           x$poly.args))
     }
+    setChildren(x, gList(child))
 }
     
 setMethod("symbolize", signature(object="PictureStroke"),
@@ -501,10 +505,10 @@ setMethod("symbolize", signature(object="PictureStroke"),
                    units="npc",
                    xscale=NULL, yscale=NULL, ..., use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  grob(object=object, x=x, y=y, size=size,
-                       units=units, xscale=xscale, yscale=yscale,
-                       use.gc=use.gc, poly.args=list(...),
-                       cl="symbolStroke")
+                  gTree(object=object, x=x, y=y, size=size,
+                        units=units, xscale=xscale, yscale=yscale,
+                        use.gc=use.gc, poly.args=list(...),
+                        cl="symbolStroke")
               } else {
                   NULL
               }
@@ -518,10 +522,10 @@ setMethod("symbolize", signature(object="PictureFill"),
                    units="npc",
                    xscale=NULL, yscale=NULL, ..., use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  grob(object=object, x=x, y=y, size=size,
-                       units=units, xscale=xscale, yscale=yscale,
-                       use.gc=use.gc, poly.args=list(...),
-                       cl="symbolFill")
+                  gTree(object=object, x=x, y=y, size=size,
+                        units=units, xscale=xscale, yscale=yscale,
+                        use.gc=use.gc, poly.args=list(...),
+                        cl="symbolFill")
               } else {
                   NULL
               }

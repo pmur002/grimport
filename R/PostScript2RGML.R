@@ -187,8 +187,13 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "/printlwd {",
       # lwd is in user coords so transform
       # This will need transforming to a grDevices "lwd" in R
-      "  currentlinewidth 0 transform pop",
-      "  0 0 transform pop sub",
+      "  currentlinewidth 0 transform",
+      "  0 0 transform",
+      "  3 index 2 index sub", # dx
+      "  3 index 2 index sub", # dy
+      "  2 exp exch 2 exp add sqrt",      
+      # clean up
+      "  5 1 roll pop pop pop pop",
       "  ( lwd=') print str cvs print (') print",
       "} def",
       "/printdash {",
