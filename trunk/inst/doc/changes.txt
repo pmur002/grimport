@@ -1,4 +1,30 @@
 
+Changes from version 0.8-4 to 0.9-0
+===================================
+
+1.  Changes to make use of new makeContext() and makeContent()
+    hooks in 'grid':
+
+    - dependency on R >= 2.16.0
+
+    - "picstroke" changed to gTree rather than just grob
+    - "picturetext" changed to gTree rather than just grob
+    - "symbolstroke" changed to gTree rather than just grob
+    - "symbolfill" changed to gTree rather than just grob
+
+    - makeContent.picstroke() function
+    - makeContent.picturetext() function
+    - makeContent.symbolstroke() function
+    - makeContent.symbolfill() function
+
+    - removed drawDetails.picstroke()
+    - removed drawDetails.picturetext()
+    - removed drawDetails.symbolstroke()
+    - removed drawDetails.symbolfill()
+
+2.  Bug fix for 'lwd' when image involves PostScript rotation
+
+
 Changes from version 0.8-0 to 0.8-4
 ===================================
 

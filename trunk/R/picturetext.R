@@ -12,7 +12,7 @@ validDetails.picturetext <- function(x) {
   x
 }
 
-drawDetails.picturetext <- function(x, recording=TRUE) {
+makeContent.picturetext <- function(x) {
     if (x$sizeByWidth) {
         # Determine size of string in current font
         currentWidth <- convertWidth(stringWidth(x$string), "inches",
@@ -20,16 +20,17 @@ drawDetails.picturetext <- function(x, recording=TRUE) {
         desiredWidth <- convertWidth(x$w, "inches",
                                      valueOnly=TRUE)
         # Scale text to fill desired width
-        grid.text(x$string, x$x, x$y, rot=x$angle,
-                  just=c("left", "bottom"),
-                  gp=gpar(cex=desiredWidth/currentWidth))
+        child <- textGrob(x$string, x$x, x$y, rot=x$angle,
+                          just=c("left", "bottom"),
+                          gp=gpar(cex=desiredWidth/currentWidth))
     } else {
         desiredHeight <- convertHeight(x$h, "points", valueOnly=TRUE)
         # Scale text to fill desired height
-        grid.text(x$string, x$x, x$y, rot=x$angle,
-                  just=c("left", "bottom"),
-                  gp=gpar(fontsize=desiredHeight))
+        child <- textGrob(x$string, x$x, x$y, rot=x$angle,
+                          just=c("left", "bottom"),
+                          gp=gpar(fontsize=desiredHeight))
     }
+    setChildren(x, gList(child))
 }
 
 pictureTextGrob <- function(string, x, y, w, h, angle, letters,
@@ -44,7 +45,7 @@ pictureTextGrob <- function(string, x, y, w, h, angle, letters,
         w <- unit(w, units)
     if (!is.unit(h))
         h <- unit(h, units)
-    grob(string=as.character(string), x=x, y=y, w=w, h=h, angle=angle,
-         sizeByWidth=sizeByWidth,
-         gp=gp, name=name, vp=vp, cl="picturetext")
+    gTree(string=as.character(string), x=x, y=y, w=w, h=h, angle=angle,
+          sizeByWidth=sizeByWidth,
+          gp=gp, name=name, vp=vp, cl="picturetext")
 }
