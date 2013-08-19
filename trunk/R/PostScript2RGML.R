@@ -1027,21 +1027,27 @@ PostScriptTrace <- function(file, outfilename,
     }
     
     # Run temp file using ghostscript
-    gscmd <- Sys.getenv("R_GSCMD")
-    if(is.null(gscmd) || !nzchar(gscmd)) {
-        gscmd <- switch(.Platform$OS.type,
-                        unix = "gs",
-                        windows = {
-                            poss <- Sys.which(c("gswin64c.exe",
-                                                "gswin32c.exe"))
-                            poss <- poss[nzchar(poss)]
-                            gscmd <- if (length(poss)) poss else "gswin32c.exe"
-                        })
+    # Determination of ghostscript command syntax derived from dev2bitmap()
+    gsexe <- Sys.getenv("R_GSCMD")
+    if (.Platform$OS.type == "windows") {
+        if(!nzchar(gsexe)) gsexe <- Sys.getenv("GSC")
+        if(is.null(gsexe) || !nzchar(gsexe)) {
+            poss <- Sys.which(c("gswin64c.exe", "gswin32c.exe"))
+            poss <- poss[nzchar(poss)]
+            gsexe <- if(length(poss)) poss else "gswin32c.exe"
+        } else if(grepl(" ", gsexe, fixed = TRUE))
+            gsexe <- shortPathName(gsexe)
+        outfile <- tempfile()
+    } else {
+        if (is.null(gsexe) || !nzchar(gsexe)) {
+            gsexe <- "gs"
+            rc <- system(paste(shQuote(gsexe), "-help > /dev/null"))
+            if (rc != 0) 
+                stop("sorry, 'gs' cannot be found")
+        }
+        outfile <- "/dev/null"
     }
-    outfile <- switch(.Platform$OS.type,
-                      unix = "/dev/null",
-                      windows = tempfile())
-    cmd <- paste(gscmd, 
+    cmd <- paste(gsexe, 
                  " -q -dBATCH -dNOPAUSE -sDEVICE=pswrite -sOutputFile=",
                  outfile, " -sstdout=",
                  outfilename, " ",
