@@ -5,7 +5,10 @@ setClass("PictureOp",
                         y="numeric",
                         rgb="character",
                         lty="numeric",
-                        lwd="numeric"),
+                        lwd="numeric",
+                        lineend="numeric",
+                        linejoin="numeric",
+                        linemitre="numeric"),
          prototype=list(rgb="black", lwd=1))
 
 setClass("PictureStroke",

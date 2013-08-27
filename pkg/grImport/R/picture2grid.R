@@ -49,14 +49,20 @@ explodePath <- function(path, fill) {
                                                  rule="winding",
                                                  lwd=path@lwd,
                                                  lty=path@lty,
-                                                 rgb=path@rgb)
+                                                 rgb=path@rgb,
+                                                 lineend=path@lineend,
+                                                 linejoin=path@linejoin,
+                                                 linemitre=path@linemitre)
                         } else {
                             newpaths[[i]] <- new("PictureStroke",
                                                  x=path@x[index],
                                                  y=path@y[index],
                                                  lwd=path@lwd,
                                                  lty=path@lty,
-                                                 rgb=path@rgb)
+                                                 rgb=path@rgb,
+                                                 lineend=path@lineend,
+                                                 linejoin=path@linejoin,
+                                                 linemitre=path@linemitre)
                         }
                     }
                 }
@@ -70,7 +76,10 @@ explodePath <- function(path, fill) {
                                 rule="winding",
                                 lwd=path@lwd,
                                 lty=path@lty,
-                                rgb=path@rgb)
+                                rgb=path@rgb,
+                                lineend=path@lineend,
+                                linejoin=path@linejoin,
+                                linemitre=path@linemitre)
                     } else {
                         newpaths[[npaths]] <- 
                             new("PictureStroke",
@@ -78,7 +87,10 @@ explodePath <- function(path, fill) {
                                 y=path@y[moves[npaths]:length(ops)],
                                 lwd=path@lwd,
                                 lty=path@lty,
-                                rgb=path@rgb)
+                                rgb=path@rgb,
+                                lineend=path@lineend,
+                                linejoin=path@linejoin,
+                                linemitre=path@linemitre)
                     }
                 }
                 newpaths[!sapply(newpaths, is.null)]
@@ -135,14 +147,18 @@ fixPath <- function(path, i, fill, bg) {
             new("PictureFill",
                 x=path@x,
                 y=path@y,
-                lwd=path@lwd, lty=path@lty, rgb=bg)
+                lwd=path@lwd, lty=path@lty, rgb=bg,
+                lineend=path@lineend, linejoin=path@linejoin,
+                linemitre=path@linemitre)
         }
     } else {
         new("PictureStroke",
             x=c(path@x, path@x[1]),
             y=c(path@y, path@y[1]),
             # Use a light stroke
-            lwd=path@lwd, lty=path@lty, rgb=path@rgb)
+            lwd=path@lwd, lty=path@lty, rgb=path@rgb,
+            lineend=path@lineend, linejoin=path@linejoin,
+            linemitre=path@linemitre)
     }
 }
 
@@ -207,7 +223,9 @@ makeContent.picstroke <- function(x) {
     child <- polylineGrob(x$x, x$y,
                           default.units=x$default.units,
                           id.lengths=x$id.lengths,
-                          gp=gpar(lwd=lwd, lty=lty, col=x$col, fill=NA))
+                          gp=gpar(lwd=lwd, lty=lty, col=x$col, fill=NA,
+                                  lineend=x$lineend, linejoin=x$linejoin,
+                                  linemitre=x$linemitre))
     setChildren(x, gList(child))
 }
 
@@ -231,6 +249,9 @@ setMethod("grobify", signature(object="PictureStroke"),
                                     lwd=object@lwd,
                                     lty=object@lty,
                                     col=object@rgb,
+                                    lineend=object@lineend,
+                                    linejoin=object@linejoin,
+                                    linemitre=object@linemitre,
                                     ...)
                   } else {
                       polylineGrob(x=unlist(pathX),
@@ -262,7 +283,10 @@ setMethod("grobify", signature(object="PictureFill"),
                                id.lengths=sapply(pathX, length),
                                rule=switch(object@rule,
                                  nonzero="winding", "evenodd"),
-                               gp=gpar(col=NA, fill=object@rgb),
+                               gp=gpar(col=NA, fill=object@rgb,
+                                       lineend=object@lineend,
+                                       linejoin=object@linejoin,
+                                       linemitre=object@linemitre),
                                ...)
                   } else {
                       pathGrob(x=unlist(pathX),
@@ -327,7 +351,10 @@ setMethod("grobify", signature(object="PictureChar"),
                                default.units="native",
                                id.lengths=sapply(pathX, length),
                                rule="winding",
-                               gp=gpar(col=NA, fill=object@rgb),
+                               gp=gpar(col=NA, fill=object@rgb,
+                                       lineend=object@lineend,
+                                       linejoin=object@linejoin,
+                                       linemitre=object@linemitre),
                                ...)
                   } else {
                       pathGrob(x=unlist(pathX),
@@ -465,7 +492,10 @@ makeContent.symbolStroke <- function(x) {
                                 default.units="inches",
                                 gp=gpar(lwd=lwd,
                                     lty=lty,
-                                    col=x$object@rgb)),
+                                    col=x$object@rgb,
+                                    lineend=x$object@lineend,
+                                    linejoin=x$object@linejoin,
+                                    linemitre=x$object@linemitre)),
                            x$poly.args))
     } else {
         child <- do.call("polylineGrob",
@@ -486,7 +516,10 @@ makeContent.symbolFill <- function(x) {
         child <- do.call("polygonGrob",
                          c(list(x=locn$x, y=locn$y, id=id, 
                                 default.units="inches",
-                                gp=gpar(col=NA, fill=x$object@rgb)),
+                                gp=gpar(col=NA, fill=x$object@rgb,
+                                        lineend=x$object@lineend,
+                                        linejoin=x$object@linejoin,
+                                        linemitre=x$object@linemitre)),
                            x$poly.args))
     } else {
         child <- do.call("polygonGrob",

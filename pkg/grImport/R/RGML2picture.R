@@ -5,6 +5,24 @@ readPicture <- function(rgmlFile, tidy=TRUE, ...) {
     funGetY = function(x) { as.numeric(xmlAttrs(x)["y"]) }
     funGetGC = function(x) { pars <- xmlApply(x, xmlAttrs) }
     funPathType = function(x) { xmlAttrs(x)["type"] }
+    funToLineJoin = function(x) {
+        x <- as.numeric(x)
+        if (x == 0)
+            1 # PS 0 is miter, R is round
+        else if (x == 1)
+            0 # PS 1 is round, R is miter
+        else
+            x # should be 2, bevel
+    }
+    funToLineEnd = function(x) {
+        x <- as.numeric(x)
+        if (x == 0)
+            1 # PS 0 is butt, R is round
+        else if (x == 1)
+            0 # PS 1 is round, R is butt
+        else
+            x # should be 2, square
+    }
 
     funPath = function(x) {
         switch(xmlName(x),
@@ -19,6 +37,9 @@ readPicture <- function(rgmlFile, tidy=TRUE, ...) {
                              stroke=new("PictureStroke", x=xval, y=yval,
                                lwd=as.numeric(gc$style["lwd"]),
                                lty=readLTY(gc$style["lty"]),
+                               lineend=funToLineEnd(gc$style["lineend"]),
+                               linejoin=funToLineJoin(gc$style["linejoin"]),
+                               linemitre=as.numeric(gc$style["linemitre"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
@@ -26,6 +47,9 @@ readPicture <- function(rgmlFile, tidy=TRUE, ...) {
                                rule="nonzero",
                                lwd=as.numeric(gc$style["lwd"]),
                                lty=readLTY(gc$style["lty"]),
+                               lineend=funToLineEnd(gc$style["lineend"]),
+                               linejoin=funToLineJoin(gc$style["linejoin"]),
+                               linemitre=as.numeric(gc$style["linemitre"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
@@ -33,6 +57,9 @@ readPicture <- function(rgmlFile, tidy=TRUE, ...) {
                                rule="evenodd",
                                lwd=as.numeric(gc$style["lwd"]),
                                lty=readLTY(gc$style["lty"]),
+                               lineend=funToLineEnd(gc$style["lineend"]),
+                               linejoin=funToLineJoin(gc$style["linejoin"]),
+                               linemitre=as.numeric(gc$style["linemitre"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))),
@@ -40,6 +67,9 @@ readPicture <- function(rgmlFile, tidy=TRUE, ...) {
                                char=xmlAttrs(x)["char"],
                                lwd=as.numeric(gc$style["lwd"]),
                                lty=readLTY(gc$style["lty"]),
+                               lineend=funToLineEnd(gc$style["lineend"]),
+                               linejoin=funToLineJoin(gc$style["linejoin"]),
+                               linemitre=as.numeric(gc$style["linemitre"]),
                                rgb=rgb(as.numeric(gc$rgb["r"]),
                                  as.numeric(gc$rgb["g"]),
                                  as.numeric(gc$rgb["b"]))))
