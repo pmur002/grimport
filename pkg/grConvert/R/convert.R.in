@@ -52,6 +52,14 @@ convertPicture <- function(file, outfile,
 
     # Now to perform the actual conversion
     conv(file, outfile, pagenum)
+
+    # For SVG, add a comment so that we know grConvert created the image.
+    # This is useful for grImport2 because it can use this to check for
+    # validity of its input (instead of assuming all SVG is valid).
+    if (outputFormat == "svg")
+        addCommentTag(outfile)
+
+    invisible(NULL)
 }
 
 convertPStoPS <- function(file, outfile, pagenum = 1L) {
@@ -171,3 +179,23 @@ validateExtensions <- function(inputExt, outputExt) {
         stop(paste0("File extension '", outputExt, "' for ",
                     "'outputFormat' is not a supported output filetype"))
 }
+
+addCommentTag <- function(svgfile) {
+    # Read all SVG
+    con <- file(svgfile, "r")
+    allLines <- readLines(con)
+    close(con)
+    # Create a new connection to reset position in file
+    con <- file(svgfile, "w")
+    # Write out a new SVG file with a comment tag added but ensure that
+    # the XML declaration remains in the first line
+    writeLines(allLines[[1]], con = con)
+    allLines <- allLines[-1]
+    writeLines(paste0("<!-- Created by grConvert v",
+               packageDescription("grConvert")$Version,
+               " -->"), con = con)
+    for (i in seq_along(allLines))
+        writeLines(allLines[[i]], con = con)
+    close(con)
+}
+
