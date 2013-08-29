@@ -690,9 +690,9 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
-enable_ps
-enable_pdf
-enable_svg
+enable_ps_input
+enable_pdf_input
+enable_svg_input
 '
       ac_precious_vars='build_alias
 host_alias
@@ -2078,23 +2078,23 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers src/config.h"
 
 
-# Check whether --enable-ps was given.
-if test "${enable_ps+set}" = set; then :
-  enableval=$enable_ps; HAVE_PS=FALSE
+# Check whether --enable-ps-input was given.
+if test "${enable_ps_input+set}" = set; then :
+  enableval=$enable_ps_input; HAVE_PS=FALSE
 else
   HAVE_PS=TRUE
 fi
 
-# Check whether --enable-pdf was given.
-if test "${enable_pdf+set}" = set; then :
-  enableval=$enable_pdf; HAVE_PDF=FALSE
+# Check whether --enable-pdf-input was given.
+if test "${enable_pdf_input+set}" = set; then :
+  enableval=$enable_pdf_input; HAVE_PDF=FALSE
 else
   HAVE_PDF=TRUE
 fi
 
-# Check whether --enable-svg was given.
-if test "${enable_svg+set}" = set; then :
-  enableval=$enable_svg; HAVE_SVG=FALSE
+# Check whether --enable-svg-input was given.
+if test "${enable_svg_input+set}" = set; then :
+  enableval=$enable_svg_input; HAVE_SVG=FALSE
 else
   HAVE_SVG=TRUE
 fi

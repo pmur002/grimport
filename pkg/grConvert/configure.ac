@@ -6,17 +6,17 @@ AC_CONFIG_HEADERS([src/config.h])
 dnl Providing optional arguments so that it's not strictly necessary
 dnl to have each of the components available for installing the package.
 dnl For example, we could, if desired, remove PostScript support.
-AC_ARG_ENABLE([ps],
+AC_ARG_ENABLE([ps-input],
               AS_HELP_STRING([--disable-ps-input	Disable conversion of PostScript input]),
               [HAVE_PS=FALSE],
               [HAVE_PS=TRUE])
 dnl or perhaps PDF support
-AC_ARG_ENABLE([pdf],
+AC_ARG_ENABLE([pdf-input],
               AS_HELP_STRING([--disable-pdf-input	Disable conversion of PDF input]),
               [HAVE_PDF=FALSE],
               [HAVE_PDF=TRUE])
 dnl or even SVG support
-AC_ARG_ENABLE([svg],
+AC_ARG_ENABLE([svg-input],
               AS_HELP_STRING([--disable-svg-input	Disable conversion of SVG input]),
               [HAVE_SVG=FALSE],
               [HAVE_SVG=TRUE])
