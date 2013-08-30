@@ -3818,6 +3818,18 @@ fi
 
 ac_config_files="$ac_config_files R/convert.R"
 
+ac_config_files="$ac_config_files tests/test-pdf-in-ps-out.R"
+
+ac_config_files="$ac_config_files tests/test-pdf-in-svg-out.R"
+
+ac_config_files="$ac_config_files tests/test-ps-in-ps-out.R"
+
+ac_config_files="$ac_config_files tests/test-ps-in-svg-out.R"
+
+ac_config_files="$ac_config_files tests/test-svg-in-ps-out.R"
+
+ac_config_files="$ac_config_files tests/test-svg-in-svg-out.R"
+
 
 ac_config_files="$ac_config_files src/Makevars"
 
@@ -4512,6 +4524,12 @@ do
   case $ac_config_target in
     "src/config.h") CONFIG_HEADERS="$CONFIG_HEADERS src/config.h" ;;
     "R/convert.R") CONFIG_FILES="$CONFIG_FILES R/convert.R" ;;
+    "tests/test-pdf-in-ps-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-pdf-in-ps-out.R" ;;
+    "tests/test-pdf-in-svg-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-pdf-in-svg-out.R" ;;
+    "tests/test-ps-in-ps-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-ps-in-ps-out.R" ;;
+    "tests/test-ps-in-svg-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-ps-in-svg-out.R" ;;
+    "tests/test-svg-in-ps-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-svg-in-ps-out.R" ;;
+    "tests/test-svg-in-svg-out.R") CONFIG_FILES="$CONFIG_FILES tests/test-svg-in-svg-out.R" ;;
     "src/Makevars") CONFIG_FILES="$CONFIG_FILES src/Makevars" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

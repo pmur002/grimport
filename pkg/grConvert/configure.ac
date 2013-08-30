@@ -96,6 +96,14 @@ AC_SUBST(HAVE_PDF)
 AC_SUBST(HAVE_PS)
 AC_SUBST(HAVE_SVG)
 AC_CONFIG_FILES([R/convert.R])
+dnl Also don't run code in tests when we don't have the
+dnl required feature
+AC_CONFIG_FILES([tests/test-pdf-in-ps-out.R])
+AC_CONFIG_FILES([tests/test-pdf-in-svg-out.R])
+AC_CONFIG_FILES([tests/test-ps-in-ps-out.R])
+AC_CONFIG_FILES([tests/test-ps-in-svg-out.R])
+AC_CONFIG_FILES([tests/test-svg-in-ps-out.R])
+AC_CONFIG_FILES([tests/test-svg-in-svg-out.R])
 AC_SUBST(CONVERT_LIBS)
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
