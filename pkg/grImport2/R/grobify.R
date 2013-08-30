@@ -278,11 +278,11 @@ setMethod("grobify",
           function(object, gpFUN = identity, gridSVG = FALSE,
                    clip = c("off", "bbox", "gridSVG"),
                    expansion = 0.05, xscale = NULL, yscale = NULL,
-                   distort = FALSE,  ...) {
+                   distort = FALSE, name = NULL, ...) {
               clip <- match.arg(clip)
               pvp <- pictureVP(object, expansion = expansion,
                                xscale = xscale, yscale = yscale,
-                               distort = distort)
+                               distort = distort, ...)
 
               if (gridSVG || clip == "gridSVG") {
                   if (! require(gridSVG)) {
@@ -304,5 +304,6 @@ setMethod("grobify",
                                  grobify, defs = object@defs,
                                  gpFUN = gpFUN, gridSVG = gridSVG,
                                  clip = clip)
-              gTree(children = do.call("gList", children), vp = pvp)
+              gTree(children = do.call("gList", children),
+                    name = name, vp = pvp)
           })
