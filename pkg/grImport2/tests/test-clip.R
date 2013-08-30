@@ -5,12 +5,12 @@ pic <- readPicture("test-clip-input.svg")
 
 postscript("test-noclip-output.ps", paper = "special",
            width = 6, height = 6, horizontal = FALSE)
-grid.picture(pic)
+grid.picture(pic, expansion = 0)
 dev.off()
 
 postscript("test-bboxclip-output.ps", paper = "special",
            width = 6, height = 6, horizontal = FALSE)
-grid.picture(pic)
+grid.picture(pic, expansion = 0)
 dev.off()
 
 if (! all(readLines("test-noclip-output.ps") ==

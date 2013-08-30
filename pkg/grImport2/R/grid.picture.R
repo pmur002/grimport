@@ -3,7 +3,7 @@ pictureGrob <- function(picture,
                         width = unit(1, "npc"), height = unit(1, "npc"),
                         just = "centre", hjust = NULL, vjust = NULL,
                         default.units = "npc",
-                        exp = 0.05, xscale = NULL, yscale = NULL,
+                        expansion = 0.05, xscale = NULL, yscale = NULL,
                         distort = FALSE,
                         gpFUN = identity, ...,
                         name = NULL) {
@@ -11,7 +11,7 @@ pictureGrob <- function(picture,
             x = x, y = y,
             width = width, height = height,
             just = just,
-            exp = exp,
+            expansion = expansion,
             xscale = xscale, yscale = yscale,
             distort = distort, gpFUN = gpFUN,
             ..., name = name)
@@ -26,12 +26,17 @@ symbolsGrob <- function(picture,
                         y = stats::runif(10),
                         size = unit(1, "char"),
                         default.units = "native",
-                        gpFUN = identity,
+                        gpFUN = identity, gridSVG = FALSE,
                         ...,
                         name = NULL) {
-    symbolize(picture,
-              x = x, y = y, size = size, default.units = default.units,
-              gpFUN = gpFUN, ..., name=name)
+    # If we have 
+    if (gridSVG) {
+        if (! require(gridSVG))
+            warning("gridSVG must be installed to use the 'gridSVG' option")
+        
+    }
+
+
 }
 
 grid.symbols <- function(...) {

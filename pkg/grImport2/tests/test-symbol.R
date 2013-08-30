@@ -5,7 +5,7 @@ pic <- readPicture("test-symbol-input.svg")
 
 postscript("test-symbol-output.ps", paper = "special",
            width = 6, height = 6, horizontal = FALSE)
-grid.picture(pic)
+grid.picture(pic, expansion = 0)
 dev.off()
 
 if (! all(readLines("test-symbol-output.ps") ==

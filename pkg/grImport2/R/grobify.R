@@ -276,8 +276,13 @@ setMethod("grobify",
 setMethod("grobify",
           signature(object = "Picture"),
           function(object, gpFUN = identity, gridSVG = FALSE,
-                   clip = c("off", "bbox", "gridSVG"), ...) {
+                   clip = c("off", "bbox", "gridSVG"),
+                   expansion = 0.05, xscale = NULL, yscale = NULL,
+                   distort = FALSE,  ...) {
               clip <- match.arg(clip)
+              pvp <- pictureVP(object, expansion = expansion,
+                               xscale = xscale, yscale = yscale,
+                               distort = distort)
 
               if (gridSVG || clip == "gridSVG") {
                   if (! require(gridSVG)) {
@@ -290,8 +295,7 @@ setMethod("grobify",
                   # native scales at the time of registration. Because of
                   # this we also set the gradient and pattern labels to be
                   # the same as the SVG IDs.
-                  pushViewport(pictureVP(object),
-                               recording = FALSE)
+                  pushViewport(pvp, recording = FALSE)
                   registerDefs(object@defs)
                   popViewport(recording = FALSE)
               }
@@ -300,6 +304,5 @@ setMethod("grobify",
                                  grobify, defs = object@defs,
                                  gpFUN = gpFUN, gridSVG = gridSVG,
                                  clip = clip)
-              gTree(children = do.call("gList", children),
-                    vp = pictureVP(object))
+              gTree(children = do.call("gList", children), vp = pvp)
           })

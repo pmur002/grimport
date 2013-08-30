@@ -13,7 +13,7 @@ pictureGrob(picture,
             x = unit(0.5, "npc"), y = unit(0.5, "npc"),
             width = unit(1, "npc"), height = unit(1, "npc"),
             just = "centre", hjust = NULL, vjust = NULL,
-            default.units = "npc", exp = 0.05,
+            default.units = "npc", expansion = 0.05,
             xscale = NULL, yscale = NULL, distort = FALSE,
             gpFUN = identity, ..., name = NULL)
 grid.picture(...)
@@ -55,7 +55,7 @@ grid.picture(...)
     A string indicating the default units to use if \code{x}, \code{y},
     \code{width}, or \code{height} are only given as numeric vectors.
   }
-  \item{exp}{
+  \item{expansion}{
     An expansion factor; determines whether any space is left
     between the extent of the picture and the bounding rectangle
     it is drawn within.

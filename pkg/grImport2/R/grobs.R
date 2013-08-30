@@ -124,15 +124,15 @@ gridSVGAddFeatures <- function(grob, gp, defs,
 }
 
 # Viewport from picture
-pictureVP <- function(picture, exp = 0.00,
+pictureVP <- function(picture, expansion = 0.05,
                       xscale = NULL, yscale = NULL,
                       distort = FALSE, ...) {
     if (is.null(xscale) || is.null(yscale)) {
         xscale <- picture@summary@xscale
     	yscale <- picture@summary@yscale
     }
-    xscale <- xscale + exp * c(-1, 1) * diff(range(xscale))
-    yscale <- yscale + exp * c(-1, 1) * diff(range(yscale))
+    xscale <- xscale + expansion * c(-1, 1) * diff(range(xscale))
+    yscale <- yscale + expansion * c(-1, 1) * diff(range(yscale))
 
     # If distort=TRUE, having the two layers of viewports is
     # massively redundant, BUT I'm keeping it so that either

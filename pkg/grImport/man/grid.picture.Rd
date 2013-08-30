@@ -56,8 +56,8 @@ pictureGrob(picture, x = 0.5, y = 0.5,
   A grid gTree.
 }
 \author{ Paul Murrell }
-\seealso{ 
-  \code{\link{grobify}} and 
+\seealso{
+  \code{\link{grobify}} and
   \code{\link{grid.symbols}}
 }
 \keyword{ dplot }% at least one, from doc/KEYWORDS

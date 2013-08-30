@@ -5,7 +5,7 @@ pic <- readPicture("test-raster-input.svg")
 
 postscript("test-raster-output.ps", paper = "special",
            width = 6, height = 6, horizontal = FALSE)
-grid.picture(pic)
+grid.picture(pic, expansion = 0)
 dev.off()
 
 if (! all(readLines("test-raster-output.ps") ==
