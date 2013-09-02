@@ -14,7 +14,9 @@ symbolsGrob(picture,
             x = stats::runif(10), y = stats::runif(10),
             size = unit(1, "char"),
             default.units = "native",
-            gpFUN = identity, ..., name = NULL)
+            gpFUN = identity,
+            gridSVG = FALSE, patternRef = "",
+            ..., name = NULL)
 grid.symbols(...)
 }
 \arguments{
@@ -37,6 +39,19 @@ grid.symbols(...)
   \item{gpFUN}{
     A function that takes a grid \code{gpar} object and returns a
     (possibly modified) \code{gpar} object.
+  }
+  \item{gridSVG}{
+    A logical vector. Determines whether or not gridSVG features should
+    be enabled. Requires the gridSVG package. This is recommended for
+    faster drawing and more accurate output, but is not strictly
+    necessary.
+  }
+  \item{patternRef}{
+    A character string. A label to refer to the gridSVG pattern fill.
+    Only used when \code{gridSVG} is \code{TRUE}. The reference label
+    must be a unique reference label, otherwise an error will result.
+    This can be checked by calling gridSVG's
+    \code{listSVGDefinitions()}.
   }
   \item{\dots}{
     For \code{grid.symbols()}, arguments to be passed onto

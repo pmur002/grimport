@@ -283,7 +283,6 @@ setMethod("grobify",
               pvp <- pictureVP(object, expansion = expansion,
                                xscale = xscale, yscale = yscale,
                                distort = distort, ...)
-
               if (gridSVG || clip == "gridSVG") {
                   if (! require(gridSVG)) {
                       warning("the 'gridSVG' package is required for advanced graphical features")
@@ -297,7 +296,7 @@ setMethod("grobify",
                   # the same as the SVG IDs.
                   pushViewport(pvp, recording = FALSE)
                   registerDefs(object@defs)
-                  popViewport(recording = FALSE)
+                  upViewport(2, recording = FALSE)
               }
 
               children <- lapply(object@content,
