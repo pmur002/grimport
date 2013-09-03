@@ -6,7 +6,10 @@ pictureGrob <- function(picture,
                         expansion = 0.05, xscale = NULL, yscale = NULL,
                         distort = FALSE,
                         gpFUN = identity, ...,
-                        name = NULL) {
+                        name = NULL, prefix = NULL) {
+    if (is.null(prefix))
+        prefix <- generateNewPrefix()
+    setPrefix(prefix)
     grobify(picture, 
             x = x, y = y,
             width = width, height = height,
@@ -28,7 +31,7 @@ symbolsGrob <- function(picture,
                         default.units = "native",
                         gpFUN = identity,
                         gridSVG = FALSE,
-                        patternRef = "",
+                        prefix = NULL,
                         ...,
                         name = NULL) {
     # Boilerplate for units, ensure that they are vectorised
@@ -50,29 +53,30 @@ symbolsGrob <- function(picture,
     if (gridSVG) {
         if (! require(gridSVG))
             stop("gridSVG must be installed to use the 'gridSVG' option")
-        if (! nzchar(patternRef))
-            stop("'patternRef' must be a non-zero length string")
+        if (is.null(prefix))
+            prefix <- generateNewPrefix()
         widths <- heights <- size
         rg <- rectGrob(x = x, y = y, width = widths, height = heights,
                        default.units = default.units, name = name,
                        gp = gpar(col = "transparent", fill = "transparent"))
         picdef <- pictureGrob(picture, gpFUN = gpFUN, expansion = 0,
-                              clip = "gridSVG", gridSVG = TRUE, ...)
+                              clip = "gridSVG", gridSVG = TRUE,
+                              prefix = prefix, ...)
         # Register the "base" pattern that we will later reference.
         # This ensures that only one definition is ever "drawn", the rest
         # are just referring to the definition and changing where it is
         # being used.
-        registerPatternFill(patternRef, pattern(picdef,
-                                                width = 1, height = 1,
-                                                just = c("left", "bottom")))
+        registerPatternFill(prefix, pattern(picdef,
+                                            width = 1, height = 1,
+                                            just = c("left", "bottom")))
         for (i in seq_len(npics))
-            registerPatternFillRef(paste0(patternRef, ".", i), patternRef,
+            registerPatternFillRef(paste0(prefix, ".", i), prefix,
                                    x = x[i], y = y[i],
                                    width = widths[i], height = heights[i])
         # Because we have registered all of the pattern fill references
         # we can apply them as a vector of labels (for group = FALSE)
         patternFillGrob(rg,
-                        label = paste0(patternRef, ".", seq_len(npics)),
+                        label = paste0(prefix, ".", seq_len(npics)),
                         group = FALSE)
     } else {
         # Slow path, have to redraw the picture multiple times, and without

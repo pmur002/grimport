@@ -15,7 +15,7 @@ pictureGrob(picture,
             just = "centre", hjust = NULL, vjust = NULL,
             default.units = "npc", expansion = 0.05,
             xscale = NULL, yscale = NULL, distort = FALSE,
-            gpFUN = identity, ..., name = NULL)
+            gpFUN = identity, ..., name = NULL, prefix = NULL)
 grid.picture(...)
 }
 \arguments{
@@ -84,6 +84,15 @@ grid.picture(...)
   }
   \item{name}{
     A character identifier.
+  }
+  \item{prefix}{
+    A character string. A prefix to add to referenced gridSVG content
+    (e.g. pattern fills). Only used when \code{gridSVG} is \code{TRUE}
+    (for \code{grobify}). The reference label must be a unique reference
+    label, otherwise an error will result. This can be checked by
+    calling gridSVG's \code{listSVGDefinitions()}. When this parameter
+    is \code{NULL}, a prefix will automatically be generated but this is
+    not guaranteed to be unique.
   }
 }
 \value{

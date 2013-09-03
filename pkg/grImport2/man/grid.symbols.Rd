@@ -15,7 +15,7 @@ symbolsGrob(picture,
             size = unit(1, "char"),
             default.units = "native",
             gpFUN = identity,
-            gridSVG = FALSE, patternRef = "",
+            gridSVG = FALSE, prefix = NULL,
             ..., name = NULL)
 grid.symbols(...)
 }
@@ -46,12 +46,14 @@ grid.symbols(...)
     faster drawing and more accurate output, but is not strictly
     necessary.
   }
-  \item{patternRef}{
-    A character string. A label to refer to the gridSVG pattern fill.
-    Only used when \code{gridSVG} is \code{TRUE}. The reference label
-    must be a unique reference label, otherwise an error will result.
-    This can be checked by calling gridSVG's
-    \code{listSVGDefinitions()}.
+  \item{prefix}{
+    A character string. A prefix to add to referenced gridSVG content
+    (e.g. pattern fills). Only used when \code{gridSVG} is
+    \code{TRUE}. The reference label must be a unique reference label,
+    otherwise an error will result. This can be checked by calling
+    gridSVG's \code{listSVGDefinitions()}. When this parameter is
+    \code{NULL}, a prefix will automatically be generated but this is
+    not guaranteed to be unique.
   }
   \item{\dots}{
     For \code{grid.symbols()}, arguments to be passed onto

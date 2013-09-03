@@ -233,3 +233,23 @@ parseTransform <- function(x) {
     rbind(matrix(as.numeric(pieces), ncol = 3),
           c(0, 0, 1))
 }
+
+.grImport2Env <- new.env()
+
+prefixName <- function(name) {
+    paste0(get("prefix", envir = .grImport2Env), name)
+}
+
+generateNewPrefixGen <- function(n = 0) {
+    counter <- n
+    function() {
+        counter <<- counter + 1
+        paste("import", counter, "", sep = ".")
+    }
+}
+
+generateNewPrefix <- generateNewPrefixGen()
+
+setPrefix <- function(prefix = "") {
+    assign("prefix", prefix, envir = .grImport2Env)
+}

@@ -67,7 +67,8 @@ setMethod("grobify",
                                      just = c("left", "bottom"))
               if (gridSVG && ! is.null(firstDef@maskRef) &&
                   length(firstDef@maskRef))
-                  tilegrob <- maskGrob(tilegrob, label = firstDef@maskRef)
+                  tilegrob <- maskGrob(tilegrob,
+                                       label = prefixName(firstDef@maskRef))
 
               # Draw a pattern.
               # The pattern has some dimensions, but these dimensions
@@ -94,7 +95,7 @@ setMethod("grobify",
               # Note, could add gridSVG features but we know only masks
               # can be applied to an <image>
               if (gridSVG && length(object@maskRef) && length(object@maskRef))
-                  maskGrob(r, label = object@maskRef)
+                  maskGrob(r, label = prefixName(object@maskRef))
               else
                   r
           })
@@ -264,7 +265,8 @@ setMethod("grobify",
                                  vp = clipvp)
               if (! is.null(object@clip) && clip == "gridSVG") {
                   cp <- object@clip
-                  groupGrob <- clipPathGrob(groupGrob, label = cp@label)
+                  groupGrob <- clipPathGrob(groupGrob,
+                                            label = prefixName(cp@label))
               }
               if (gridSVG)
                   groupGrob <-
@@ -296,6 +298,7 @@ setMethod("grobify",
                   # the same as the SVG IDs.
                   pushViewport(pvp, recording = FALSE)
                   registerDefs(object@defs)
+                  # Up 2 because we pushed a vpStack of 2 viewports
                   upViewport(2, recording = FALSE)
               }
 
@@ -303,6 +306,8 @@ setMethod("grobify",
                                  grobify, defs = object@defs,
                                  gpFUN = gpFUN, gridSVG = gridSVG,
                                  clip = clip)
-              gTree(children = do.call("gList", children),
-                    name = name, vp = pvp)
+              gt <- gTree(children = do.call("gList", children),
+                          name = name, vp = pvp)
+              gt$name <- prefixName(gt$name)
+              gt
           })
