@@ -27,6 +27,12 @@ Changes from version 0.8-4 to 0.9-0
 3.  Improvements to determination of ghostscript command syntax
     (based on dev2bitmap).  Suggestion by Brian Ripley.
 
+4.  Add support for rectangles (translated to a path). (Simon)
+
+5.  Now able to use PostScript 'linecap', 'linejoin' and 'linemiter'
+    properties, which map to 'lineend', 'linejoin' and 'linemitre' grid line
+    properties. (Simon)
+
 
 Changes from version 0.8-0 to 0.8-4
 ===================================
