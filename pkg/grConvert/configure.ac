@@ -46,8 +46,6 @@ AS_IF([test "$HAVE_SVG" = "TRUE"], [
             HAVE_SVG=FALSE
         ])
 ])
-dnl same for PostScript
-
 dnl same for PDF
 AS_IF([test "$HAVE_PDF" = "TRUE"], [
     PKG_CHECK_MODULES([poppler], [poppler-glib],
@@ -67,6 +65,7 @@ AS_IF([test "$HAVE_PDF" = "TRUE"], [
         HAVE_PS=FALSE
     ])
 ])
+dnl same for PostScript
 AS_IF([test "$HAVE_PS" = "TRUE"], [
     PKG_CHECK_MODULES([spectre], [libspectre],
         [
