@@ -10,7 +10,7 @@ setMethod("drawPath", signature(p="PictureStroke"),
           function(p, trans, ...) {
               lwd <- (trans(p@lwd, 0)$x - trans(0, 0)$x)/xinch()*72
               lty <- fixLTY(p@lty, p@lwd)
-              paths <- grImport:::explode(p)
+              paths <- explode(p)
               if (is.list(paths)) {
                   pathX <- unlist(lapply(paths,
                                          function(pp) { c(NA, pp@x) }))[-1]
@@ -25,7 +25,7 @@ setMethod("drawPath", signature(p="PictureStroke"),
 
 setMethod("drawPath", signature(p="PictureFill"),
           function(p, trans, ...) {
-              paths <- grImport:::explode(p)
+              paths <- explode(p)
               if (is.list(paths)) {
                   pathX <- unlist(lapply(paths,
                                          function(pp) { c(NA, pp@x) }))[-1]
@@ -53,7 +53,7 @@ setMethod("drawPath", signature(p="PictureText"),
 
 setMethod("drawPath", signature(p="PictureChar"),
           function(p, trans, ...) {
-              paths <- grImport:::explode(p, FALSE, NA)
+              paths <- explode(p, FALSE, NA)
               if (is.list(paths)) {
                   pathX <- unlist(lapply(paths,
                                          function(pp) { c(NA, pp@x) }))[-1]

@@ -233,7 +233,7 @@ makeContent.picstroke <- function(x) {
 setMethod("grobify", signature(object="PictureStroke"),
           function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  paths <- grImport:::explode(object)
+                  paths <- explode(object)
                   if (is.list(paths)) {
                       pathX <- lapply(paths, slot, "x")
                       pathY <- lapply(paths, slot, "y")
@@ -268,7 +268,7 @@ setMethod("grobify", signature(object="PictureStroke"),
 setMethod("grobify", signature(object="PictureFill"),
           function(object, ..., fillText, bgText, sizeByWidth, use.gc=TRUE) {
               if (length(object@x) > 1) {
-                  paths <- grImport:::explode(object)
+                  paths <- explode(object)
                   if (is.list(paths)) {
                       pathX <- lapply(paths, slot, "x")
                       pathY <- lapply(paths, slot, "y")
@@ -341,7 +341,7 @@ setMethod("grobify", signature(object="PictureChar"),
           function(object, ...,
                    fillText=FALSE, bgText=NA,
                    sizeByWidth=TRUE, use.gc=TRUE) {
-              paths <- grImport:::explode(object, FALSE, NA)
+              paths <- explode(object, FALSE, NA)
               if (length(paths) > 0) {
                   pathX <- lapply(paths, slot, "x")
                   pathY <- lapply(paths, slot, "y")
