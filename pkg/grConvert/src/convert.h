@@ -29,6 +29,9 @@
 #define USE_RINTERNALS 1
 #include <Rinternals.h>
 
+/* Defining custom error macro so we know where to look when debugging */
+#define C_ERROR(x) error("ERROR %s:%d: %s", __FILE__, __LINE__, x)
+
 SEXP pdf_get_n_pages(SEXP filename);
 SEXP ps_get_n_pages(SEXP filename);
 SEXP ps_to_pdf(SEXP ps_file, SEXP pdf_file);
