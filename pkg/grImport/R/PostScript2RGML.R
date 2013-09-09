@@ -171,11 +171,11 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       # first element which is colorspace name
       "  currentcolorspace 0 get",
       # If it's DeviceRGB or DeviceGray or DeviceCMYK we're ok
-      # Separation is a special case that is currently handled
-      # by just specifying "black" as the colour
+      # Separation and Pattern are special cases that are currently handled
+      # by just specifying "grey" as the colour
       # Otherwise we "hail mary" and hope that currencolor throws back 3 values
       # that can be interpreted as RGB (e.g., R's sRGB!)
-      "  dup (Separation) eq {pop 0 0 0} {dup (DeviceGray) eq exch dup (DeviceRGB) eq exch (DeviceCMYK) eq or or {currentrgbcolor} {currentcolor} ifelse} ifelse",
+      "  dup dup (Separation) eq exch (Pattern) eq or {pop 0.5 0.5 0.5} {dup (DeviceGray) eq exch dup (DeviceRGB) eq exch (DeviceCMYK) eq or or {currentrgbcolor} {currentcolor} ifelse} ifelse",
       "  (\t\t<rgb) print",
       # make sure the colour is RGB not BGR
       "  ( r=') print 2 index str cvs print (') print",
@@ -1009,7 +1009,7 @@ processNUL <- function(filename, linenum) {
 # above PostScript code.
 # (e.g., do some character escaping that would be more painful to do
 #  in PostScript code)
-postProcess <- function(outfilename, enc) {
+postProcess <- function(outfilename, enc, defaultcol) {
     processStringLine <- function(stringLine) {
         paste(stringLine[1],
               gsub("<", "&lt;",
@@ -1048,7 +1048,7 @@ postProcess <- function(outfilename, enc) {
 # Generate RGML file from PostScript file
 PostScriptTrace <- function(file, outfilename,
                             charpath=TRUE, charpos=FALSE,
-                            setflat=NULL,
+                            setflat=NULL, defaultcol="black",
                             encoding="ISO-8859-1") {
     # Create temporary PostScript file which loads
     # dictionary redefining stroke and fill operators
@@ -1101,7 +1101,7 @@ PostScriptTrace <- function(file, outfilename,
         stop(gettextf("status %d in running command '%s'", ret, cmd),
              domain = NA)
     } else {
-        postProcess(outfilename, encoding)
+        postProcess(outfilename, encoding, defaultcol)
     }
     invisible(cmd)
 }
