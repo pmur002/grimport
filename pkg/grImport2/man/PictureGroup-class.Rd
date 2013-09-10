@@ -52,7 +52,7 @@
       \code{signature(object = "PictureGroup")}: convert to a grid grob
       (for use as a one-off image) for drawing.
 
-      This method is typically not called directly but can take four
+      This method is typically not called directly but can take three
       additional arguments.
 
       \describe{
@@ -68,22 +68,18 @@
           return it. By default this argument is assigned the value of
           the identity function.
         }
-        \item{\code{gridSVG}}{
-          A logical value. When \code{TRUE}, this enables advanced
-          graphical features provided by the gridSVG package. Such
-          features include masking, filtering, pattern fills, etc.
-        }
-        \item{\code{clip}}{
+        \item{\code{ext}}{
           A character vector. This argument can partially match to one
-          of \code{off}, \code{bbox}, or \code{gridSVG}. When
+          of \code{off}, \code{clipbbox}, or \code{gridSVG}. When
           \code{off}, no clipping is applied to the group. When
-          \code{bbox}, the contents of the group will be clipped to the
-          bounding box of the clipping definition. When \code{gridSVG},
-          the contents of the group will be clipped to the non-zero
-          region defined by the clipping definition. \code{bbox} is
-          restricted to rectangular clipping regions, while
-          \code{gridSVG} has no such restriction and can clip to any
-          arbitrary region.
+          \code{clipbbox}, the contents of the group will be clipped to
+          the bounding box of the clipping definition. When
+          \code{gridSVG}, the contents of the group will be clipped to
+          the non-zero region defined by the clipping definition, in
+          addition to using gridSVG features (i.e. gradients, filters),
+          when required. \code{bbox} is restricted to rectangular
+          clipping regions, while \code{gridSVG} has no such restriction
+          and can clip to any arbitrary region.
         }
       }
     }

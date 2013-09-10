@@ -48,7 +48,7 @@
       \code{signature(object = "Picture")}: convert a picture
       into a grid grob (for use as a one-off image).
 
-      This method contains three additional arguments:
+      This method contains two additional arguments:
 
       \describe{
         \item{\code{gpFUN}}{
@@ -57,31 +57,12 @@
           \code{gpar} object, modify that object, and then return it. By
           default the value of this argument is the identity function.
         }
-        \item{\code{gridSVG}}{
-          A logical value. When this argument is \code{TRUE}, the
-          contents of the picture can use advanced graphical features,
-          as provided by the gridSVG package. These features are not
-          available in R graphics so will not be visible in any
-          device besides gridSVG.
-        }
-        \item{\code{clip}}{
-          A character vector. This argument will partially match to one
-          of \code{off}, \code{bbox}, or \code{gridSVG}. When this
-          argument is \code{off}, the contents of the picture will not
-          be clipped at all. When this argument is \code{bbox}, any
-          clipping applied to this image will be applied to the bounding
-          box of any clipping path definition so that it can safely be
-          used in R graphics. When this argument is \code{gridSVG}, any
-          clipping applied to the contents of this picture are applied
-          using the gridSVG package, which does not have the restriction
-          of clipping only to a rectangular region, i.e. it can clip to
-          any arbitrary region.
+        \item{\code{ext}}{
+          A character vector. See \code{\link{grid.picture}} for more
+          information on what this extension selection parameter means,
+          in addition to the valid values this argument takes.
         }
       }
-    }
-    \item{symbolize}{
-      \code{signature(object = "Picture")}: convert a picture into a
-      grid grob (for use as a plotting symbol).
     }
   }
 }

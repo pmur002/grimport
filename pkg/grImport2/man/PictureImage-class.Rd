@@ -63,9 +63,10 @@
       image. Typically used in conjunction with a pattern.
 
       While not intended to be used directly, this function contains a
-      single optional argument, \code{gridSVG}. When this argument is
-      \code{TRUE} (the default), masking can be applied to the resulting
-      raster grob.
+      single optional argument, \code{ext}, which is a character vector.
+      See \code{\link{grid.picture}} for more information on what this
+      extension selection parameter means, in addition to the valid
+      values this argument takes.
     }
   }
 }

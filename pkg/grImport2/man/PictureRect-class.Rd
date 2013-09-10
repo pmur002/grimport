@@ -67,9 +67,10 @@
           object. By default, the value of this argument is the identity
           function.
         }
-        \item{\code{gridSVG}}{
-          A logical value. When \code{TRUE}, advanced graphical features
-          can be enabled by gridSVG.
+        \item{\code{ext}}{
+          A character vector. See \code{\link{grid.picture}} for more
+          information on what this extension selection parameter means,
+          in addition to the valid values this argument takes.
         }
       }
     }

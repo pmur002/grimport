@@ -46,11 +46,10 @@
           modified \code{gpar} object. The default value for this
           arugment is the identity function.
         }
-        \item{\code{gridSVG}}{
-          A logical value. If \code{TRUE} (which will most likely be the
-          case), the definition of the clipping path may use advanced
-          graphics features of gridSVG that are not available in regular R
-          graphics.
+        \item{\code{ext}}{
+          A character vector. See \code{\link{grid.picture}} for more
+          information on what this extension selection parameter means,
+          in addition to the valid values this argument takes.
         }
       }
     }

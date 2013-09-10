@@ -15,7 +15,9 @@ pictureGrob(picture,
             just = "centre", hjust = NULL, vjust = NULL,
             default.units = "npc", expansion = 0.05,
             xscale = NULL, yscale = NULL, distort = FALSE,
-            gpFUN = identity, ..., name = NULL, prefix = NULL)
+            gpFUN = identity, ...,
+            ext = c("none", "clipbbox", "gridSVG"),
+            name = NULL, prefix = NULL)
 grid.picture(...)
 }
 \arguments{
@@ -81,6 +83,16 @@ grid.picture(...)
     For \code{grid.picture}, arguments to be passed to
     \code{pictureGrob}. For \code{pictureGrob}, arguments to be passed
     to the picture object's \code{grobify} method.
+  }
+  \item{ext}{
+    A character vector. Selects from one of three possible extensions
+    for drawing imported pictures. \code{"none"} means that no clipping
+    will be applied to the imported picture. \code{"clipbbox"} means
+    that clipping will be applied, but only to the bounding boxes of any
+    imported clipping paths. \code{"gridSVG"} means that gridSVG will be
+    used when drawing the \code{"Picture"} object, which enables the use
+    of complex clipping paths, gradients, patterns, etc. to be rendered
+    from an imported picture.
   }
   \item{name}{
     A character identifier.

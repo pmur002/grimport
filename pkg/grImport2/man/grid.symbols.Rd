@@ -15,7 +15,8 @@ symbolsGrob(picture,
             size = unit(1, "char"),
             default.units = "native",
             gpFUN = identity,
-            gridSVG = FALSE, prefix = NULL,
+            ext = c("none", "clipbbox", "gridSVG"),
+            prefix = NULL,
             ..., name = NULL)
 grid.symbols(...)
 }
@@ -40,11 +41,15 @@ grid.symbols(...)
     A function that takes a grid \code{gpar} object and returns a
     (possibly modified) \code{gpar} object.
   }
-  \item{gridSVG}{
-    A logical vector. Determines whether or not gridSVG features should
-    be enabled. Requires the gridSVG package. This is recommended for
-    faster drawing and more accurate output, but is not strictly
-    necessary.
+  \item{ext}{
+    A character vector. Selects from one of three possible extensions
+    for drawing imported pictures. \code{"none"} means that no clipping
+    will be applied to the imported picture. \code{"clipbbox"} means
+    that clipping will be applied, but only to the bounding boxes of any
+    imported clipping paths. \code{"gridSVG"} means that gridSVG will be
+    used when drawing the \code{"Picture"} object, which enables the use
+    of complex clipping paths, gradients, patterns, etc. to be rendered
+    from an imported picture.
   }
   \item{prefix}{
     A character string. A prefix to add to referenced gridSVG content

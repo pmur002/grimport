@@ -1,11 +1,13 @@
 setMethod("grobify",
           signature(object = "PictureClipPath"),
-          function(object, defs, gpFUN = identity, gridSVG = TRUE, ...) {
+          function(object, defs, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               if (is.null(object@content) || ! length(object@content))
                   return(gTree())
               children <- lapply(object@content, grobify,
                                  defs = defs, gpFUN = gpFUN,
-                                 gridSVG = gridSVG)
+                                 ext = ext)
               gTree(children = do.call("gList", children))
           })
 
@@ -30,18 +32,21 @@ setMethod("grobify",
 
 setMethod("grobify",
           signature(object = "PictureMask"),
-          function(object, defs, gpFUN = identity, gridSVG = TRUE, ...) {
+          function(object, defs, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               if (is.null(object@content) || ! length(object@content))
                   return(mask(gTree()))
               children <- lapply(object@content, grobify,
                                  defs = defs, gpFUN = gpFUN,
-                                 gridSVG = gridSVG)
+                                 ext = ext)
               mask(gTree(children = do.call("gList", children)))
           })
 
 setMethod("grobify",
           signature(object = "PicturePattern"),
-          function(object, gridSVG = TRUE, ...) {
+          function(object, ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               # Ignoring gpFUN because it will only be applied to a
               # raster and gp settings do not apply to rasters.
 
@@ -65,7 +70,8 @@ setMethod("grobify",
                                      width = w, height = abs(h),
                                      default.units = "inches",
                                      just = c("left", "bottom"))
-              if (gridSVG && ! is.null(firstDef@maskRef) &&
+              if (ext == "gridSVG" &&
+                  ! is.null(firstDef@maskRef) &&
                   length(firstDef@maskRef))
                   tilegrob <- maskGrob(tilegrob,
                                        label = prefixName(firstDef@maskRef))
@@ -82,7 +88,8 @@ setMethod("grobify",
 
 setMethod("grobify",
           signature(object = "PictureImage"),
-          function(object, gridSVG = TRUE, ...) { 
+          function(object, ext = c("none", "clipbbox", "gridSVG"), ...) { 
+              ext <- match.arg(ext)
               # Note gpFUN is not used here because it has no effect on
               # rasterGrobs. The 'grid' documentation points out that all
               # gpar settings are *ignored*.
@@ -94,7 +101,8 @@ setMethod("grobify",
                               just = c("left", "bottom"))
               # Note, could add gridSVG features but we know only masks
               # can be applied to an <image>
-              if (gridSVG && length(object@maskRef) && length(object@maskRef))
+              if (ext == "gridSVG" &&
+                  length(object@maskRef) && length(object@maskRef))
                   maskGrob(r, label = prefixName(object@maskRef))
               else
                   r
@@ -143,21 +151,25 @@ setMethod("grobify",
 
 setMethod("grobify",
           signature(object = "PictureRect"),
-          function(object, defs, gpFUN = identity, gridSVG = TRUE, ...) {
+          function(object, defs, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               object@gp <- gpFUN(object@gp)
               grob <- picRectGrob(object@x, object@y,
                                   object@width, object@height,
                                   just = c("left", "bottom"),
                                   default.units = "native",
                                   gp = object@gp)
-              if (gridSVG)
+              if (ext == "gridSVG")
                   grob <- gridSVGAddFeatures(grob, object@gp, defs)
               grob
           })
 
 setMethod("grobify",
           signature(object = "PicturePath"),
-          function(object, defs, gpFUN = identity, gridSVG = TRUE, ...) {
+          function(object, defs, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               # Due to the complex nature of SVG paths, we require a bit
               # of calculation in order to translate these into R paths.
               ismt <- sapply(object@d@segments, is, "PathMoveTo")
@@ -237,18 +249,18 @@ setMethod("grobify",
               grob <- picComplexPathGrob(linePoints, pathPoints,
                                          lidlen, pidlen,
                                          object@rule, object@gp)
-              if (gridSVG)
+              if (ext == "gridSVG")
                   grob <- gridSVGAddFeatures(grob, object@gp, defs)
               grob
           })
 
 setMethod("grobify",
           signature(object = "PictureGroup"),
-          function(object, defs, gpFUN = identity, gridSVG = TRUE,
-                   clip = c("off", "bbox", "gridSVG"), ...) {
-              clip <- match.arg(clip)
+          function(object, defs, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"), ...) {
+              ext <- match.arg(ext)
               clipvp <-
-                  if (! is.null(object@clip) && clip == "bbox") {
+                  if (! is.null(object@clip) && ext == "clipbbox") {
                       cp <- object@clip
                       bbox <- getbbox(cp)
                       clipVP(bbox[1:2], bbox[3:4])
@@ -258,17 +270,16 @@ setMethod("grobify",
               object@gp <- gpFUN(object@gp)
               childTree <- lapply(object@content,
                                   grobify, defs = defs,
-                                  gpFUN = gpFUN, gridSVG = gridSVG,
-                                  clip = clip)
+                                  gpFUN = gpFUN, ext = ext)
               groupGrob <- gTree(children = do.call("gList", childTree),
                                  gp = object@gp,
                                  vp = clipvp)
-              if (! is.null(object@clip) && clip == "gridSVG") {
+              if (! is.null(object@clip) && ext == "gridSVG") {
                   cp <- object@clip
                   groupGrob <- clipPathGrob(groupGrob,
                                             label = prefixName(cp@label))
               }
-              if (gridSVG)
+              if (ext == "gridSVG")
                   groupGrob <-
                       gridSVGAddFeatures(groupGrob, object@gp, defs,
                                          object@maskRef, object@filterRef)
@@ -277,35 +288,33 @@ setMethod("grobify",
 
 setMethod("grobify",
           signature(object = "Picture"),
-          function(object, gpFUN = identity, gridSVG = FALSE,
-                   clip = c("off", "bbox", "gridSVG"),
+          function(object, gpFUN = identity,
+                   ext = c("none", "clipbbox", "gridSVG"),
                    expansion = 0.05, xscale = NULL, yscale = NULL,
                    distort = FALSE, name = NULL, ...) {
-              clip <- match.arg(clip)
+              ext <- match.arg(ext)
               pvp <- pictureVP(object, expansion = expansion,
                                xscale = xscale, yscale = yscale,
                                distort = distort, ...)
-              if (gridSVG || clip == "gridSVG") {
+              if (ext == "gridSVG") {
                   if (! require(gridSVG)) {
-                      warning("the 'gridSVG' package is required for advanced graphical features")
-                      gridSVG <- FALSE
-                      if (clip == "gridSVG")
-                          clip <- "bbox"
+                      warning("the 'gridSVG' package is required for advanced graphical features, reverting to 'clipbbox'")
+                      ext <- "clipbbox"
+                  } else {
+                      # Things like gradients and patterns need to be aware of
+                      # native scales at the time of registration. Because of
+                      # this we also set the gradient and pattern labels to be
+                      # the same as the SVG IDs.
+                      pushViewport(pvp, recording = FALSE)
+                      registerDefs(object@defs)
+                      # Up 2 because we pushed a vpStack of 2 viewports
+                      upViewport(2, recording = FALSE)
                   }
-                  # Things like gradients and patterns need to be aware of
-                  # native scales at the time of registration. Because of
-                  # this we also set the gradient and pattern labels to be
-                  # the same as the SVG IDs.
-                  pushViewport(pvp, recording = FALSE)
-                  registerDefs(object@defs)
-                  # Up 2 because we pushed a vpStack of 2 viewports
-                  upViewport(2, recording = FALSE)
               }
 
               children <- lapply(object@content,
                                  grobify, defs = object@defs,
-                                 gpFUN = gpFUN, gridSVG = gridSVG,
-                                 clip = clip)
+                                 gpFUN = gpFUN, ext = ext)
               gt <- gTree(children = do.call("gList", children),
                           name = name, vp = pvp)
               gt$name <- prefixName(gt$name)

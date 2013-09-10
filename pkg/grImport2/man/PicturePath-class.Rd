@@ -59,11 +59,10 @@
           object and return a modified \code{gpar} object. By default
           this argument is the identity function.
         }
-        \item{\code{gridSVG}}{
-          A logical value. When this is \code{TRUE}, this method can use
-          advanced graphical features made available by gridSVG that are
-          not present in R graphics. Such features include masking,
-          filtering, gradient fills, etc.
+        \item{\code{ext}}{
+          A character vector. See \code{\link{grid.picture}} for more
+          information on what this extension selection parameter means,
+          in addition to the valid values this argument takes.
         }
       }
     }

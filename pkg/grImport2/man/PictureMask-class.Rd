@@ -38,11 +38,10 @@
           and returns a modified \code{gpar} object. The default value
           is the identity function.
         }
-        \item{\code{gridSVG}}{
-          When \code{TRUE}, (which is almost certainly going to be
-          case), this allows the mask definition to use advanced
-          graphics features that are enabled by gridSVG that are not
-          present in R graphics.
+        \item{\code{ext}}{
+          A character vector. See \code{\link{grid.picture}} for more
+          information on what this extension selection parameter means,
+          in addition to the valid values this argument takes.
         }
       }
     }

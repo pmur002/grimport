@@ -6,6 +6,7 @@ pictureGrob <- function(picture,
                         expansion = 0.05, xscale = NULL, yscale = NULL,
                         distort = FALSE,
                         gpFUN = identity, ...,
+                        ext = c("none", "clipbbox", "gridSVG"),
                         name = NULL, prefix = NULL) {
     if (is.null(prefix))
         prefix <- generateNewPrefix()
@@ -16,7 +17,7 @@ pictureGrob <- function(picture,
             just = just,
             expansion = expansion,
             xscale = xscale, yscale = yscale,
-            distort = distort, gpFUN = gpFUN,
+            distort = distort, gpFUN = gpFUN, ext = match.arg(ext),
             ..., name = name)
 }
 
@@ -30,7 +31,7 @@ symbolsGrob <- function(picture,
                         size = unit(1, "char"),
                         default.units = "native",
                         gpFUN = identity,
-                        gridSVG = FALSE,
+                        ext = c("none", "clipbbox", "gridSVG"),
                         prefix = NULL,
                         ...,
                         name = NULL) {
@@ -47,12 +48,14 @@ symbolsGrob <- function(picture,
     y <- rep(y, length.out = npics)
     size <- rep(size, length.out = npics)
 
+    ext <- match.arg(ext)
+
     # If we have gridSVG, then there is a fast way of drawing everything.
     # Simply draw a bunch of rectangles and fill them with a pattern.
     # The pattern definition is the picture itself.
-    if (gridSVG) {
+    if (ext == "gridSVG") {
         if (! require(gridSVG))
-            stop("gridSVG must be installed to use the 'gridSVG' option")
+            stop("gridSVG must be installed to use the 'gridSVG' extension")
         if (is.null(prefix))
             prefix <- generateNewPrefix()
         widths <- heights <- size
@@ -60,8 +63,7 @@ symbolsGrob <- function(picture,
                        default.units = default.units, name = name,
                        gp = gpar(col = "transparent", fill = "transparent"))
         picdef <- pictureGrob(picture, gpFUN = gpFUN, expansion = 0,
-                              clip = "gridSVG", gridSVG = TRUE,
-                              prefix = prefix, ...)
+                              ext = "gridSVG", prefix = prefix, ...)
         # Register the "base" pattern that we will later reference.
         # This ensures that only one definition is ever "drawn", the rest
         # are just referring to the definition and changing where it is
@@ -90,7 +92,7 @@ symbolsGrob <- function(picture,
                             x = x[i], y = y[i],
                             width = size[i], height = size[i],
                             default.units = default.units,
-                            gpFUN = gpFUN, ...)
+                            gpFUN = gpFUN, ext = ext, ...)
             })
         ))
     }

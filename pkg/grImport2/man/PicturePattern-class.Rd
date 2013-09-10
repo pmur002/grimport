@@ -46,10 +46,10 @@
       certainly a raster of some sort) as a grob too.
 
       While not intended to be used directly, this method contains a
-      single optional argument. This argument is \code{gridSVG} and it
-      holds the value of \code{TRUE}. When \code{TRUE}, it is possible
-      to apply masking to the pattern definition using the gridSVG
-      package. When \code{FALSE}, no masking will be applied.
+      single optional argument. This argument is \code{ext}, a character
+      vector. See \code{\link{grid.picture}} for more information on
+      what this extension selection parameter means, in addition to the
+      valid values this argument takes.
     }
   }
 }
