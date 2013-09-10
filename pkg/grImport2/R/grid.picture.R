@@ -61,7 +61,7 @@ symbolsGrob <- function(picture,
         widths <- heights <- size
         rg <- rectGrob(x = x, y = y, width = widths, height = heights,
                        default.units = default.units, name = name,
-                       gp = gpar(col = "transparent", fill = "transparent"))
+                       gp = gpar(col = "#FFFFFF00", fill = "#FFFFFF00"))
         picdef <- pictureGrob(picture, gpFUN = gpFUN, expansion = 0,
                               ext = "gridSVG", prefix = prefix, ...)
         # Register the "base" pattern that we will later reference.

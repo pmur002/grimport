@@ -123,7 +123,7 @@ svgStyleListToGpar <- function(style) {
 resolveColours <- function(x) {
     rgba2col <- function(col, alpha) {
         if (col == "none")
-            return("transparent")
+            return("#FFFFFF00")
         # Remove "rgb(" and ")"
         # Also split into numbers
         col <-

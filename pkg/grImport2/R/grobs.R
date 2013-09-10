@@ -51,11 +51,11 @@ picComplexPathGrob <- function(linePoints, pathPoints,
     gTree(children = gList(
         picPathGrob(unlist(pathPoints$x), unlist(pathPoints$y),
                     id.lengths = pathIDLengths,
-                    rule = rule, gp = gpar(col = "transparent"),
+                    rule = rule, gp = gpar(col = "#FFFFFF00"),
                     default.units = "native"),
         picPolylineGrob(unlist(linePoints$x), unlist(linePoints$y),
                         id.lengths = lineIDLengths,
-                        gp = gpar(fill = "transparent"),
+                        gp = gpar(fill = "#FFFFFF00"),
                         default.units = "native")
     ), gp = gp, cl = "picComplexPath")
 }
