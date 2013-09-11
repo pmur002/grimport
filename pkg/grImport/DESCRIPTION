@@ -4,8 +4,10 @@ Depends:      R (>= 3.0.0), methods, grid, XML
 Suggests:     lattice, cluster, colorspace, survival
 SystemRequirements: ghostscript
 Title:        Importing Vector Graphics
-Author:       Paul Murrell and Richard Walton.
-Maintainer:   Paul Murrell <p.murrell@auckland.ac.nz>
+Authors@R: c(person("Paul", "Murrell", role = c("aut", "cre"),
+                    email = "p.murrell@auckland.ac.nz"),
+             person("Richard", "Walton", role = "aut"),
+             person("Simon", "Potter", role = "ctb"))
 Description:  Functions for converting, importing, and drawing PostScript 
               pictures in R plots.
 License:      GPL (>= 2)
