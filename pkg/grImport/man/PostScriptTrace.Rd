@@ -7,7 +7,8 @@
 }
 \usage{PostScriptTrace(file, outfilename,
                        charpath=TRUE, charpos=FALSE,
-                       setflat=NULL, encoding="ISO-8859-1")}
+                       setflat=NULL, defaultcol="black",
+                       encoding="ISO-8859-1")}
 \arguments{
   \item{file}{The name of the PostScript file.}
   \item{outfilename}{The name of the XML document.}
@@ -18,6 +19,9 @@
     own location.}
   \item{setflat}{A number that controls how many straight lines a curve
     is broken into.  Lower values break a curve into more lines. }
+  \item{defaultcol}{The default colour to use when grImport is unable
+    to determine a colour for a path. This may occur when patterns are
+    present in a PostScript image.}
   \item{encoding}{A character value giving the encoding for the
     resulting RGML file.}
 }
