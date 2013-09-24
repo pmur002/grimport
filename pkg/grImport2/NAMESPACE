@@ -1,5 +1,6 @@
 import(grid)
 import(XML)
+import(methods)
 importFrom(base64enc, base64decode)
 importFrom(png, readPNG)
 importFrom(jpeg, readJPEG)

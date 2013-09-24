@@ -1,8 +1,8 @@
-readPicture <- function(file) {
+readPicture <- function(file, warn = TRUE) {
     if (missing(file))
         stop("'file' must be a character string representing a path to a file.")
     doc <- xmlParse(file)
-    checkValidSVG(doc)
+    checkValidSVG(doc, warn = warn)
     svgImage <- xmlRoot(doc)
     pictureDims <- getPictureDims(svgImage)
     # Need to create picture definitions table first
@@ -19,9 +19,11 @@ readPicture <- function(file) {
                       yscale = c(pictureDims[2], 0)))
 }
 
-checkValidSVG <- function(doc, minVersion = NA) {
+checkValidSVG <- function(doc, minVersion = NA, warn = TRUE) {
     if (xmlName(xmlRoot(doc)) != "svg")
         stop("This picture is not an SVG document.")
+    if (! warn)
+        return()
     # Note: suppressing warnings because we know we just want comments
     # and do not care about the namespace (SVG) that they belong in
     grConvertComment <-
