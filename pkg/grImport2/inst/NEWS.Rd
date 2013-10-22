@@ -2,6 +2,17 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-1}{
+  \itemize{
+    \item Fix to path parsing to handle path data of the form
+    \code{d="M x y"} (by ignoring such paths).
+
+    \item Bug fix for converting SVG style to gpar settings
+    when style is a url() reference (it was doing the wrong thing
+    to replace, for example, \code{gp$fill} with
+    \code{gp$gradientFill} and could end up with neither).
+  }
+}
 \section{Changes in version 0.1-0}{
   \itemize{
 

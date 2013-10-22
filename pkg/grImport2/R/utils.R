@@ -74,7 +74,7 @@ svgStyleToList <- function(styleAttr, defs) {
             gpars$patternStroke <- id
         else
             gpars$gradientStroke <- id
-        gpars <- gpars[! gparNames == "col"]
+        gpars$col <- NULL
     }
     if ("fill" %in% names(gpars) && is.urlref(gpars$fill)) {
         id <- urlToID(gpars$fill)
@@ -83,7 +83,7 @@ svgStyleToList <- function(styleAttr, defs) {
             gpars$patternFill <- id
         else
             gpars$gradientFill <- id
-        gpars <- gpars[! gparNames == "fill"]
+        gpars$fill <- NULL
     }
 
     gpars

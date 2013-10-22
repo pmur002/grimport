@@ -110,6 +110,10 @@ parsePathData <- function(x) {
         # Special case to remove trailing "M" command on older
         # versions of Cairo
         if (command == "M" && dataInd == (ncommands - 1)) {
+            # BUT watch out for case where path data consist of only
+            # trailing "M"
+            if (ncommands == 1)
+                return(NULL)
             # Need to truncate list to remove unused command
             pathData <- pathData[1:dataInd]
             break

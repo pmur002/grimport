@@ -187,6 +187,9 @@ parseSVGPath <- function(x, defs, createDefs) {
         else
             "winding"
     d <- parsePathData(d)
+    # If path data is (effectively) empty, return NULL
+    if (is.null(d))
+        return(NULL)
     gp <- svgStyleListToGpar(styleList)
     points <- getPoints(d, line = TRUE)
     p <- new("PicturePath", d = d, rule = rule,
