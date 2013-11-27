@@ -95,7 +95,7 @@ setMethod("grobify",
               # gpar settings are *ignored*.
               r <- rasterGrob(object@image,
                               x = object@x,
-                              y = unit(1, "npc") - unit(object@y, "native"),
+                              y = unit(object@y + object@height, "native"),
                               width = object@width, height = -object@height,
                               default.units = "native",
                               just = c("left", "bottom"))

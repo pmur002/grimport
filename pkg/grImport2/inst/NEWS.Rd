@@ -4,6 +4,18 @@
 
 \section{Changes in version 0.1-1}{
   \itemize{
+    \item Fix to grobify() method for \code{"PictureImage"} to correct
+    location calculation for raster element (was doing incorrect
+    unit arithmetic).
+    
+    \item Fix to parseSVGUse() to handle direct <use> of image
+    (not for a pattern or mask, but for an actual image);  problem
+    was that image was not positioned correctly.
+    
+    \item Fix to pictureVP() to handle inverted x-scale or y-scale;
+    problem was evident in incorrect overall clipping (because pictureVP()
+    was incorrect shape).
+    
     \item Fix to path parsing to handle path data of the form
     \code{d="M x y"} (by ignoring such paths).
 

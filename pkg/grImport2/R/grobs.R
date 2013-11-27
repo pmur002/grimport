@@ -133,8 +133,8 @@ pictureVP <- function(picture, expansion = 0.05,
         xscale <- picture@summary@xscale
     	yscale <- picture@summary@yscale
     }
-    xscale <- xscale + expansion * c(-1, 1) * diff(range(xscale))
-    yscale <- yscale + expansion * c(-1, 1) * diff(range(yscale))
+    xscale <- xscale + expansion * c(-1, 1) * diff(xscale)
+    yscale <- yscale + expansion * c(-1, 1) * diff(yscale)
 
     # If distort=TRUE, having the two layers of viewports is
     # massively redundant, BUT I'm keeping it so that either

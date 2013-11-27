@@ -277,12 +277,25 @@ parseSVGUse <- function(x, defs, createDefs) {
     def <- getDef(defs, hrefToID(useAttrs$href))
     if (is.null(def))
         return(NULL) # Assume that the source is not drawable
-    # No scaling, just translation
-    # Still need to build up a transformation matrix (for consistency)
-    translation <- as.numeric(c(useAttrs$x, useAttrs$y))
-    tm <- diag(3)
-    tm[1, 3] <- translation[1]
-    tm[2, 3] <- translation[2]
+    # <use> could spec 'x' and 'y' OR 'transform' (latter for image)
+    # OR possibly neither (in which case provide identity transform)
+    if (is.null(useAttrs$transform)) {
+        if (is.null(useAttrs$x))
+            tx <- 0
+        else
+            tx <- as.numeric(useAttrs$x)
+        if (is.null(useAttrs$y))
+            ty <- 0
+        else
+            ty <- as.numeric(useAttrs$y)
+        # No scaling, just translation
+        # Still need to build up a transformation matrix (for consistency)
+        tm <- diag(3)
+        tm[1, 3] <- tx
+        tm[2, 3] <- ty
+    } else {
+        tm <- parseTransform(useAttrs$transform)
+    }
     # Now need to act according to the type of content we have pulled out
     # For example, for a <symbol>, we're only interested in the definition 
     # and not the <symbol> itself.
@@ -297,8 +310,10 @@ parseSVGUse <- function(x, defs, createDefs) {
                ! is.null(xmlGetAttr(x, "mask"))) {
         def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
         def
+    } else if (is(def, "PictureImage")) {
+        applyTransform(def, tm) # image 
     } else {
-        def # image (probably for a pattern)
+        def # image ? (for a pattern ?)
     }
 }
 
