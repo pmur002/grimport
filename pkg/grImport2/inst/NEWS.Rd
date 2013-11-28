@@ -4,6 +4,9 @@
 
 \section{Changes in version 0.1-1}{
   \itemize{
+    \item Fix for 'default.units' argument in grid.picture(), which was
+    being ignored.
+    
     \item Fix to grobify() method for \code{"PictureImage"} to correct
     location calculation for raster element (was doing incorrect
     unit arithmetic).
