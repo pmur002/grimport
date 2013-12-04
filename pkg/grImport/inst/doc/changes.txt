@@ -39,6 +39,10 @@ Changes from version 0.8-4 to 0.9-0
     Treat this the same as /Separation result, which is (now) to
     use "grey" as the colour.
 
+7.  Changed ghostscript device from 'pswrite' to 'ps2write'
+    (because 'pswrite' is deprecated in ghostscript 9.10).
+    Reported by Troy Travlos.
+
 
 Changes from version 0.8-0 to 0.8-4
 ===================================

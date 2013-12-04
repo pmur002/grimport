@@ -1090,7 +1090,7 @@ PostScriptTrace <- function(file, outfilename,
         outfile <- "/dev/null"
     }
     cmd <- paste(gsexe, 
-                 " -q -dBATCH -dNOPAUSE -sDEVICE=pswrite -sOutputFile=",
+                 " -q -dBATCH -dNOPAUSE -sDEVICE=ps2write -sOutputFile=",
                  outfile, " -sstdout=",
                  outfilename, " ",
                  psfilename, sep="")
