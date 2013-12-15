@@ -26,6 +26,10 @@
     when style is a url() reference (it was doing the wrong thing
     to replace, for example, \code{gp$fill} with
     \code{gp$gradientFill} and could end up with neither).
+
+    \item Bug fix for <path> with 'transform' and 'fill' that is url()
+    reference.  The transform was not being applied to the referenced
+    gradient fill.  
   }
 }
 \section{Changes in version 0.1-0}{

@@ -253,3 +253,13 @@ generateNewPrefix <- generateNewPrefixGen()
 setPrefix <- function(prefix = "") {
     assign("prefix", prefix, envir = .grImport2Env)
 }
+
+updateIdGen <- function() {
+    index <- 0
+    function(id) {
+        index <<- index + 1
+        paste(id, "update", index, sep="-")
+    }
+}
+
+updateId <- updateIdGen()

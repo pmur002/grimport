@@ -196,8 +196,9 @@ parseSVGPath <- function(x, defs, createDefs) {
              gp = gp, bbox = c(min(points$x), max(points$x),
                                min(points$y), max(points$y)))
     # Scaling path and line data in addition to styling
-    if (! is.null(tm))
+    if (! is.null(tm)) {
         p <- applyTransform(p, tm)
+    }
     # won't be used by id, so just return
     p
 }

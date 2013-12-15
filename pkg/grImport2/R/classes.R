@@ -257,6 +257,28 @@ setMethod("[[", "PictureGroup",
               x@content[[i]]
           })
 
+# This is different from applyTransform() method for "PictureLinearGradient"
+# This one works from a *reference* (by name) to a "PictureLinearGradient"
+# that already exists in a list of definitions, so has to do the look up
+# using the name to get a "PictureLinearGradient"
+# (actually it is more general than that because it could be working with
+#  a radial gradient fill, not just a linear gradient fill)
+# The existing definition is modified to create a new definition, with
+# a new name, and the new name (reference to the new definition) is returned
+# NOTE that if the name does not identify a known definition then the
+# function silently returns the old name
+transformNamedGradientFill <- function(id, tm) {
+    defList <- get("defs", .grImport2Env)
+    gradDef <- getDef(defList, id)
+    if (! is.null(gradDef)) {
+        newDef <- applyTransform(gradDef, tm)
+        newId <- updateId(id)
+        assign("defs", setDef(defList, newId, newDef), .grImport2Env)
+        id <- newId
+    }
+    id
+}
+
 setMethod("applyTransform",
           signature(object = "gpar",
                     tm = "matrix"),
@@ -267,6 +289,9 @@ setMethod("applyTransform",
                   object$lwd <- abs(object$lwd * scaleFactor)
               if ("lty" %in% gparNames)
                   object$lty <- abs(object$lty * scaleFactor)
+              if ("gradientFill" %in% gparNames)
+                  object$gradientFill <-
+                      transformNamedGradientFill(object$gradientFill, tm)
               object 
           })
 
