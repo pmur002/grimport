@@ -16,7 +16,7 @@
 #endif
 #if HAVE_LIBRSVG
 #include <librsvg/rsvg.h>
-#if LIBRSVG_MAJOR_VERSION <= 2 && LIBRSVG_MICRO_VERSION <= 31 && LIBRSVG_MICRO_VERSION <= 1
+#ifndef RSVG_CAIRO_H
 #include <librsvg/rsvg-cairo.h>
 #endif
 #endif
