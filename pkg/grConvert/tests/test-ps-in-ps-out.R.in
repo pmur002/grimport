@@ -5,14 +5,13 @@
 # us that the input is already valid.
 
 library(grConvert)
-library(grImport)
-
-psFiles <- c("Georgia.ps", "Michigan.ps", "Mississippi.ps", "New_Zealand.ps")
-
-if (@HAVE_PS@) {
-    for (i in seq_along(psFiles)) {
-        convertPicture(psFiles[i], paste0(psFiles[i], "-new.ps"))
-        PostScriptTrace(psFiles[i])
+if (require(grImport)) {
+    psFiles <- c("Georgia.ps", "Michigan.ps", "Mississippi.ps", "New_Zealand.ps")
+    
+    if (@HAVE_PS@) {
+        for (i in seq_along(psFiles)) {
+            convertPicture(psFiles[i], paste0(psFiles[i], "-new.ps"))
+            PostScriptTrace(psFiles[i])
+        }
     }
 }
-
