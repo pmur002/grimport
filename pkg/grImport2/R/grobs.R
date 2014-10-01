@@ -9,13 +9,13 @@ makeContext.picRect <- function(x) {
 
 makeContent.picRect <- function(x) {
     rectGrob(x$x, x$y, x$width, x$height,
-             just = x$just, gp = x$gp,
+             just = x$just, gp = x$gp, vp=x$vp,
              default.units = x$default.units)
 }
 
-picRectGrob <- function(x, y, width, height, just, gp, default.units) {
+picRectGrob <- function(x, y, width, height, just, gp, default.units, vp=NULL) {
     grob(x = x, y = y, width = width, height = height,
-         just = just, gp = gp, default.units = default.units,
+         just = just, gp = gp, default.units = default.units, vp = vp,
          cl = "picRect")
 }
 

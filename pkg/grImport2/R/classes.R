@@ -94,6 +94,7 @@ setClass("PictureImage",
                         y = "numeric",
                         width = "numeric",
                         height = "numeric",
+                        angle = "numeric",
                         image = "nativeRaster",
                         maskRef = "ANY",
                         bbox = "numeric"))
@@ -129,6 +130,7 @@ setClass("PicturePattern",
                         y = "numeric",
                         width = "numeric",
                         height = "numeric",
+                        angle = "numeric",
                         definition = "list"))
 
 setClass("PictureRadialGradient",
@@ -168,6 +170,7 @@ setClass("PictureRect",
                         y = "numeric",
                         width = "numeric",
                         height = "numeric",
+                        angle = "numeric",
                         gp = "gpar",
                         bbox = "numeric"))
 
@@ -262,16 +265,16 @@ setMethod("[[", "PictureGroup",
 # that already exists in a list of definitions, so has to do the look up
 # using the name to get a "PictureLinearGradient"
 # (actually it is more general than that because it could be working with
-#  a radial gradient fill, not just a linear gradient fill)
+#  a radial gradient fill or a pattern fill, not just a linear gradient fill)
 # The existing definition is modified to create a new definition, with
 # a new name, and the new name (reference to the new definition) is returned
 # NOTE that if the name does not identify a known definition then the
 # function silently returns the old name
-transformNamedGradientFill <- function(id, tm) {
+transformRegisteredDef <- function(id, tm) {
     defList <- get("defs", .grImport2Env)
-    gradDef <- getDef(defList, id)
-    if (! is.null(gradDef)) {
-        newDef <- applyTransform(gradDef, tm)
+    def <- getDef(defList, id)
+    if (! is.null(def)) {
+        newDef <- applyTransform(def, tm)
         newId <- updateId(id)
         assign("defs", setDef(defList, newId, newDef), .grImport2Env)
         id <- newId
@@ -284,14 +287,21 @@ setMethod("applyTransform",
                     tm = "matrix"),
           function(object, tm) {
               gparNames <- names(object)
-              scaleFactor <- min(tm[1, 1], tm[2, 2])
+              ul <- matrix(c(0, 1, 0, 1, rep(1, 2)), ncol = 3)
+              for (i in seq_len(nrow(ul)))
+                  ul[i, ] <- tm %*% ul[i, ]
+              scaleFactor <- sqrt((ul[1, 1] - ul[2, 1])^2 +
+                                  (ul[1, 2] - ul[2, 2])^2)
               if ("lwd" %in% gparNames)
                   object$lwd <- abs(object$lwd * scaleFactor)
               if ("lty" %in% gparNames)
                   object$lty <- abs(object$lty * scaleFactor)
               if ("gradientFill" %in% gparNames)
                   object$gradientFill <-
-                      transformNamedGradientFill(object$gradientFill, tm)
+                      transformRegisteredDef(object$gradientFill, tm)
+              if ("patternFill" %in% gparNames)
+                  object$patternFill <-
+                      transformRegisteredDef(object$patternFill, tm)
               object 
           })
 
@@ -336,6 +346,44 @@ setMethod("applyTransform",
               object 
           })
 
+setGeneric("transformPatternContent",
+           function(object, tm) standardGeneric("transformPatternContent"))
+
+setMethod("transformPatternContent",
+          signature(object = "PictureImage",
+                    tm = "matrix"),
+          function(object, tm) {
+              object@width <- object@width*tm[1, 1]
+              object@height <- object@height*tm[2, 2]
+              object
+          })
+
+setMethod("transformPatternContent",
+          signature(object = "ANY",
+                    tm = "matrix"),
+          function(object, tm) {
+              object
+          })
+
+setMethod("applyTransform",
+          signature(object = "PicturePattern",
+                    tm = "matrix"),
+          function(object, tm) {
+              object@definition <- lapply(object@definition,
+                                          transformPatternContent, tm)
+              object <- transformRect(object, tm)
+              object 
+          })
+
+setMethod("applyTransform",
+          signature(object = "PictureGroup",
+                    tm = "matrix"),
+          function(object, tm) {
+              object@content <- lapply(object@content, applyTransform, tm)
+              object@gp <- applyTransform(object@gp, tm)
+              object
+          })
+              
 # Really only need to be applied to the path data itself
 setMethod("applyTransform",
           signature(object = "PicturePath",
@@ -349,17 +397,79 @@ setMethod("applyTransform",
               object
           })
 
+transformRect <- function(object, tm) {
+    # Get new x, y, width, height, and angle from
+    # original x, y, width, height, and transform
+    loc <- tm %*% c(object@x, object@y, 1)
+    sx <- sqrt(tm[1, 1]^2 + tm[1, 2]^2)
+    if (tm[1, 1] < 0)
+        sx <- -sx
+    sy <- sqrt(tm[2, 1]^2 + tm[2, 2]^2)
+    if (tm[2, 2] < 0)
+        sy <- -sy
+    angle <- atan2(-tm[1, 2], tm[1, 1])
+    object@x <- loc[1, 1]
+    object@y <- loc[2, 1]
+    object@width <- sx*object@width
+    object@height <- sy*object@height
+    object@angle <- object@angle + angle
+    object
+}
+
+ALTtransformRect <- function(object, tm) {
+    # Get new x, y, width, height, and angle from
+    # original x, y, width, height, and transform
+    loc <- tm %*% c(object@x, object@y, 1)
+    object@x <- loc[1, 1]
+    object@y <- loc[2, 1]
+    sx <- sqrt(tm[1, 1]^2 + tm[1, 2]^2)
+    if (tm[1, 1] < 0)
+        sx <- -sx
+    sy <- sqrt(tm[2, 1]^2 + tm[2, 2]^2)
+    if (tm[2, 2] < 0)
+        sy <- -sy
+    object@width <- sx*object@width
+    object@height <- sy*object@height
+    # Remove translation
+    tm[1, 3] <- 0
+    tm[2, 3] <- 0
+    # Remove scaling
+    tm[1, 1] <- tm[1, 1]/sx
+    tm[1, 2] <- tm[1, 2]/-sy
+    tm[2, 1] <- tm[2, 1]/sx
+    tm[2, 2] <- tm[2, 2]/sy
+    # Rotate (1, 0) = positive x-axis to get angle
+    loc <- tm %*% c(1, 0, 1)
+    angle <- atan2(loc[2, 1], loc[1, 1])
+    object@angle <- object@angle + angle
+    object
+}
+
+transformRectBBox <- function(object, tm) {
+    locs <- matrix(c(object@x,
+                     object@x + object@width,
+                     object@x,
+                     object@x + object@width,
+                     object@y,
+                     object@y + object@height,
+                     object@y + object@height,
+                     object@y,
+                     rep(1, 4)),
+                   ncol = 3)
+    for (i in seq_len(nrow(locs)))
+        locs[i, ] <- tm %*% locs[i, ]
+    c(min(locs[, 1]), min(locs[, 2]), max(locs[, 1]), max(locs[, 2]))
+}
+
 setMethod("applyTransform",
           signature(object = "PictureRect",
                     tm = "matrix"),
           function(object, tm) {
-              object@x <- object@x + tm[1, 3]
-              object@y <- object@y + tm[2, 3]
-              object@width <- object@width * tm[1, 1]
-              object@height <- object@height * tm[2, 2]
+              # Must transform bbox before transforming object itself
+              # (which modifies object's x,y,width,height)
+              object@bbox <- transformRectBBox(object, tm)
+              object <- transformRect(object, tm)
               object@gp <- applyTransform(object@gp, tm)
-              object@bbox <- c(object@x, object@x + object@width,
-                               object@y, object@y + object@height)
               object 
           })
 
@@ -367,24 +477,32 @@ setMethod("applyTransform",
           signature(object = "PictureImage",
                     tm = "matrix"),
           function(object, tm) {
-              object@x <- object@x + tm[1, 3]
-              object@y <- object@y + tm[2, 3]
-              object@width <- object@width * tm[1, 1]
-              object@height <- object@height * tm[2, 2]
-              object@bbox <- c(object@x, object@x + object@width,
-                               object@y, object@y + object@height)
+              # Must transform bbox before transforming object itself
+              # (which modifies object's x,y,width,height)
+              object@bbox <- transformRectBBox(object, tm)
+              object <- transformRect(object, tm)
               object 
           })
 
+getbboxFromList <- function(x) {
+    allBounds <- lapply(x, getbbox)
+    xmin <- min(sapply(allBounds, function(x) x[1]))
+    xmax <- max(sapply(allBounds, function(x) x[2]))
+    ymin <- min(sapply(allBounds, function(x) x[3]))
+    ymax <- max(sapply(allBounds, function(x) x[4]))
+    c(xmin, xmax, ymin, ymax)
+}
+
+setMethod("getbbox",
+          signature(object = "list"),
+          function(object) {
+              getbboxFromList(object)
+          })
+              
 setMethod("getbbox",
           signature(object = "PictureClipPath"),
           function(object) {
-              allBounds <- lapply(object@content, getbbox)
-              xmin <- min(sapply(allBounds, function(x) x[1]))
-              xmax <- max(sapply(allBounds, function(x) x[2]))
-              ymin <- min(sapply(allBounds, function(x) x[3]))
-              ymax <- max(sapply(allBounds, function(x) x[4]))
-              c(xmin, xmax, ymin, ymax)
+              getbboxFromList(object@content)
           })
 
 setMethod("getbbox",
@@ -402,12 +520,7 @@ setMethod("getbbox",
 setMethod("getbbox",
           signature(object = "PictureGroup"),
           function(object) {
-              allBounds <- lapply(object@content, getbbox)
-              xmin <- min(sapply(allBounds, function(x) x[1]))
-              xmax <- max(sapply(allBounds, function(x) x[2]))
-              ymin <- min(sapply(allBounds, function(x) x[3]))
-              ymax <- max(sapply(allBounds, function(x) x[4]))
-              c(xmin, xmax, ymin, ymax)
+              getbboxFromList(object@content)
           })
 
 setMethod("getbbox",

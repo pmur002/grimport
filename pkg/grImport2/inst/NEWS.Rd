@@ -2,6 +2,18 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-2}{
+  \itemize{
+    \item Fix for importing rotated rectangles.
+
+    \item Fix for importing rotated raster images.
+
+    \item Improved import of line widths.
+
+    \item Enhancement of importing patterns to allow general pattern
+    content, rather than just a single image as pattern content.
+  }
+}
 \section{Changes in version 0.1-1}{
   \itemize{
     \item Fix for 'default.units' argument in grid.picture(), which was

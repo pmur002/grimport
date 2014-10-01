@@ -58,24 +58,17 @@ setMethod("grobify",
               hin <- abs(convertHeight(unit(object@height, "native"),
                                       "inches", valueOnly = TRUE))
 
-              # Convert to inches because when grabbing the raster
-              # later, we would otherwise run into issues. This is because
-              # the dims of the image are flattened to inches and cannot
-              # be reverted. We need the original inches for gridSVG.
-              firstDef <- object@definition[[1]]
-              w <- convertWidth(unit(firstDef@width, "native"), "inches")
-              h <- convertHeight(unit(firstDef@height, "native"), "inches")
-              tilegrob <- rasterGrob(firstDef@image,
-                                     x = 0, y = 0,
-                                     width = w, height = abs(h),
-                                     default.units = "inches",
-                                     just = c("left", "bottom"))
-              if (ext == "gridSVG" &&
-                  ! is.null(firstDef@maskRef) &&
-                  length(firstDef@maskRef))
-                  tilegrob <- maskGrob(tilegrob,
-                                       label = prefixName(firstDef@maskRef))
-
+              # Grobify all pattern content
+              patternContent <- lapply(object@definition, grobify, ext=ext, ...)
+              # Construct bounding box for pattern
+              # bbox <- getbbox(object@definition)
+              bbox <- c(0, abs(object@width), 0, abs(object@height))
+              # Generate gTree containing all content
+              # AND with viewport that has scale based on content bbox
+              tilegrob <- gTree(children=do.call("gList", patternContent),
+                                vp=viewport(xscale=bbox[1:2],
+                                            yscale=bbox[3:4]))
+              
               # Draw a pattern.
               # The pattern has some dimensions, but these dimensions
               # must be matched by the width of the pattern tile device.
@@ -93,12 +86,21 @@ setMethod("grobify",
               # Note gpFUN is not used here because it has no effect on
               # rasterGrobs. The 'grid' documentation points out that all
               # gpar settings are *ignored*.
-              r <- rasterGrob(object@image,
-                              x = object@x,
-                              y = unit(object@y + object@height, "native"),
-                              width = object@width, height = -object@height,
-                              default.units = "native",
-                              just = c("left", "bottom"))
+              # IF the PictureImage has an angle, we need to generate
+              # a viewport to draw the raster within (to perform the rotation)
+              if (object@angle != 0) {
+                  r <- rasterGrob(object@image, 
+                                  x=0, y=1, width=1, height=-1,
+                                  just = c("left", "bottom"),
+                                  vp = angleVP(object, image=TRUE))
+              } else {
+                  r <- rasterGrob(object@image,
+                                  x = object@x,
+                                  y = unit(object@y + object@height, "native"),
+                                  width = object@width, height = -object@height,
+                                  default.units = "native",
+                                  just = c("left", "bottom"))
+              }
               # Note, could add gridSVG features but we know only masks
               # can be applied to an <image>
               if (ext == "gridSVG" &&
@@ -149,17 +151,39 @@ setMethod("grobify",
               list(offset = object@offset, col = object@col)
           })
 
+# Only called when we already know object@transform is non-NULL
+angleVP <- function(object, image=FALSE) {
+    # Get new x, y, width, height, and angle from
+    # original x, y, width, height, and transform
+    if (image)
+        object@angle <- -object@angle
+    viewport(x = object@x, y = object@y,
+             width = object@width, height = object@height,
+             just = c("left", "bottom"),
+             default.units = "native",
+             angle = 180 * object@angle / pi,
+             name = "anglevp")
+}
+
 setMethod("grobify",
           signature(object = "PictureRect"),
           function(object, defs, gpFUN = identity,
                    ext = c("none", "clipbbox", "gridSVG"), ...) {
               ext <- match.arg(ext)
               object@gp <- gpFUN(object@gp)
-              grob <- picRectGrob(object@x, object@y,
-                                  object@width, object@height,
-                                  just = c("left", "bottom"),
-                                  default.units = "native",
-                                  gp = object@gp)
+              # IF the PictureRect has an angle, we need to generate
+              # a viewport to draw the rect within (to perform the rotation)
+              if (object@angle != 0) {
+                  grob <- picRectGrob(.5, .5, 1, 1, "centre", 
+                                      object@gp, "npc",
+                                      vp = angleVP(object))
+              } else {
+                  grob <- picRectGrob(object@x, object@y,
+                                      object@width, object@height,
+                                      just = c("left", "bottom"),
+                                      default.units = "native",
+                                      gp = object@gp)
+              }
               if (ext == "gridSVG")
                   grob <- gridSVGAddFeatures(grob, object@gp, defs)
               grob

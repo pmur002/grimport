@@ -102,6 +102,7 @@ parseSVGImage <- function(x, defs, createDefs) {
                   x = 0, y = 0, # Always true, as per cairo source
                   width = bbox[3],
                   height = bbox[4],
+                  angle = 0, # just initialising
                   image = readBase64Image(imageAttrs$href),
                   maskRef = urlToID(xmlGetAttr(x, "mask")),
                   bbox = bbox)
@@ -152,25 +153,18 @@ parseSVGPattern <- function(x, defs, createDefs) {
         patAttrs$x <- 0
     if (is.null(patAttrs$y))
         patAttrs$y <- 0
-    # create a temp rectangle and transform it, we can use the resulting
-    # locations and dimensions for our pattern
-    r <- new("PictureRect",
-             x = as.numeric(patAttrs$x), y = as.numeric(patAttrs$y),
-             width = as.numeric(patAttrs$width),
-             height = as.numeric(patAttrs$height),
-             gp = gpar(), bbox = rep(0, 4)) # gp and bbox not useful here
     tm <- parseTransform(patAttrs$patternTransform)
-    r <- applyTransform(r, tm)
-    # only ever one <image> as a child
-    # generalising (via lapply), but it is known that this is not
-    # strictly necessary
     children <- parseImage(xmlChildren(x, addNames = FALSE),
                            defs, FALSE)
-    children <- lapply(children, applyTransform, tm)
     pat <- new("PicturePattern",
-               x = r@x, y = r@y,
-               width = r@width, height = r@height,
+               x = as.numeric(patAttrs$x), y = as.numeric(patAttrs$y),
+               width = as.numeric(patAttrs$width),
+               height = as.numeric(patAttrs$height),
+               angle = 0, # just initialising
                definition = children)
+    if (! is.null(tm)) {
+        pat <- applyTransform(pat, tm)
+    }
     setDef(defs, patAttrs$id, pat) # can only be setting a def
 }
 
@@ -231,11 +225,16 @@ parseSVGRect <- function(x, defs, createDefs) {
     styleList <- svgStyleToList(rectAttrs$style, defs)
     tm <- parseTransform(rectAttrs$transform)
     gp <- svgStyleListToGpar(styleList)
+    # If 'x' or 'y' are unspecified,
+    # the SVG spec says the value is taken to be zero
+    if (is.null(rectAttrs$x)) rectAttrs$x <- 0
+    if (is.null(rectAttrs$y)) rectAttrs$y <- 0
     xy <- as.numeric(c(rectAttrs$x, rectAttrs$y))
     wh <- as.numeric(c(rectAttrs$width, rectAttrs$height))
     r <- new("PictureRect",
              x = xy[1], y = xy[2],
              width = wh[1], height = wh[2],
+             angle = 0, # just initialising
              gp = gp, bbox = c(xy, xy + wh))
     # Scaling path and line data and gp
     if (! is.null(tm))
