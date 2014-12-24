@@ -5,7 +5,7 @@ Suggests: grImport, grImport2
 SystemRequirements: ghostscript, libcairo, libpoppler, libspectre
 Title: Converting Vector Graphics
 Authors@R: person("Simon", "Potter", role = c("cre", "aut"),
-                  email = "simon.potter@auckland.ac.nz")
+                  email = "simon@sjp.co.nz")
 Description: Convert vector images into PostScript and SVG images suitable
     for importing by grImport and grImport2.
 License: GPL (>= 2)
