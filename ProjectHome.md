@@ -1,0 +1,1 @@
+An R package for importing vector graphics images into the R language and environment for statistical computing and graphics
