@@ -10,6 +10,7 @@ makeContext.picRect <- function(x) {
 makeContent.picRect <- function(x) {
     rectGrob(x$x, x$y, x$width, x$height,
              just = x$just, gp = x$gp, vp=x$vp,
+             name = x$name,
              default.units = x$default.units)
 }
 
@@ -21,6 +22,7 @@ picRectGrob <- function(x, y, width, height, just, gp, default.units, vp=NULL) {
 
 makeContent.picPath <- function(x) {
     pathGrob(x$x, x$y, id.lengths = x$id.lengths, rule = x$rule,
+             name = x$name,
              gp = x$gp, default.units = x$default.units)
 }
 
@@ -31,6 +33,7 @@ picPathGrob <- function(x, y, id.lengths, rule, gp, default.units) {
 
 makeContent.picPolyline <- function(x) {
     polylineGrob(x$x, x$y, id.lengths = x$id.lengths,
+                 name = x$name,
                  gp = x$gp, default.units = x$default.units)
 }
 

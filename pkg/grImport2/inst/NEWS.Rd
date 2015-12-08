@@ -2,6 +2,13 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-3}{
+  \itemize{
+    \item Fix for \code{makeContent()} methods for picRect, picPath,
+    and picPolyline, so that the forced grob has the same name
+    as the original grob.
+  }
+}
 \section{Changes in version 0.1-2}{
   \itemize{
     \item Fix for importing rotated rectangles.
