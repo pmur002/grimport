@@ -54,7 +54,7 @@ symbolsGrob <- function(picture,
     # Simply draw a bunch of rectangles and fill them with a pattern.
     # The pattern definition is the picture itself.
     if (ext == "gridSVG") {
-        if (! require(gridSVG))
+        if (! requireNamespace("gridSVG"))
             stop("gridSVG must be installed to use the 'gridSVG' extension")
         if (is.null(prefix))
             prefix <- generateNewPrefix()
@@ -68,16 +68,16 @@ symbolsGrob <- function(picture,
         # This ensures that only one definition is ever "drawn", the rest
         # are just referring to the definition and changing where it is
         # being used.
-        registerPatternFill(prefix, pattern(picdef,
+        gridSVG::registerPatternFill(prefix, gridSVG::pattern(picdef,
                                             width = 1, height = 1,
                                             just = c("left", "bottom")))
         for (i in seq_len(npics))
-            registerPatternFillRef(paste0(prefix, ".", i), prefix,
+            gridSVG::registerPatternFillRef(paste0(prefix, ".", i), prefix,
                                    x = x[i], y = y[i],
                                    width = widths[i], height = heights[i])
         # Because we have registered all of the pattern fill references
         # we can apply them as a vector of labels (for group = FALSE)
-        patternFillGrob(rg,
+        gridSVG::patternFillGrob(rg,
                         label = paste0(prefix, ".", seq_len(npics)),
                         group = FALSE)
     } else {

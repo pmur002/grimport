@@ -14,7 +14,7 @@ setMethod("grobify",
 setMethod("grobify",
           signature(object = "PictureFeColorMatrix"),
           function(object) {
-              feColorMatrix(input = object@input,
+              gridSVG::feColorMatrix(input = object@input,
                             type = object@type,
                             values = object@values)
           })
@@ -23,7 +23,7 @@ setMethod("grobify",
           signature(object = "PictureFilter"),
           function(object, ...) {
               # defs are not needed, nor gpFUN, and gridSVG is implied
-              filterEffect(grobify(object@content),
+              gridSVG::filterEffect(grobify(object@content),
                            filterUnits = object@filterUnits,
                            x = object@x, y = object@y,
                            width = object@width, height = object@height,
@@ -36,11 +36,11 @@ setMethod("grobify",
                    ext = c("none", "clipbbox", "gridSVG"), ...) {
               ext <- match.arg(ext)
               if (is.null(object@content) || ! length(object@content))
-                  return(mask(gTree()))
+                  return(gridSVG::mask(gTree()))
               children <- lapply(object@content, grobify,
                                  defs = defs, gpFUN = gpFUN,
                                  ext = ext)
-              mask(gTree(children = do.call("gList", children)))
+              gridSVG::mask(gTree(children = do.call("gList", children)))
           })
 
 setMethod("grobify",
@@ -72,7 +72,7 @@ setMethod("grobify",
               # Draw a pattern.
               # The pattern has some dimensions, but these dimensions
               # must be matched by the width of the pattern tile device.
-              pattern(tilegrob,
+              gridSVG::pattern(tilegrob,
                       x = object@x, y = object@y,
                       width = object@width, height = object@height,
                       default.units = "native", just = c("left", "bottom"),
@@ -107,7 +107,7 @@ setMethod("grobify",
               # can be applied to an <image>
               if (ext == "gridSVG" &&
                   length(object@maskRef) && length(object@maskRef))
-                  maskGrob(r, label = prefixName(object@maskRef))
+                  gridSVG::maskGrob(r, label = prefixName(object@maskRef))
               else
                   r
           })
@@ -118,7 +118,7 @@ setMethod("grobify",
               stops <- lapply(object@stops, grobify)
               offsets <- sapply(stops, function(x) x$offset)
               cols <- sapply(stops, function(x) x$col)
-              radialGradient(col = cols,
+              gridSVG::radialGradient(col = cols,
                              stops = offsets,
                              gradientUnits = "coords",
                              x = object@x,
@@ -136,7 +136,7 @@ setMethod("grobify",
               stops <- lapply(object@stops, grobify)
               offsets <- sapply(stops, function(x) x$offset)
               cols <- sapply(stops, function(x) x$col)
-              linearGradient(col = cols,
+              gridSVG::linearGradient(col = cols,
                              stops = offsets,
                              gradientUnits = "coords",
                              x0 = object@x0,
@@ -304,7 +304,7 @@ setMethod("grobify",
                                  vp = clipvp)
               if (! is.null(object@clip) && ext == "gridSVG") {
                   cp <- object@clip
-                  groupGrob <- clipPathGrob(groupGrob,
+                  groupGrob <- gridSVG::clipPathGrob(groupGrob,
                                             label = prefixName(cp@label))
               }
               if (ext == "gridSVG")
@@ -325,7 +325,7 @@ setMethod("grobify",
                                xscale = xscale, yscale = yscale,
                                distort = distort, ...)
               if (ext == "gridSVG") {
-                  if (! require(gridSVG)) {
+                  if (! requireNamespace("gridSVG")) {
                       warning("the 'gridSVG' package is required for advanced graphical features, reverting to 'clipbbox'")
                       ext <- "clipbbox"
                   } else {

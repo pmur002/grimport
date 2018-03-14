@@ -98,7 +98,7 @@ gridSVGAddFeatures <- function(grob, gp, defs,
             # Assume a fillAlpha of 1 because there will be no
             # fill property (due to gradient being there instead)
             fillAlpha <- 1
-            grob <- gradientFillGrob(grob,
+            grob <- gridSVG::gradientFillGrob(grob,
                                      label = prefixName(gp$gradientFill),
                                      alpha = fillAlpha)
         }
@@ -111,7 +111,7 @@ gridSVGAddFeatures <- function(grob, gp, defs,
         patDef <- getDef(defs, gp$patternFill)
         if (! is.null(patDef)) {
             fillAlpha <- 1
-            grob <- patternFillGrob(grob,
+            grob <- gridSVG::patternFillGrob(grob,
                                     label = prefixName(gp$patternFill),
                                     alpha = fillAlpha)
         }
@@ -122,9 +122,9 @@ gridSVGAddFeatures <- function(grob, gp, defs,
     }
     # Now for masks and filters
     if (length(mask))
-        grob <- maskGrob(grob, label = prefixName(mask))
+        grob <- gridSVG::maskGrob(grob, label = prefixName(mask))
     if (length(filter))
-        grob <- filterGrob(grob, label = prefixName(filter))
+        grob <- gridSVG::filterGrob(grob, label = prefixName(filter))
     grob
 }
 
@@ -173,15 +173,15 @@ registerDefs <- function(defs) {
         def <- content[[i]]
         label <- prefixName(ids[i])
         if (class(def) == "PicturePattern")
-            registerPatternFill(label, grobify(def))
+            gridSVG::registerPatternFill(label, grobify(def))
         if (class(def) == "PictureFilter")
-            registerFilter(label, grobify(def))
+            gridSVG::registerFilter(label, grobify(def))
         if (class(def) == "PictureMask")
-            registerMask(label, grobify(def))
+            gridSVG::registerMask(label, grobify(def))
         if (class(def) == "PictureClipPath")
-            registerClipPath(label, clipPath(grobify(def)))
+            gridSVG::registerClipPath(label, gridSVG::clipPath(grobify(def)))
         if (any(class(def) == c("PictureLinearGradient",
                                 "PictureRadialGradient")))
-            registerGradientFill(label, grobify(def))
+            gridSVG::registerGradientFill(label, grobify(def))
     }
 }
