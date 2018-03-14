@@ -7,6 +7,11 @@
     \item Fix for \code{makeContent()} methods for picRect, picPath,
     and picPolyline, so that the forced grob has the same name
     as the original grob.
+
+    \item Fix for parsing \code{<symbol>} element with no children or
+    with empty image.
+
+    \item Fix for import of \code{lwd} from SVG \code{line-width}
   }
 }
 \section{Changes in version 0.1-2}{

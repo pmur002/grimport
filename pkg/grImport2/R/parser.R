@@ -262,6 +262,7 @@ parseSVGSymbol <- function(x, defs, createDefs) {
             list(new("PictureRect",
                      x = 0, y = 0,
                      width = 0, height = 0,
+                     angle = 0,
                      gp = gpar(col = "#FFFFFF00", fill = "#FFFFFF00"),
                      bbox = rep(0, 4)))
     symbol <- new("PictureSymbol",

@@ -287,7 +287,7 @@ setMethod("applyTransform",
                     tm = "matrix"),
           function(object, tm) {
               gparNames <- names(object)
-              ul <- matrix(c(0, 1, 0, 1, rep(1, 2)), ncol = 3)
+              ul <- matrix(c(0, 1/sqrt(2), 0, 1/sqrt(2), rep(1, 2)), ncol = 3)
               for (i in seq_len(nrow(ul)))
                   ul[i, ] <- tm %*% ul[i, ]
               scaleFactor <- sqrt((ul[1, 1] - ul[2, 1])^2 +
