@@ -1,23 +1,22 @@
 library(grid)
 library(grImport2)
+library(gridSVG)
 
 pic <- readPicture("test-clip-input.svg")
 
-postscript("test-noclip-output.ps", paper = "special",
-           width = 6, height = 6, horizontal = FALSE)
+gridsvg("test-noclip-output.svg", width = 6, height = 6, annotate=FALSE)
 grid.picture(pic, expansion = 0)
 dev.off()
 
-postscript("test-bboxclip-output.ps", paper = "special",
-           width = 6, height = 6, horizontal = FALSE)
-grid.picture(pic, expansion = 0)
+gridsvg("test-bboxclip-output.svg", width = 6, height = 6, annotate=FALSE)
+grid.picture(pic, expansion = 0, ext="clipbbox")
 dev.off()
 
-if (! all(readLines("test-noclip-output.ps") ==
-          readLines("test-noclip-output.ps.save")))
+if (! all(readLines("test-noclip-output.svg") ==
+          readLines("test-noclip-output.svg.save")))
     stop("noclip output not equal to expected output")
 
-if (! all(readLines("test-bboxclip-output.ps") ==
-          readLines("test-bboxclip-output.ps.save")))
+if (! all(readLines("test-bboxclip-output.svg") ==
+          readLines("test-bboxclip-output.svg.save")))
     stop("bboxclip output not equal to expected output")
 
