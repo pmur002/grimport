@@ -9,7 +9,16 @@ grid.picture(pic, expansion = 0)
 dev.off()
 
 ## Encoding in SVG file (on line 1) differs by platform
-if (! all(readLines("test-rect-output.svg")[-1] ==
-          readLines("test-rect-output.svg.save")[-1]))
-    stop("rect output not equal to expected output")
+model <- readLines("test-rect-output.svg.save")[-1]
+test <- readLines("test-rect-output.svg")[-1]
+same <- model == test
+if (! all(same)) {
+    stop(paste0("rect output not equal to expected output",
+                "------------------",
+                model[!same],
+                "------------------",
+                test[!same],
+                collapse="\n"))
+}
+
 

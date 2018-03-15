@@ -15,11 +15,28 @@ grid.picture(pic, expansion = 0)
 dev.off()
 
 ## Encoding in SVG file (on line 1) differs by platform
-if (! all(readLines("test-path-simple-output.svg")[-1] ==
-          readLines("test-path-simple-output.svg.save")[-1]))
-    stop("simplepath expected not equal to expected output")
+model <- readLines("test-path-simple-output.svg.save")[-1]
+test <- readLines("test-path-simple-output.svg")[-1]
+same <- model == test
+if (! all(same)) {
+    stop(paste0("path-simple output not equal to expected output",
+                "------------------",
+                model[!same],
+                "------------------",
+                test[!same],
+                collapse="\n"))
+}
 
-if (! all(readLines("test-path-complex-output.svg")[-1] ==
-          readLines("test-path-complex-output.svg.save")[-1]))
-    stop("complexpath output not equal to expected output")
+model <- readLines("test-path-complex-output.svg.save")[-1]
+test <- readLines("test-path-complex-output.svg")[-1]
+same <- model == test
+if (! all(same)) {
+    stop(paste0("path-complex output not equal to expected output",
+                "------------------",
+                model[!same],
+                "------------------",
+                test[!same],
+                collapse="\n"))
+}
+
 
