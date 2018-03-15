@@ -12,11 +12,12 @@ gridsvg("test-bboxclip-output.svg", width = 6, height = 6, annotate=FALSE)
 grid.picture(pic, expansion = 0, ext="clipbbox")
 dev.off()
 
-if (! all(readLines("test-noclip-output.svg") ==
-          readLines("test-noclip-output.svg.save")))
+## Encoding in SVG file (on line 1) differs by platform
+if (! all(readLines("test-noclip-output.svg")[-1] ==
+          readLines("test-noclip-output.svg.save")[-1]))
     stop("noclip output not equal to expected output")
 
-if (! all(readLines("test-bboxclip-output.svg") ==
-          readLines("test-bboxclip-output.svg.save")))
+if (! all(readLines("test-bboxclip-output.svg")[-1] ==
+          readLines("test-bboxclip-output.svg.save")[-1]))
     stop("bboxclip output not equal to expected output")
 

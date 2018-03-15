@@ -12,8 +12,8 @@ dev.off()
 ## in the temporary PNG file that is created when exporting raster
 ## to SVG via 'gridSVG'
 notrun <- function() {
-    if (! all(readLines("test-raster-output.svg") ==
-              readLines("test-raster-output.svg.save")))
+    if (! all(readLines("test-raster-output.svg")[-1] ==
+              readLines("test-raster-output.svg.save")[-1]))
         stop("raster output not equal to expected output")
 }
 
