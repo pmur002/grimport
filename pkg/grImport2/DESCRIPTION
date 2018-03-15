@@ -4,9 +4,9 @@ Depends: R (>= 2.12.0)
 Imports: methods, grDevices, grid, XML, png, jpeg, base64enc
 Suggests: gridSVG, rsvg
 Title: Importing Vector Graphics
-Authors@R: c(person("Simon", "Potter", role = c("aut", "cre"),
+Authors@R: c(person("Simon", "Potter", role = c("aut"),
                     email = "simon.potter@auckland.ac.nz"),
-             person("Paul", "Murrell", role = c("ctb"),
+             person("Paul", "Murrell", role = c("ctb", "cre"),
                     email = "paul@stat.auckland.ac.nz"))
 Description: Functions for importing, and drawing vector images in R plots.
 License: GPL (>= 2)
