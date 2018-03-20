@@ -10,12 +10,12 @@ Authors@R: c(person("Simon", "Potter", role = c("aut"),
                     email = "paul@stat.auckland.ac.nz",
                     comment = c(ORCID = "0000-0002-3224-8858")))
 Description: Functions for importing external vector images and
-  drawing them as part of R plots.  This package is different from the
+  drawing them as part of 'R' plots.  This package is different from the
   'grImport' package because, where that package imports 'PostScript'
   format images, this package imports 'SVG' format images.  Furthermore,
   this package imports a specific subset of 'SVG', so external images
-  must be pre-processed using a package like 'rsvg' to produce 'SVG'
+  must be preprocessed using a package like 'rsvg' to produce 'SVG'
   that this package can import.  'SVG' features that are not supported
-  by R graphics, e.g., gradient fills, can be imported and then
+  by 'R' graphics, e.g., gradient fills, can be imported and then
   exported via the 'gridSVG' package.
 License: GPL (>= 2)
