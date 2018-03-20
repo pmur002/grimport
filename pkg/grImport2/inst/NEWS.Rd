@@ -2,6 +2,12 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-4}{
+  \itemize{
+    \item Fix for importing radial gradient with gradientTransform
+    (radius of gradient was not being transformed correctly).
+  }
+}
 \section{Changes in version 0.1-3}{
   \itemize{
     \item Fix for \code{makeContent()} methods for picRect, picPath,

@@ -336,13 +336,15 @@ setMethod("applyTransform",
                              ncol = 3)
               for (i in seq_len(nrow(locs)))
                   locs[i, ] <- tm %*% locs[i, ]
+              ## Just interested in scaling (not translation) for radius
+              tm[,3] <- c(0, 0, 1)
+              ## (assuming no shear)
+              tr <- tm %*% c(object@r, 0, 1)
               object@x <- locs[1, 1]
               object@y <- locs[1, 2]
               object@fx <- locs[2, 1]
               object@fy <- locs[2, 2]
-              # Assume minimum for scaling, but both values should be
-              # the same so should not be strictly necessary
-              object@r <- min(tm[1, 1], tm[2, 2]) * object@r
+              object@r <- sqrt(tr[1]^2 + tr[2]^2)
               object 
           })
 
