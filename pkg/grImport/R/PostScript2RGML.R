@@ -1053,7 +1053,7 @@ PostScriptTrace <- function(file, outfilename,
     # Create temporary PostScript file which loads
     # dictionary redefining stroke and fill operators
     # and then runs target PostScript file
-    psfilename <- paste("capture", basename(file), sep="")
+    psfilename <- tempfile(fileext = ".ps")
     psfile <- file(psfilename, "w")
     writeLines(PScaptureHead(file, charpath, charpos,
                              setflat, encoding), psfile)

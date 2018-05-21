@@ -1,4 +1,13 @@
 
+Changes from version 0.9-0 to 0.9-1
+===================================
+
+1.  The temporary PostScript file that is created by PostScriptTrace()
+    to convert from PostScript to RGML is now created in /tmp
+    so that it is automatically removed on R exit.
+    Thanks to suggestion and patch from Rainer Krug.
+
+
 Changes from version 0.8-4 to 0.9-0
 ===================================
 
