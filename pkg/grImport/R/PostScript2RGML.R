@@ -1078,7 +1078,7 @@ PostScriptTrace <- function(file, outfilename,
             poss <- poss[nzchar(poss)]
             gsexe <- if(length(poss)) poss else "gswin32c.exe"
         } else if(grepl(" ", gsexe, fixed = TRUE))
-            gsexe <- shortPathName(gsexe)
+            gsexe <- utils::shortPathName(gsexe)
         outfile <- tempfile()
     } else {
         if (is.null(gsexe) || !nzchar(gsexe)) {
