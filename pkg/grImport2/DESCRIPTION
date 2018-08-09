@@ -1,5 +1,5 @@
 Package: grImport2
-Version: 0.1-4
+Version: 0.1-5
 Depends: R (>= 2.12.0)
 Imports: methods, grDevices, grid, XML, png, jpeg, base64enc
 Suggests: gridSVG, rsvg
