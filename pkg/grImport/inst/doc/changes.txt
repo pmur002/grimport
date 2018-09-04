@@ -5,6 +5,9 @@ Changes from version 0.9-1 to 0.9-2
 1.  When stroking a path, convert to a filled path if the pen 
     is skewed.
 
+2.  Added support for setdash with odd number of values
+    (by appending the first value to the end)
+
 
 Changes from version 0.9-0 to 0.9-1
 ===================================

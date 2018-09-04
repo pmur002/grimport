@@ -26,6 +26,10 @@ readLTY <- function(ltyString) {
 # Go from numeric vector for lty to string
 fixLTY <- function(lty, lwd) {
     if (length(lty)) {
+        # Make sure lty has even length
+        if (length(lty) %% 2) {
+            lty <- c(lty, lty[1])
+        }
         # Minimum allowed is 1
         paste(as.hexmode(pmax(1, round(lty/lwd))),
               collapse="")
