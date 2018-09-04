@@ -8,7 +8,7 @@
 \usage{PostScriptTrace(file, outfilename,
                        charpath=TRUE, charpos=FALSE,
                        setflat=NULL, defaultcol="black",
-                       encoding="ISO-8859-1")}
+                       encoding="ISO-8859-1", scaleEPS=.01)}
 \arguments{
   \item{file}{The name of the PostScript file.}
   \item{outfilename}{The name of the XML document.}
@@ -24,6 +24,9 @@
     present in a PostScript image.}
   \item{encoding}{A character value giving the encoding for the
     resulting RGML file.}
+  \item{scaleEPS}{A numeric cut-off used to decide when to convert
+    a stroke to a fill if the pen is skewed (the difference between
+    the x-scale factor and the y-scale factor).}
 }
 \details{
   This function calls ghostscript to do the conversion,

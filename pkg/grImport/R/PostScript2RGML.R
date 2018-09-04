@@ -4,7 +4,8 @@ PScaptureText <- c()
 
 PScaptureChars <- c()
     
-PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
+PScaptureHead <- function(file, charpath, charpos, setflat, encoding,
+                          scaleEPS) {
     c("%!PS-Adobe-2.0 EPSF-1.2",
       "%%BeginProcSet:convertToR 0 0",
       
@@ -368,10 +369,45 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding) {
       "  (</path>\n\n) print",
       "} def",
 
-      # override paint operators
-      "/stroke {",
+      "/checkskew {",
+      ## load individual elements of CTM onto stack (and name them)
+      ## https://stackoverflow.com/questions/11777305/postscript-discover-rotate-scale-value
+      "  matrix currentmatrix aload pop",
+      ## calculate xscale and yscale
+      ## https://stackoverflow.com/questions/20422392/given-a-2d-transformation-matrix-how-to-calculate-the-scalings-skews-rotation
+
+      ## a, b, c, d, tx, ty
+      "  pop pop",
+      ## a, b, c, d
+      "  dup mul exch dup mul add sqrt",
+      ## a, b, sqrt(c*c + d*d)
+      "  3 1 roll",
+      ## sqrt(c*c + d*d), a, b
+      "  dup mul exch dup mul add sqrt",
+      ## sqrt(c*c + d*d), sqrt(a*a + b*b)
+      
+      ## if they are not equal use strokepath to convert to path we can fill
+      ## (because R does not have the concept of a transformed pen for stroking)
+      ## "  (<!-- ) print dup str cvs print (, ) print exch dup str cvs print ( -->) print sub abs (<!-- diff=) print dup str cvs print ( -->) print .01 ge",
+      paste0("  sub abs ", scaleEPS, " ge"),
+      "} def",
+
+      "/fillstroke {",
+      ## convert stroke to path we can fill
+      "  strokepath",
+      ## fill instead of stroke
+      "  flattenpath {mymove} {myline} {mycurve} {myclose}",
+      "  myfill",
+      "} def",
+      
+      "/strokestroke {",
       "  flattenpath {mymove} {myline} {mycurve} {myclose}",
       "  mystroke",
+      "} def",
+      
+      # override paint operators
+      "/stroke {",
+      "  checkskew {fillstroke} {strokestroke} ifelse",
       "  newpath",
       "} def",
       "/fill {",
@@ -1049,14 +1085,15 @@ postProcess <- function(outfilename, enc, defaultcol) {
 PostScriptTrace <- function(file, outfilename,
                             charpath=TRUE, charpos=FALSE,
                             setflat=NULL, defaultcol="black",
-                            encoding="ISO-8859-1") {
+                            encoding="ISO-8859-1", scaleEPS=.01) {
     # Create temporary PostScript file which loads
     # dictionary redefining stroke and fill operators
     # and then runs target PostScript file
     psfilename <- tempfile(fileext = ".ps")
     psfile <- file(psfilename, "w")
     writeLines(PScaptureHead(file, charpath, charpos,
-                             setflat, encoding), psfile)
+                             setflat, encoding, scaleEPS),
+               psfile)
     # Reconstitute file name here to handle Windows-style paths
     # in the file name
     writeLines(paste("(", file.path(dirname(file), basename(file)),
