@@ -1,7 +1,7 @@
 \documentclass[nojss,article]{jss}
 
 %% need no \usepackage{Sweave.sty}
-%% \VignetteIndexEntry{grImport}
+%% \VignetteIndexEntry{Importing Vector Graphics}
 
 \author{Paul Murrell\\The University of Auckland}
 \title{Importing Vector Graphics:\\ The \pkg{grImport} Package for \proglang{R}}

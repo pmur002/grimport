@@ -1,7 +1,7 @@
 \documentclass{article}
 
 \usepackage{Sweave}
-%% \VignetteIndexEntry{grImport}
+%% \VignetteIndexEntry{Importing text}
 
 \author{Paul Murrell\\The University of Auckland}
 \title{Importing text}
