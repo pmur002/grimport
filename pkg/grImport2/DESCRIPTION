@@ -18,4 +18,5 @@ Description: Functions for importing external vector images and
   that this package can import.  'SVG' features that are not supported
   by 'R' graphics, e.g., gradient fills, can be imported and then
   exported via the 'gridSVG' package.
+URL: https://r-forge.r-project.org/projects/grimport/,https://stattech.wordpress.fos.auckland.ac.nz/2013/09/,https://stattech.wordpress.fos.auckland.ac.nz/2016/08/30/2016-11-the-butterfly-affectation/
 License: GPL (>= 2)
