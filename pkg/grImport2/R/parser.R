@@ -310,7 +310,7 @@ parseSVGUse <- function(x, defs, createDefs) {
     } else if ("maskRef" %in% slotNames(def) &&
                ! is.null(xmlGetAttr(x, "mask"))) {
         def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
-        def
+        applyTransform(def, tm) 
     } else if (is(def, "PictureImage")) {
         applyTransform(def, tm) # image 
     } else {
