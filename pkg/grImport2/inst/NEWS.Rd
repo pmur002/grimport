@@ -2,6 +2,11 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-6}{
+  \itemize{
+    \item ALWAYS apply transform for <use> elements.
+  }
+}
 \section{Changes in version 0.1-5}{
   \itemize{
     \item Added \code{clip} argument to \code{grid.picture()} so that

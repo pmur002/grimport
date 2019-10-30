@@ -314,7 +314,7 @@ parseSVGUse <- function(x, defs, createDefs) {
     } else if (is(def, "PictureImage")) {
         applyTransform(def, tm) # image 
     } else {
-        def # image ? (for a pattern ?)
+        applyTransform(def, tm) 
     }
 }
 
