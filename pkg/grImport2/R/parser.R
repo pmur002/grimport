@@ -31,7 +31,7 @@ parseSVGFeColorMatrix <- function(x, defs, createDefs) {
     # sequence of integers:
     # "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
     nums <- as.integer(strsplit(xmlGetAttr(x, "values"), " ")[[1]])
-    colmat <- matrix(nums, nrow = 4, ncol = 5)
+    colmat <- matrix(nums, nrow = 4, ncol = 5, byrow=TRUE)
     new("PictureFeColorMatrix",
         type = xmlGetAttr(x, "type"),
         input = xmlGetAttr(x, "in"),
@@ -309,6 +309,7 @@ parseSVGUse <- function(x, defs, createDefs) {
         applyTransform(def@definition[[1]], tm)
     } else if ("maskRef" %in% slotNames(def) &&
                ! is.null(xmlGetAttr(x, "mask"))) {
+        ## Shift mask on <use> to mask on def
         def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
         applyTransform(def, tm) 
     } else if (is(def, "PictureImage")) {
