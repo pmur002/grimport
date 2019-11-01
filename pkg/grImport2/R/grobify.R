@@ -334,7 +334,7 @@ setMethod("grobify",
                       # this we also set the gradient and pattern labels to be
                       # the same as the SVG IDs.
                       pushViewport(pvp, recording = FALSE)
-                      registerDefs(object@defs)
+                      registerDefs(object@defs, ext)
                       # Up 2 because we pushed a vpStack of 2 viewports
                       upViewport(2, recording = FALSE)
                   }

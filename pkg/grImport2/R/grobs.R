@@ -166,22 +166,23 @@ clipVP <- function(xscale, yscale) {
              clip = "on")
 }
 
-registerDefs <- function(defs) {
+registerDefs <- function(defs, ext) {
     content <- defs@content
     ids <- names(content)
     for (i in seq_len(length(content))) {
         def <- content[[i]]
         label <- prefixName(ids[i])
         if (class(def) == "PicturePattern")
-            gridSVG::registerPatternFill(label, grobify(def))
+            gridSVG::registerPatternFill(label, grobify(def, ext=ext))
         if (class(def) == "PictureFilter")
-            gridSVG::registerFilter(label, grobify(def))
+            gridSVG::registerFilter(label, grobify(def, ext=ext))
         if (class(def) == "PictureMask")
-            gridSVG::registerMask(label, grobify(def))
+            gridSVG::registerMask(label, grobify(def, ext=ext))
         if (class(def) == "PictureClipPath")
-            gridSVG::registerClipPath(label, gridSVG::clipPath(grobify(def)))
+            gridSVG::registerClipPath(label,
+                                      gridSVG::clipPath(grobify(def, ext=ext)))
         if (any(class(def) == c("PictureLinearGradient",
                                 "PictureRadialGradient")))
-            gridSVG::registerGradientFill(label, grobify(def))
+            gridSVG::registerGradientFill(label, grobify(def, ext=ext))
     }
 }
