@@ -4,7 +4,18 @@
 
 \section{Changes in version 0.1-6}{
   \itemize{
-    \item ALWAYS apply transform for <use> elements.
+    \item fix for importing SVG containing \code{<use>} elements that
+    refer to complex content (including nested \code{<use>} elements,
+    \code{<use>} use elements with \code{transform} attributes,
+    \code{<use>} elements with \code{mask} attributes, and \code{use}
+    content with \code{clip-path} attributes.
+    
+    \item fix for feColorMatrix filter (matrix value was being
+    transposed).
+    
+    \item fix for \code{ext="gridSVG"} when exporting definitions
+    (like masks) that contain references to other definitions
+    (like filters).
   }
 }
 \section{Changes in version 0.1-5}{

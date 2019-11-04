@@ -282,6 +282,21 @@ transformRegisteredDef <- function(id, tm) {
     id
 }
 
+## Different again because need to transform the clip path itself
+## and the registered definition 
+transformClipPath <- function(cp, tm) {
+    defList <- get("defs", .grImport2Env)
+    id <- cp@label
+    def <- getDef(defList, id)
+    if (! is.null(def)) {
+        newDef <- applyTransform(def, tm)
+        newId <- updateId(id)
+        assign("defs", setDef(defList, newId, newDef), .grImport2Env)
+        cp@label <- newId
+    }
+    applyTransform(cp, tm)
+}
+
 setMethod("applyTransform",
           signature(object = "gpar",
                     tm = "matrix"),
@@ -383,6 +398,29 @@ setMethod("applyTransform",
           function(object, tm) {
               object@content <- lapply(object@content, applyTransform, tm)
               object@gp <- applyTransform(object@gp, tm)
+              ## If there is a clip path or a mask, also transform those
+              if (!is.null(object@clip)) {
+                  object@clip <- transformClipPath(object@clip, tm)
+              }
+              if (length(object@maskRef)) {  ## !(NULL or character(0))
+                  object@maskRef <- transformRegisteredDef(object@maskRef, tm)
+              }
+              object
+          })
+              
+setMethod("applyTransform",
+          signature(object = "PictureClipPath",
+                    tm = "matrix"),
+          function(object, tm) {
+              object@content <- lapply(object@content, applyTransform, tm)
+              object
+          })
+              
+setMethod("applyTransform",
+          signature(object = "PictureMask",
+                    tm = "matrix"),
+          function(object, tm) {
+              object@content <- lapply(object@content, applyTransform, tm)
               object
           })
               

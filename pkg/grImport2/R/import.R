@@ -12,7 +12,7 @@ readPicture <- function(file, warn = TRUE) {
     # Now parse the contents of the image (<defs> are ignored).
     # <use>s are resolved to "real" elements
     pic <- parseImage(xmlChildren(svgImage, addNames = FALSE),
-                      picdefs, createDefs = FALSE)
+                      picdefs, createDefs = FALSE, transform = TRUE)
     # Update defs for changes during parseImage
     picdefs <- get("defs", picdefs, envir=.grImport2Env)
     new("Picture",

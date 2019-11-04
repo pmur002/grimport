@@ -1,3 +1,32 @@
+
+################################################################################
+
+## SVG content is parsed in TWO sweeps:
+## 1: definitions (within <defs>)
+## 2: other content
+
+## Sweep 1 only create Picture objects and stores them (by name) in a
+## list of definitions.  Some elements ONLY do this.
+## During this sweep, we do NOT transform locations and dimensions.
+
+## Sweep 2 creates Picture objects, building up a big tree of Picture
+## objects that represent the image.
+## During this sweep, we TRANSFORM locations and dimensions.
+
+## Some elements NEST (e.g., groups, masks, clipPaths, use),
+## in which case, the sweep recursively descends (for both sweeps).
+## During Sweep 2, transformations are applied recursively.
+
+## Some attributes work BY REFERENCE (e.g., mask= and clip-path=),
+## in which case, we resolve a LABEL to a Picture definition (in both sweeps).
+
+## <use> elements work by REPLACEMENT, in which case, we retrieve
+## a Picture definition.
+## In Sweep 2, transforms are applied (recursively) to retrieved definition.
+## Transformations generate a new definition, with a new LABEL.
+
+################################################################################
+
 getPictureDims <- function(image) {
     svgDims <- c(xmlGetAttr(image, "width"),
                  xmlGetAttr(image, "height"))
@@ -7,14 +36,14 @@ getPictureDims <- function(image) {
 
 nullFn <- function(...) { NULL }
 
-parseSVGClipPath <- function(x, defs, createDefs) {
+parseSVGClipPath <- function(x, defs, createDefs, transform) {
     # Can assume just one child (if necessary)
     # because Cairo SVG does not include more than
     # one definition. It's either a rectangle or a path.
     clipID <- xmlGetAttr(x, "id")
     # children don't set definitions, set createDefs to FALSE
     clipRegion <- parseImage(xmlChildren(x, addNames = FALSE),
-                             defs, createDefs = FALSE)
+                             defs, createDefs = FALSE, transform)
     cp <- new("PictureClipPath",
               content = clipRegion,
               label = clipID)
@@ -24,7 +53,7 @@ parseSVGClipPath <- function(x, defs, createDefs) {
         cp
 }
 
-parseSVGFeColorMatrix <- function(x, defs, createDefs) {
+parseSVGFeColorMatrix <- function(x, defs, createDefs, transform) {
     # type will be a matrix
     # input will be SourceGraphic
     # primary concern is parsing values, which will likely be the following
@@ -38,7 +67,7 @@ parseSVGFeColorMatrix <- function(x, defs, createDefs) {
         values = colmat)
 }
 
-parseSVGFilter <- function(x, defs, createDefs) {
+parseSVGFilter <- function(x, defs, createDefs, transform) {
     # Can assume just one child (if necessary)
     # because Cairo SVG does not include more than
     # a single feColorMatrix element
@@ -55,13 +84,13 @@ parseSVGFilter <- function(x, defs, createDefs) {
         f
 }
 
-parseSVGGroup <- function(x, defs, createDefs) {
+parseSVGGroup <- function(x, defs, createDefs, transform) {
     # Getting style information to pass on later
     styleList <- svgStyleToList(xmlGetAttr(x, "style"), defs)
     if (length(styleList)) {
         tm <- parseTransform(xmlGetAttr(x, "transform"))
         gp <- svgStyleListToGpar(styleList)
-        if (! is.null(tm))
+        if (transform && ! is.null(tm))
             gp <- applyTransform(gp, tm)
     } else {
         gp <- gpar()
@@ -70,9 +99,11 @@ parseSVGGroup <- function(x, defs, createDefs) {
     # the group as a reference by itself (most likely)
     if (createDefs && is.null(xmlGetAttr(x, "id")))
         return(parseImage(xmlChildren(x, addNames = FALSE),
-                          defs, createDefs))
+                          defs, createDefs, transform))
+
+    ## children don't set definitions, set createDefs to FALSE
     children <- do.call("list", parseImage(xmlChildren(x, addNames = FALSE),
-                                           defs, FALSE))
+                                           defs, FALSE, transform))
     cliprule <- xmlGetAttr(x, "clip-rule")
     clip <- ! is.null(cliprule) && cliprule == "nonzero"
     if (clip) {
@@ -93,7 +124,7 @@ parseSVGGroup <- function(x, defs, createDefs) {
         pg
 }
 
-parseSVGImage <- function(x, defs, createDefs) {
+parseSVGImage <- function(x, defs, createDefs, transform) {
     imageAttrs <- as.list(xmlAttrs(x))
     bbox <- c(0, 0,
               as.numeric(imageAttrs$width),
@@ -112,7 +143,7 @@ parseSVGImage <- function(x, defs, createDefs) {
         pimage
 }
 
-parseSVGLinearGradient <- function(x, defs, createDefs) {
+parseSVGLinearGradient <- function(x, defs, createDefs, transform) {
     gradAttrs <- as.list(xmlAttrs(x))
     spreadMethod <-
         if (! is.null(gradAttrs$spreadMethod))
@@ -120,7 +151,7 @@ parseSVGLinearGradient <- function(x, defs, createDefs) {
         else
             "pad"
     stops <- lapply(xmlChildren(x, addNames = FALSE),
-                    parseSVGStop, defs, createDefs = FALSE)
+                    parseSVGStop, defs, createDefs = FALSE, transform)
     tm <- parseTransform(gradAttrs$gradientTransform)
     lg <- new("PictureLinearGradient",
               x0 = as.numeric(gradAttrs$x1),
@@ -134,11 +165,11 @@ parseSVGLinearGradient <- function(x, defs, createDefs) {
     setDef(defs, gradAttrs$id, lg) # can only be setting a def
 }
 
-parseSVGMask <- function(x, defs, createDefs) {
+parseSVGMask <- function(x, defs, createDefs, transform) {
     maskID <- xmlGetAttr(x, "id")
     # children don't set definitions, set createDefs to FALSE
     maskRegion <- parseImage(xmlChildren(x, addNames = FALSE),
-                             defs, createDefs = FALSE)
+                             defs, createDefs = FALSE, transform)
     m <- new("PictureMask",
              content = maskRegion)
     if (createDefs)
@@ -147,7 +178,7 @@ parseSVGMask <- function(x, defs, createDefs) {
         m
 }
 
-parseSVGPattern <- function(x, defs, createDefs) {
+parseSVGPattern <- function(x, defs, createDefs, transform) {
     patAttrs <- as.list(xmlAttrs(x))
     if (is.null(patAttrs$x))
         patAttrs$x <- 0
@@ -168,7 +199,7 @@ parseSVGPattern <- function(x, defs, createDefs) {
     setDef(defs, patAttrs$id, pat) # can only be setting a def
 }
 
-parseSVGPath <- function(x, defs, createDefs) {
+parseSVGPath <- function(x, defs, createDefs, transform) {
     styleList <- svgStyleToList(xmlGetAttr(x, "style"), defs)
     tm <- parseTransform(xmlGetAttr(x, "transform"))
     # Sometimes a path is present where d=""
@@ -197,7 +228,7 @@ parseSVGPath <- function(x, defs, createDefs) {
     p
 }
 
-parseSVGRadialGradient <- function(x, defs, createDefs) {
+parseSVGRadialGradient <- function(x, defs, createDefs, transform) {
     gradAttrs <- as.list(xmlAttrs(x))
     spreadMethod <-
         if (! is.null(gradAttrs$spreadMethod))
@@ -205,7 +236,7 @@ parseSVGRadialGradient <- function(x, defs, createDefs) {
         else
             "pad"
     stops <- lapply(xmlChildren(x, addNames = FALSE),
-                    parseSVGStop, defs, createDefs = FALSE)
+                    parseSVGStop, defs, createDefs = FALSE, transform)
     tm <- parseTransform(gradAttrs$gradientTransform)
     radgrad <- new("PictureRadialGradient",
                    x = as.numeric(gradAttrs$cx),
@@ -220,7 +251,7 @@ parseSVGRadialGradient <- function(x, defs, createDefs) {
     setDef(defs, gradAttrs$id, radgrad) # can only be setting a def
 }
 
-parseSVGRect <- function(x, defs, createDefs) {
+parseSVGRect <- function(x, defs, createDefs, transform) {
     rectAttrs <- as.list(xmlAttrs(x))
     styleList <- svgStyleToList(rectAttrs$style, defs)
     tm <- parseTransform(rectAttrs$transform)
@@ -243,7 +274,7 @@ parseSVGRect <- function(x, defs, createDefs) {
     r
 }
 
-parseSVGStop <- function(x, defs, createDefs) {
+parseSVGStop <- function(x, defs, createDefs, transform) {
     # ignore defs and createDefs, always content for another definition
     stopAttrs <- as.list(xmlAttrs(x))
     offset <- as.numeric(stopAttrs$offset)
@@ -252,10 +283,10 @@ parseSVGStop <- function(x, defs, createDefs) {
     new("PictureGradientStop", offset = offset, col = col)
 }
 
-parseSVGSymbol <- function(x, defs, createDefs) {
+parseSVGSymbol <- function(x, defs, createDefs, transform) {
     symbolID <- xmlGetAttr(x, "id")
     symbolChildren <- parseImage(xmlChildren(x, addNames = FALSE),
-                                 defs, createDefs = FALSE)
+                                 defs, createDefs = FALSE, transform)
     if (is.null(symbolChildren) || ! length(symbolChildren) ||
         is.null(unlist(symbolChildren)))
         symbolChildren <-
@@ -270,7 +301,7 @@ parseSVGSymbol <- function(x, defs, createDefs) {
     setDef(defs, symbolID, symbol)
 }
 
-parseSVGUse <- function(x, defs, createDefs) {
+parseSVGUse <- function(x, defs, createDefs, transform) {
     # Will not be used to set definitions (because a <use> will only
     # refer to something that already exists, and *not* define anything
     # new).
@@ -280,46 +311,62 @@ parseSVGUse <- function(x, defs, createDefs) {
         return(NULL) # Assume that the source is not drawable
     # <use> could spec 'x' and 'y' OR 'transform' (latter for image)
     # OR possibly neither (in which case provide identity transform)
-    if (is.null(useAttrs$transform)) {
-        if (is.null(useAttrs$x))
-            tx <- 0
-        else
-            tx <- as.numeric(useAttrs$x)
-        if (is.null(useAttrs$y))
-            ty <- 0
-        else
-            ty <- as.numeric(useAttrs$y)
-        # No scaling, just translation
-        # Still need to build up a transformation matrix (for consistency)
-        tm <- diag(3)
-        tm[1, 3] <- tx
-        tm[2, 3] <- ty
+    if (transform) {
+        if (is.null(useAttrs$transform)) {
+            if (is.null(useAttrs$x))
+                tx <- 0
+            else
+                tx <- as.numeric(useAttrs$x)
+            if (is.null(useAttrs$y))
+                ty <- 0
+            else
+                ty <- as.numeric(useAttrs$y)
+            ## No scaling, just translation
+            ## Still need to build up a transformation matrix (for consistency)
+            tm <- diag(3)
+            tm[1, 3] <- tx
+            tm[2, 3] <- ty
+        } else {
+            tm <- parseTransform(useAttrs$transform)
+        }
+        ## Now need to act according to the type of content we have pulled out
+        ## For example, for a <symbol>, we're only interested in the definition 
+        ## and not the <symbol> itself.
+        ## We'll only be seeing this for symbols and patterns in practice (as
+        ## per the cairo source)
+        if (is(def, "PictureSymbol")) {
+            ## symbol, assume only one child!
+            ## safe because they're only used for font glyphs, which are known
+            ## to be single <path> elements
+            applyTransform(def@definition[[1]], tm)
+        } else if ("maskRef" %in% slotNames(def) &&
+                   ! is.null(xmlGetAttr(x, "mask"))) {
+            ## Shift mask on <use> to mask on def
+            def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
+            applyTransform(def, tm) 
+        } else if (is(def, "PictureImage")) {
+            applyTransform(def, tm) # image 
+        } else {
+            applyTransform(def, tm) 
+        }
     } else {
-        tm <- parseTransform(useAttrs$transform)
-    }
-    # Now need to act according to the type of content we have pulled out
-    # For example, for a <symbol>, we're only interested in the definition 
-    # and not the <symbol> itself.
-    # We'll only be seeing this for symbols and patterns in practice (as
-    # per the cairo source)
-    if (is(def, "PictureSymbol")) {
-        # symbol, assume only one child!
-        # safe because they're only used for font glyphs, which are known
-        # to be single <path> elements
-        applyTransform(def@definition[[1]], tm)
-    } else if ("maskRef" %in% slotNames(def) &&
-               ! is.null(xmlGetAttr(x, "mask"))) {
-        ## Shift mask on <use> to mask on def
-        def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
-        applyTransform(def, tm) 
-    } else if (is(def, "PictureImage")) {
-        applyTransform(def, tm) # image 
-    } else {
-        applyTransform(def, tm) 
+        if (is(def, "PictureSymbol")) {
+            ## symbol, assume only one child!
+            ## safe because they're only used for font glyphs, which are known
+            ## to be single <path> elements
+            def@definition[[1]]
+        } else if ("maskRef" %in% slotNames(def) &&
+                   ! is.null(xmlGetAttr(x, "mask"))) {
+            ## Shift mask on <use> to mask on def
+            def@maskRef <- urlToID(xmlGetAttr(x, "mask"))
+            def
+        } else {
+            def
+        }
     }
 }
 
-parseImage <- function(x, defs, createDefs = FALSE) {
+parseImage <- function(x, defs, createDefs = FALSE, transform) {
     # Ensure there is a list of content to iterate over
     if (inherits(x, "XMLInternalNode"))
         x <- list(x)
@@ -347,9 +394,9 @@ parseImage <- function(x, defs, createDefs = FALSE) {
                         use = parseSVGUse,
                         nullFn)
         if (createDefs)
-            defs <- svgFn(node, defs, createDefs)
+            defs <- svgFn(node, defs, createDefs, transform)
         else
-            result[[i]] <- svgFn(node, defs, createDefs)
+            result[[i]] <- svgFn(node, defs, createDefs, transform)
     }
 
     if (createDefs)
@@ -364,5 +411,5 @@ parsePictureDefinitions <- function(svgImage) {
     parseImage(getNodeSet(svgImage, "//svg:defs/*",
                           c(svg = "http://www.w3.org/2000/svg")),
                defs = new("PictureDefinitions"),
-               createDefs = TRUE)
+               createDefs = TRUE, transform = FALSE)
 }
