@@ -2,6 +2,17 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.2-0}{
+  \itemize{
+    \item \code{pictureGrob()} has new argument \code{delayContent}.
+    If that is \code{TRUE}, the function returns a \code{"PictureGrob"}
+    gTree that has a \code{makeContent()} method, so that
+    \code{grobify()} only happens at drawing time, so that,
+    IF we are using \pkg{gridSVG} for output,
+    registration of SVG definitions happens within the current
+    viewport.  The default value is \code{ext == "gridSVG"}.
+  }
+}
 \section{Changes in version 0.1-6}{
   \itemize{
     \item fix for importing SVG containing \code{<use>} elements that
