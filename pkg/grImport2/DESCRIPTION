@@ -6,7 +6,7 @@ Suggests: gridSVG, rsvg
 Title: Importing 'SVG' Graphics
 Authors@R: c(person("Simon", "Potter", role = c("aut"),
                     email = "simon.potter@auckland.ac.nz"),
-             person("Paul", "Murrell", role = c("ctb", "cre"),
+             person("Paul", "Murrell", role = c("aut", "cre"),
                     email = "paul@stat.auckland.ac.nz",
                     comment = c(ORCID = "0000-0002-3224-8858")))
 Description: Functions for importing external vector images and
