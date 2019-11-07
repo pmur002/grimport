@@ -11,6 +11,12 @@
     IF we are using \pkg{gridSVG} for output,
     registration of SVG definitions happens within the current
     viewport.  The default value is \code{ext == "gridSVG"}.
+
+    \item Internal restructuring:  to fix more complex SVG input
+    where \code{<defs>} refer to each other and include nested
+    transformations; to handle transformations more consistently
+    in general;  to fix calculation of bounding box for transformed
+    clipping path.  
   }
 }
 \section{Changes in version 0.1-6}{

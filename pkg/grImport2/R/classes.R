@@ -184,25 +184,25 @@ setClass("PictureDefinitions",
          prototype(content = list()))
 
 setGeneric("getDef",
-           function(object, id) standardGeneric("getDef"))
+           function(id) standardGeneric("getDef"))
 
 setMethod("getDef",
-          signature(object = "PictureDefinitions",
-                    id = "character"),
-          function(object, id) {
-              object@content[[id]]
+          signature(id = "character"),
+          function(id) {
+              defList <- get("defs", .grImport2Env)
+              defList@content[[id]]
           })
 
 setGeneric("setDef",
-           function(object, id, value) standardGeneric("setDef"))
+           function(id, value) standardGeneric("setDef"))
 
 setMethod("setDef",
-          signature(object = "PictureDefinitions",
-                    id = "character",
+          signature(id = "character",
                     value = "PictureContent"),
-          function(object, id, value) {
-              object@content[[id]] <- value
-              object
+          function(id, value) {
+              defList <- get("defs", .grImport2Env)
+              defList@content[[id]] <- value
+              assign("defs", defList, .grImport2Env)
           })
 
 setClass("PictureSummary",
@@ -271,12 +271,11 @@ setMethod("[[", "PictureGroup",
 # NOTE that if the name does not identify a known definition then the
 # function silently returns the old name
 transformRegisteredDef <- function(id, tm) {
-    defList <- get("defs", .grImport2Env)
-    def <- getDef(defList, id)
+    def <- getDef(id)
     if (! is.null(def)) {
         newDef <- applyTransform(def, tm)
         newId <- updateId(id)
-        assign("defs", setDef(defList, newId, newDef), .grImport2Env)
+        setDef(newId, newDef)
         id <- newId
     }
     id
@@ -285,13 +284,12 @@ transformRegisteredDef <- function(id, tm) {
 ## Different again because need to transform the clip path itself
 ## and the registered definition 
 transformClipPath <- function(cp, tm) {
-    defList <- get("defs", .grImport2Env)
     id <- cp@label
-    def <- getDef(defList, id)
+    def <- getDef(id)
     if (! is.null(def)) {
         newDef <- applyTransform(def, tm)
         newId <- updateId(id)
-        assign("defs", setDef(defList, newId, newDef), .grImport2Env)
+        setDef(newId, newDef)
         cp@label <- newId
     }
     applyTransform(cp, tm)
@@ -498,7 +496,7 @@ transformRectBBox <- function(object, tm) {
                    ncol = 3)
     for (i in seq_len(nrow(locs)))
         locs[i, ] <- tm %*% locs[i, ]
-    c(min(locs[, 1]), min(locs[, 2]), max(locs[, 1]), max(locs[, 2]))
+    c(min(locs[, 1]), max(locs[, 1]), min(locs[, 2]), max(locs[, 2]))
 }
 
 setMethod("applyTransform",

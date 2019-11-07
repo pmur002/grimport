@@ -5,16 +5,17 @@ readPicture <- function(file, warn = TRUE) {
     checkValidSVG(doc, warn = warn)
     svgImage <- xmlRoot(doc)
     pictureDims <- getPictureDims(svgImage)
-    # Need to create picture definitions table first
-    picdefs <- parsePictureDefinitions(svgImage)
-    # Stick defs in .grImport2Env so can be modded on-the-fly during parseImage
-    assign("defs", picdefs, envir=.grImport2Env)
+    ## Initialise defs in .grImport2Env so can be modded on-the-fly
+    ## during parseImage
+    assign("defs", new("PictureDefinitions"), envir=.grImport2Env)
+    # Fill up picture definitions table first
+    parsePictureDefinitions(svgImage)
     # Now parse the contents of the image (<defs> are ignored).
     # <use>s are resolved to "real" elements
     pic <- parseImage(xmlChildren(svgImage, addNames = FALSE),
-                      picdefs, createDefs = FALSE, transform = TRUE)
+                      createDefs = FALSE)
     # Update defs for changes during parseImage
-    picdefs <- get("defs", picdefs, envir=.grImport2Env)
+    picdefs <- get("defs", envir=.grImport2Env)
     new("Picture",
         content = pic,
         defs = picdefs,

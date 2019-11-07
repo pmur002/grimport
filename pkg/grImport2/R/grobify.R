@@ -189,7 +189,7 @@ setMethod("grobify",
                                       gp = object@gp)
               }
               if (ext == "gridSVG")
-                  grob <- gridSVGAddFeatures(grob, object@gp, defs)
+                  grob <- gridSVGAddFeatures(grob, object@gp)
               grob
           })
 
@@ -278,7 +278,7 @@ setMethod("grobify",
                                          lidlen, pidlen,
                                          object@rule, object@gp)
               if (ext == "gridSVG")
-                  grob <- gridSVGAddFeatures(grob, object@gp, defs)
+                  grob <- gridSVGAddFeatures(grob, object@gp)
               grob
           })
 
@@ -309,7 +309,7 @@ setMethod("grobify",
               }
               if (ext == "gridSVG")
                   groupGrob <-
-                      gridSVGAddFeatures(groupGrob, object@gp, defs,
+                      gridSVGAddFeatures(groupGrob, object@gp, 
                                          object@maskRef, object@filterRef)
               groupGrob
           })

@@ -88,12 +88,12 @@ scaleLwd <- function(gp) {
 
 # Apply gridSVG features to grid grobs
 # FIXME: Make this more efficient by using registration
-gridSVGAddFeatures <- function(grob, gp, defs,
+gridSVGAddFeatures <- function(grob, gp, 
                                mask = character(0),
                                filter = character(0)) {
     gparNames <- names(gp)
     if ("gradientFill" %in% gparNames) {
-        gradDef <- getDef(defs, gp$gradientFill)
+        gradDef <- getDef(gp$gradientFill)
         if (! is.null(gradDef)) {
             # Assume a fillAlpha of 1 because there will be no
             # fill property (due to gradient being there instead)
@@ -108,7 +108,7 @@ gridSVGAddFeatures <- function(grob, gp, defs,
         #def <- getDef(defs, gp$gradientStroke)
     }
     if ("patternFill" %in% gparNames) {
-        patDef <- getDef(defs, gp$patternFill)
+        patDef <- getDef(gp$patternFill)
         if (! is.null(patDef)) {
             fillAlpha <- 1
             grob <- gridSVG::patternFillGrob(grob,
