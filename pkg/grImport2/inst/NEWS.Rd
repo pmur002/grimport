@@ -16,7 +16,7 @@
     where \code{<defs>} refer to each other and include nested
     transformations; to handle transformations more consistently
     in general;  to fix calculation of bounding box for transformed
-    clipping path.  
+    clipping path.
   }
 }
 \section{Changes in version 0.1-6}{

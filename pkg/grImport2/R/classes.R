@@ -519,6 +519,10 @@ setMethod("applyTransform",
               # (which modifies object's x,y,width,height)
               object@bbox <- transformRectBBox(object, tm)
               object <- transformRect(object, tm)
+              ## If there is a mask, also transform that
+              if (length(object@maskRef)) {  ## !(NULL or character(0))
+                  object@maskRef <- transformRegisteredDef(object@maskRef, tm)
+              }
               object 
           })
 
