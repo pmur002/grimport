@@ -438,19 +438,38 @@ setMethod("applyTransform",
 transformRect <- function(object, tm) {
     # Get new x, y, width, height, and angle from
     # original x, y, width, height, and transform
-    loc <- tm %*% c(object@x, object@y, 1)
-    sx <- sqrt(tm[1, 1]^2 + tm[1, 2]^2)
-    if (tm[1, 1] < 0)
-        sx <- -sx
-    sy <- sqrt(tm[2, 1]^2 + tm[2, 2]^2)
-    if (tm[2, 2] < 0)
-        sy <- -sy
-    angle <- atan2(-tm[1, 2], tm[1, 1])
-    object@x <- loc[1, 1]
-    object@y <- loc[2, 1]
-    object@width <- sx*object@width
-    object@height <- sy*object@height
-    object@angle <- object@angle + angle
+    ## https://math.stackexchange.com/questions/13150/extracting-rotation-scale-values-from-2d-transformation-matrix
+    a <- tm[1, 1]
+    b <- tm[1, 2]
+    c <- tm[2, 1]
+    d <- tm[2, 2]
+    e <- tm[1, 3]
+    f <- tm[2, 3]    
+    delta <- a * d - b * c
+    translation <- c(e, f)
+    if (a != 0 || b != 0) {
+        r <- sqrt(a * a + b * b)
+        rotation <- if (b > 0) acos(a / r) else -acos(a / r)
+        scale <- c(r, delta / r)
+        skew <- c(atan((a * c + b * d) / (r * r)), 0)
+    } else if (c != 0 || d != 0) {
+        s <- sqrt(c * c + d * d)
+        rotation <- pi / 2 -
+            if (d > 0) acos(-c / s) else -acos(c / s)
+        scale <- c(delta / s, s)
+        skew <- c(0, atan((a * c + b * d) / (s * s)))
+    } else {
+        ## a = b = c = d = 0
+        warning("Zero transformation matrix")
+    }
+    if (any(skew != 0)) {
+        warning("Skew transformation matrix")
+    }
+    object@x <- object@x + translation[1]
+    object@y <- object@y + translation[2]
+    object@width <- scale[1]*object@width
+    object@height <- scale[2]*object@height
+    object@angle <- object@angle + rotation
     object
 }
 
