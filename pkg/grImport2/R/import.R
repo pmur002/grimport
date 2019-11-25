@@ -1,4 +1,4 @@
-readPicture <- function(file, warn = TRUE) {
+readPicture <- function(file, warn = TRUE, initDefs = TRUE) {
     if (missing(file))
         stop("'file' must be a character string representing a path to a file.")
     doc <- xmlParse(file)
@@ -7,7 +7,9 @@ readPicture <- function(file, warn = TRUE) {
     pictureDims <- getPictureDims(svgImage)
     ## Initialise defs in .grImport2Env so can be modded on-the-fly
     ## during parseImage
-    assign("defs", new("PictureDefinitions"), envir=.grImport2Env)
+    if (initDefs) {
+        assign("defs", new("PictureDefinitions"), envir=.grImport2Env)
+    }
     # Fill up picture definitions table first
     parsePictureDefinitions(svgImage)
     # Now parse the contents of the image (<defs> are ignored).

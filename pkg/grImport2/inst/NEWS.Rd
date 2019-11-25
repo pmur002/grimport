@@ -4,7 +4,7 @@
 
 \section{Changes in version 0.2-0}{
   \itemize{
-    \item \code{pictureGrob()} has new argument \code{delayContent}.
+    \item \code{pictureGrob()} has a new argument \code{delayContent}.
     If that is \code{TRUE}, the function returns a \code{"PictureGrob"}
     gTree that has a \code{makeContent()} method, so that
     \code{grobify()} only happens at drawing time, so that,
@@ -17,6 +17,13 @@
     transformations; to handle transformations more consistently
     in general;  to fix calculation of bounding box for transformed
     clipping path.
+
+    \item \code{readPicture()} has a new argument \code{initDefs},
+    which controls whether the list of definitions (things like
+    masks, filters, gradient fills, ...) is initialized when
+    reading a new picture.  This should be set to \code{FALSE}
+    when importing and drawing more than one picture in the same
+    R image.
   }
 }
 \section{Changes in version 0.1-6}{
