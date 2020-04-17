@@ -10,6 +10,11 @@ readPicture <- function(file, warn = TRUE, initDefs = TRUE) {
     if (initDefs) {
         assign("defs", new("PictureDefinitions"), envir=.grImport2Env)
     }
+    ## Parsing can create temporary graphics devices, so make sure
+    ## that the current device BEFORE this call is restored
+    cd <- dev.cur()
+    if (cd > 1)
+        on.exit(dev.set(cd))
     # Fill up picture definitions table first
     parsePictureDefinitions(svgImage)
     # Now parse the contents of the image (<defs> are ignored).

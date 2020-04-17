@@ -2,6 +2,12 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.2-1}{
+  \itemize{
+    \item Restore current graphics device after \code{readPicture()}
+    call.  Thanks to Trevor Davis for report and patch.
+  }
+}
 \section{Changes in version 0.2-0}{
   \itemize{
     \item \code{pictureGrob()} has a new argument \code{delayContent}.
