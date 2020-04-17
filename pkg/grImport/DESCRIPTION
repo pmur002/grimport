@@ -1,5 +1,5 @@
 Package:      grImport
-Version:      0.9-2
+Version:      0.9-3
 Depends:      R (>= 3.0.0), methods, grDevices, graphics, grid, XML
 Suggests:     lattice, cluster, colorspace, survival
 SystemRequirements: ghostscript
@@ -10,4 +10,5 @@ Authors@R: c(person("Paul", "Murrell", role = c("aut", "cre"),
              person("Simon", "Potter", role = "ctb"))
 Description:  Functions for converting, importing, and drawing PostScript 
               pictures in R plots.
+URL:          https://r-forge.r-project.org/projects/grimport/,http://www.jstatsoft.org/v30/i04,https://stattech.wordpress.fos.auckland.ac.nz/2018/09/20/2018-09-importing-general-purpose-graphics-in-r/
 License:      GPL (>= 2)

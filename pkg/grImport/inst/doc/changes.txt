@@ -1,4 +1,18 @@
 
+Changes from version 0.9-2 to 0.9-3
+===================================
+
+1.  Add -dNOSAFER flag to 'gs' command.  
+
+    From ghostscript version 9.28, -dSAFER is the default, 
+    which means that file permission restrictions are applied
+    (ghostscript cannot read or write files unless explicitly
+    allowed).  -dNOSAFER is a simple "fix" that reverts to
+    the old, permissive, behaviour.  A more sophisticated fix
+    would identify the files that ghostscript needs to access
+    and provide explicit permissions.
+
+
 Changes from version 0.9-1 to 0.9-2
 ===================================
 
