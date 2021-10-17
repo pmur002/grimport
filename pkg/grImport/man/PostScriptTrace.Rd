@@ -48,6 +48,6 @@
   inspection of the source PostScript file.
 }
 \references{
-  \url{http://www.cs.wisc.edu/~ghost/}
+  \url{https://www.ghostscript.com/}
 }
 \keyword{dplot}

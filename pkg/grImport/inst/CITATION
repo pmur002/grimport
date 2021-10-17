@@ -8,12 +8,12 @@ citEntry(entry = "Article",
   volume       = "30",
   number       = "4",
   pages        = "1--37",
-  url          = "http://www.jstatsoft.org/v30/i04/",
+  doi          = "10.18637/jss.v030.i04",
 
   textVersion  =
   paste("Paul Murrell (2009).",
         "Importing Vector Graphics: The grImport Package for R.",
         "Journal of Statistical Software, 30(4), 1-37.",
-        "URL http://www.jstatsoft.org/v30/i04/.")
+        "https://doi.org/10.18637/jss.v030.i04.")
 )
 
