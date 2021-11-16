@@ -1,4 +1,12 @@
 
+Changes from version 0.9-4 to 0.9-6
+===================================
+
+1.  Tweak to make robust changes to PostScriptTrace() more efficient.
+
+    Thanks again to Harold Gutch.
+
+
 Changes from version 0.9-4 to 0.9-5
 ===================================
 

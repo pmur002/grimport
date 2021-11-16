@@ -175,8 +175,6 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding,
       
       # echoing graphics state
       "/printcol {",
-      "  1 dict begin",
-      "  /str 50 string def",
       # What colorspace are we in?
       # Return colorspace array and extract
       # first element which is colorspace name
@@ -194,7 +192,6 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding,
       "  ( b=') print str cvs print (') print",
       "  (/>\n) print",
       "  pop pop",
-      "  end",
       "  } def",
       "/printlwd {",
       # lwd is in user coords so transform
@@ -224,8 +221,6 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding,
       "  ( lty=') print pop {0 transform pop 0 0 transform pop sub str cvs print ( ) print} forall (') print",
       "} def",      
       "/printstyle {",
-      "  1 dict begin",
-      "  /str 50 string def",
       "  (\t\t<style) print",
       "  printlwd",
       "  printdash",
@@ -233,7 +228,6 @@ PScaptureHead <- function(file, charpath, charpos, setflat, encoding,
       "  printlinemiter",
       "  printlinejoin",
       "  (/>\n) print",
-      "  end",
       "} def",
 
       # print out "closestroke" marker plus graphics state info
