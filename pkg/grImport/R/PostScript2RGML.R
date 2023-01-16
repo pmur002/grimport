@@ -1139,7 +1139,7 @@ PostScriptTrace <- function(file, outfilename,
         if(is.null(gsexe) || !nzchar(gsexe)) {
             poss <- Sys.which(c("gswin64c.exe", "gswin32c.exe"))
             poss <- poss[nzchar(poss)]
-            gsexe <- if(length(poss)) poss else "gswin32c.exe"
+            gsexe <- if(length(poss)) poss[1] else "gswin32c.exe"
         } else if(grepl(" ", gsexe, fixed = TRUE))
             gsexe <- utils::shortPathName(gsexe)
         outfile <- tempfile()
@@ -1152,7 +1152,7 @@ PostScriptTrace <- function(file, outfilename,
         }
         outfile <- "/dev/null"
     }
-    cmd <- paste(gsexe, 
+    cmd <- paste(shQuote(gsexe), 
                  " -q -dBATCH -dNOPAUSE -dNOSAFER",
                  " -sDEVICE=ps2write -sOutputFile=",
                  outfile, " -sstdout=",
