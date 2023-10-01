@@ -6,6 +6,9 @@
   \itemize{
     \item Restore current graphics device after \code{readPicture()}
     call.  Thanks to Trevor Davis for report and patch.
+    
+    \item Add \code{Picture} method for \code{applyTransform()}.
+    Thanks to Trevor Davis for report.
   }
 }
 \section{Changes in version 0.2-0}{
