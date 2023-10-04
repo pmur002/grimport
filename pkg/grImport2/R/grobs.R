@@ -154,7 +154,10 @@ pictureVP <- function(picture, expansion = 0.05,
                      layout.pos.col = 1,
                      xscale = xscale,
                      yscale = yscale,
-                     clip = clip))
+                     clip = clip,
+                     ## Enforce SVG defaults
+                     ## https://oreillymedia.github.io/Using_SVG/guide/style.html
+                     gp = gpar(col=NA, fill="black")))
 }
 
 clipVP <- function(xscale, yscale) {

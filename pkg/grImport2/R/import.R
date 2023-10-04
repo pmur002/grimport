@@ -57,6 +57,7 @@ checkValidSVG <- function(doc, minVersion = NA, warn = TRUE) {
                                minVersion,". Errors may result"))
         }
     } else {
+        ## This only works for Cairo versions < 1.18.0
         topGroup <- getNodeSet(doc, "/svg:svg/svg:g[1]",
                                namespaces=c(svg="http://www.w3.org/2000/svg"))
         if (length(topGroup)) {
