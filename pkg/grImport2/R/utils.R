@@ -108,6 +108,8 @@ presentationAttributes <- c("fill",
                             "font-size",
                             "font-weight",
                             "opacity",
+                            "stop-color",
+                            "stop-opacity",
                             "stroke",
                             "stroke-dasharray",
                             "stroke-linecap",
@@ -158,8 +160,14 @@ svgStyleList <- function(x) {
 parseLty <- function(x) {
     if (x == "none")
         1 # solid
-    else
-        as.numeric(strsplit(x, ",")[[1]])
+    else {
+        ## See "Usage notes"
+        ## https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+        lty <- as.numeric(strsplit(as.character(x), ",| ")[[1]])
+        if (length(lty) %% 2 == 1)
+            lty <- rep(lty, 2)
+        lty
+    }
 }
 
 # Pull out all of the gpar settings

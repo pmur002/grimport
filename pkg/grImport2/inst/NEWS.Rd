@@ -6,6 +6,12 @@
   \itemize{
     \item Expand SVG parser to support newer Cairo SVG output
     (Cairo >= 1.18.0).
+
+    Root \code{<svg>} element has no units on \code{width} and
+    \code{height}.
+
+    Many other elements use SVG presentation attributes rather
+    than a single \code{style} attribute (with CSS attributes).
   }
 }
 \section{Changes in version 0.2-1}{
