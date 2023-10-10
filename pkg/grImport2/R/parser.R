@@ -56,17 +56,29 @@ parseSVGClipPath <- function(x, createDefs) {
 }
 
 parseSVGFeColorMatrix <- function(x, createDefs) {
-    # type will be a matrix
-    # input will be SourceGraphic
-    # primary concern is parsing values, which will likely be the following
-    # sequence of integers:
-    # "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+    ## https://www.w3.org/TR/SVG11/filters.html#feColorMatrixElement
+    ## 'type' defaults to "matrix"
+    type <- xmlGetAttr(x, "type")
+    if (is.null(type))
+        type <- "matrix"
+    ## 'input' defaults to NA
+    input <- xmlGetAttr(x, "in")
+    if (is.null(input))
+        input <- as.character(NA)
+    ## 'color-interpolation-filters' defaults to "auto"
+    colorspace <- xmlGetAttr(x, "color-interpolation-filters")
+    if (is.null(colorspace))
+        colorspace <- "auto"
+    ## Primary concern is parsing values, which will likely be the following
+    ## sequence of integers:
+    ## "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
     nums <- as.integer(strsplit(xmlGetAttr(x, "values"), " ")[[1]])
     colmat <- matrix(nums, nrow = 4, ncol = 5, byrow=TRUE)
     new("PictureFeColorMatrix",
-        type = xmlGetAttr(x, "type"),
-        input = xmlGetAttr(x, "in"),
-        values = colmat)
+        type = type,
+        input = input,
+        values = colmat,
+        "color-interpolation-filters" = colorspace)
 }
 
 parseSVGFilter <- function(x, createDefs) {

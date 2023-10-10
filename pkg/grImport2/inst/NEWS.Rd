@@ -2,6 +2,11 @@
 \title{NEWS file for the grImport2 package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.3-1}{
+  \itemize{
+    \item Fix for newer Cairo SVG support (for feColorMatrix filters).
+  }
+}
 \section{Changes in version 0.3-0}{
   \itemize{
     \item Expand SVG parser to support newer Cairo SVG output

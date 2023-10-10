@@ -51,7 +51,8 @@ setClass("PictureFeColorMatrix",
          representation("PictureContent",
                         type = "character",
                         input = "character",
-                        values = "matrix"))
+                        values = "matrix",
+                        "color-interpolation-filters" = "character"))
 
 setClass("PictureFilter",
          representation("PictureContent",
