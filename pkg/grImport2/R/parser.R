@@ -55,6 +55,30 @@ parseSVGClipPath <- function(x, createDefs) {
         cp
 }
 
+parseSVGFeImage <- function(x, createDefs) {
+    attrs <- xmlAttrs(x)
+    new("PictureFeImage",
+        href = attrs["href"],
+        result = attrs["result"],
+        x = attrs["x"],
+        y = attrs["y"],
+        width = attrs["width"],
+        height = attrs["height"])
+}
+
+parseSVGFeComposite <- function(x, createDefs) {
+    attrs <- xmlAttrs(x)
+    new("PictureFeComposite",
+        input1 = attrs["in"],
+        input2 = attrs["in2"],
+        operator = attrs["operator"],
+        k1 = as.numeric(attrs["k1"]),
+        k2 = as.numeric(attrs["k2"]),
+        k3 = as.numeric(attrs["k3"]),
+        k4 = as.numeric(attrs["k4"]),
+        colorspace = attrs["color=interpolation-filters"])
+}
+
 parseSVGFeColorMatrix <- function(x, createDefs) {
     ## https://www.w3.org/TR/SVG11/filters.html#feColorMatrixElement
     ## 'type' defaults to "matrix"
@@ -78,20 +102,17 @@ parseSVGFeColorMatrix <- function(x, createDefs) {
         type = type,
         input = input,
         values = colmat,
-        "color-interpolation-filters" = colorspace)
+        colorspace = colorspace)
 }
 
 parseSVGFilter <- function(x, createDefs) {
-    # Can assume just one child (if necessary)
-    # because Cairo SVG does not include more than
-    # a single feColorMatrix element
     filterID <- xmlGetAttr(x, "id")
     # children don't set definitions, set createDefs to FALSE
-    fecolmat <- parseImage(xmlChildren(x, addNames = FALSE),
-                           createDefs = FALSE)[[1]]
+    effects <- parseImage(xmlChildren(x, addNames = FALSE),
+                          createDefs = FALSE)
     f <- new("PictureFilter", filterUnits = "bbox",
               x = 0, y = 0, width = 1, height = 1,
-              content = fecolmat)
+              content = effects)
     if (createDefs)
         setDef(filterID, f) # should always be this
     else
@@ -378,6 +399,8 @@ parseImage <- function(x, createDefs = FALSE) {
         svgFn <- switch(el,
                         clipPath = parseSVGClipPath,
                         feColorMatrix = parseSVGFeColorMatrix,
+                        feImage = parseSVGFeImage,
+                        feComposite = parseSVGFeComposite,
                         filter = parseSVGFilter,
                         g = parseSVGGroup,
                         image = parseSVGImage,
