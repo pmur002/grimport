@@ -51,10 +51,10 @@ setClass("PictureFeImage",
          representation("PictureContent",
                         href = "character",
                         result = "character",
-                        x = "character",
-                        y = "character",
-                        width = "character",
-                        height = "character"))
+                        x = "numeric",
+                        y = "numeric",
+                        width = "numeric",
+                        height = "numeric"))
 
 setClass("PictureFeComposite",
          representation("PictureContent",
@@ -77,6 +77,7 @@ setClass("PictureFeColorMatrix",
 setClass("PictureFilter",
          representation("PictureContent",
                         filterUnits = "character",
+                        primitiveUnits = "character",
                         x = "numeric", y = "numeric",
                         width = "numeric", height = "numeric",
                         content = "list"))

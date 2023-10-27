@@ -56,14 +56,14 @@ parseSVGClipPath <- function(x, createDefs) {
 }
 
 parseSVGFeImage <- function(x, createDefs) {
-    attrs <- xmlAttrs(x)
+    attrs <- as.list(xmlAttrs(x))
     new("PictureFeImage",
-        href = attrs["href"],
-        result = attrs["result"],
-        x = attrs["x"],
-        y = attrs["y"],
-        width = attrs["width"],
-        height = attrs["height"])
+        href = hrefToID(attrs$href),
+        result = attrs$result,
+        x = as.numeric(attrs$x),
+        y = as.numeric(attrs$y),
+        width = as.numeric(attrs$width),
+        height = as.numeric(attrs$height))
 }
 
 parseSVGFeComposite <- function(x, createDefs) {
@@ -110,9 +110,14 @@ parseSVGFilter <- function(x, createDefs) {
     # children don't set definitions, set createDefs to FALSE
     effects <- parseImage(xmlChildren(x, addNames = FALSE),
                           createDefs = FALSE)
-    f <- new("PictureFilter", filterUnits = "bbox",
-              x = 0, y = 0, width = 1, height = 1,
-              content = effects)
+    f <- new("PictureFilter",
+             ## NOTE that we are ASSUMING x/y/w/h = 0/0/1/1
+             ## AND that filterUnits="objectBoundingBox"
+             ## AND that primitiveUnits="userSpaceOnUse"
+             ## (and ignoring anything to the contrary in the imported SVG)
+             filterUnits = "bbox", primitiveUnits = "coords",
+             x = 0, y = 0, width = 1, height = 1,
+             content = effects)
     if (createDefs)
         setDef(filterID, f) # should always be this
     else

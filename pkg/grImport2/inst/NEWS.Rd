@@ -4,7 +4,14 @@
 
 \section{Changes in version 0.3-1}{
   \itemize{
-    \item Fix for newer Cairo SVG support (for feColorMatrix filters).
+    \item Additional support for parsing newer Cairo SVG output:
+    \itemize{
+      \item feColorMatrix filter effect.
+      \item feImage filter effect.
+      \item feComposite filter effect.
+      \item filters with more than one filter effect.
+      \item more general transform attributes.
+    }
   }
 }
 \section{Changes in version 0.3-0}{
