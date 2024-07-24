@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="576" height="288" viewBox="0 0 576 288">
+<defs>
+<clipPath id="clip-0">
+<path clip-rule="nonzero" d="M 0 0 L 288 0 L 288 288 L 0 288 Z M 0 0 "/>
+</clipPath>
+</defs>
+<rect x="-57.6" y="-28.8" width="691.2" height="345.6" fill="rgb(100%, 100%, 100%)" fill-opacity="1"/>
+<rect x="-57.6" y="-28.8" width="691.2" height="345.6" fill="rgb(74.509804%, 74.509804%, 74.509804%)" fill-opacity="1"/>
+<g clip-path="url(#clip-0)">
+<path fill-rule="nonzero" fill="rgb(100%, 100%, 100%)" fill-opacity="1" d="M -28.800781 -28.800781 L 316.800781 -28.800781 L 316.800781 316.800781 L -28.800781 316.800781 Z M -28.800781 -28.800781 "/>
+<path fill-rule="nonzero" fill="rgb(100%, 100%, 100%)" fill-opacity="1" d="M -28.800781 -28.800781 L 316.800781 -28.800781 L 316.800781 316.800781 L -28.800781 316.800781 Z M -28.800781 -28.800781 "/>
+<path fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0 288 L 288 288 L 288 0 L 0 0 L 0 288 "/>
+<path fill="none" stroke-width="60" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0 288 L 288 0 "/>
+<path fill="none" stroke-width="60" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(87.45098%, 32.54902%, 41.960784%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0 0 L 288 288 "/>
+<path fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 0 288 L 288 288 L 288 0 L 0 0 L 0 288 "/>
+</g>
+</svg>
