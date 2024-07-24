@@ -4,10 +4,11 @@
 
 \section{Changes in version 0.3-3}{
   \itemize{
-    \item Respond to \code{hjust} and \code{vjust}.
+    \item Respond to \code{hjust} and \code{vjust} (previously ignored).
 
     \item Allow \code{width} and \code{height} to be \code{NULL}
-    (and fill them in based on image aspect ratio).
+    (in fact those are now the defaults)
+    and fill them in based on image aspect ratio.
   }
 }
 \section{Changes in version 0.3-2}{
