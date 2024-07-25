@@ -54,3 +54,4 @@ jobs:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           working-directory: '"pkg"'
+
