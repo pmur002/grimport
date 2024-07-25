@@ -1,44 +1,49 @@
 library(grid)
 library(grImport2)
+library(gridSVG)
 
 test <- readPicture("test-wh-input.svg")
 
+dev <- function(name, width, height) {
+    gridsvg(name, width = width, height = height, annotate = FALSE)
+}
+
 ## Check that 'width' and 'height' default to sensible unit(1, "npc")
-svg("test-wh-default.svg", width=4, height=4)
+dev("test-wh-default.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0)
 dev.off()
 
-svg("test-wh-default-wider.svg", width=8, height=4)
+dev("test-wh-default-wider.svg", width=8, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0)
 dev.off()
 
-svg("test-wh-default-taller.svg", width=4, height=8)
+dev("test-wh-default-taller.svg", width=4, height=8)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0)
 dev.off()
 
 ## Check justification
-svg("test-wh-default-wider-left.svg", width=8, height=4)
+dev("test-wh-default-wider-left.svg", width=8, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0, x=0, hjust=0)
 dev.off()
 
-svg("test-wh-default-taller-bottom.svg", width=4, height=8)
+dev("test-wh-default-taller-bottom.svg", width=4, height=8)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0, y=0, vjust=0)
 dev.off()
 
 ## Check that aspect ratio is retained if only one of width/height is given
-svg("test-wh-width-null.svg", width=4, height=4)
+dev("test-wh-width-null.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              height=.5,
              x=.25, y=.25, hjust=0, vjust=0)
 dev.off()
 
-svg("test-wh-height-null.svg", width=4, height=4)
+dev("test-wh-height-null.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=.5,
@@ -46,46 +51,46 @@ grid.picture(test, expansion=0,
 dev.off()
 
 ## For sanity, check that setting width and height is respected
-svg("test-wh-set.svg", width=4, height=4)
+dev("test-wh-set.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=.5, height=.5)
 dev.off()
 
-svg("test-wh-set-wider.svg", width=4, height=4)
+dev("test-wh-set-wider.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=1, height=.5)
 dev.off()
 
 ## Various repetitions allowing distortion
-svg("test-wh-set-distort.svg", width=4, height=4)
+dev("test-wh-set-distort.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=.5, height=.5,
              distort=TRUE)
 dev.off()
 
-svg("test-wh-set-wider-distort.svg", width=4, height=4)
+dev("test-wh-set-wider-distort.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=1, height=.5,
              distort=TRUE)
 dev.off()
 
-svg("test-wh-default-wider-distort.svg", width=8, height=4)
+dev("test-wh-default-wider-distort.svg", width=8, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              distort=TRUE)
 dev.off()
 
-svg("test-wh-default-taller-distort.svg", width=4, height=8)
+dev("test-wh-default-taller-distort.svg", width=4, height=8)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              distort=TRUE)
 dev.off()
 
-svg("test-wh-width-null-distort.svg", width=4, height=4)
+dev("test-wh-width-null-distort.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              height=.5,
@@ -93,7 +98,7 @@ grid.picture(test, expansion=0,
              distort=TRUE)
 dev.off()
 
-svg("test-wh-height-null-distort.svg", width=4, height=4)
+dev("test-wh-height-null-distort.svg", width=4, height=4)
 grid.rect(gp=gpar(col=NA, fill="grey"))
 grid.picture(test, expansion=0,
              width=.5,
