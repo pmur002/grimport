@@ -5,6 +5,7 @@ on:
     branches: [main, master]
     paths:
       - 'pkg/grImport2'
+      - '.github'
   pull_request:
     branches: [main, master]
 
