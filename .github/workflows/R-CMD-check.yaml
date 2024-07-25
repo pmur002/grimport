@@ -46,7 +46,7 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
-          working-directory: '"pkg/grImport2"'
+          working-directory: '../pkg/grImport2'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
